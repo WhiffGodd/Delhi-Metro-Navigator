@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Delhi Metro — Network Map, Route Planner & Helplines</title>
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Leaflet CSS (Cloudflare CDN for ultra-reliable Vercel deployment) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" crossorigin="anonymous">
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- App Styles -->
+  <link rel="stylesheet" href="styles.css">
+
+  <meta name="description" content="Interactive Delhi Metro network map, route planner, fare calculator, and emergency helpline directory.">
+</head>
+<body>
+
+  <!-- ═══════════════════════════ HEADER ═══════════════════════════ -->
+  <header class="app-header">
+    <div class="logo-container">
+      <div class="logo-icon-bg">
+        <span class="logo-icon">🚇</span>
+      </div>
+      <div class="logo-title-group">
+        <h1 class="logo-text">Delhi Metro Navigator</h1>
+        <span class="logo-subtitle">Network Map, Planner & Safety Helplines</span>
+      </div>
+    </div>
+
+    <div class="header-stats">
+      <div class="stat-pill">
+        <span class="stat-dot"></span>
+        <span>10 Metro Lines</span>
+      </div>
+      <a href="https://www.dmrcsmartcard.com/" target="_blank" rel="noopener" class="stat-pill card-recharge-pill" title="Smart Card Recharge on DMRC Portal">
+        <span class="stat-icon">💳</span>
+        <span>Smart Card Recharge ↗</span>
+      </a>
+      <div class="stat-pill helpline-quick-pill" onclick="switchTab('helplines')">
+        <span class="stat-icon">🚨</span>
+        <span>24x7 Helplines</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════ LAYOUT ═══════════════════════════ -->
+  <div class="app-container">
+
+    <!-- ──────────────── SIDEBAR ──────────────── -->
+    <aside class="sidebar">
+
+      <!-- Tabs -->
+      <div class="sidebar-tabs">
+        <button id="tab-network" class="tab-btn active">
+          <i data-lucide="map" style="width:14px;height:14px"></i> Network
+        </button>
+        <button id="tab-planner" class="tab-btn">
+          <i data-lucide="navigation" style="width:14px;height:14px"></i> Planner
+        </button>
+        <button id="tab-helplines" class="tab-btn">
+          <i data-lucide="phone-call" style="width:14px;height:14px"></i> Helplines
+        </button>
+        <button id="tab-info" class="tab-btn">
+          <i data-lucide="info" style="width:14px;height:14px"></i> Info
+        </button>
+      </div>
+
+      <!-- ── TAB 1: Network ────────────────────── -->
+      <div id="content-network" class="tab-content active">
+
+        <!-- Search -->
+        <div class="sidebar-section">
+          <span class="sidebar-title">Find a Station</span>
+          <div class="search-wrapper">
+            <input type="text" id="search-input" class="search-input"
+              placeholder="Search station name (e.g. Rajiv Chowk)…" autocomplete="off">
+            <span class="search-icon">🔍</span>
+            <div id="search-results" class="search-results"></div>
+          </div>
+        </div>
+
+        <!-- Lines legend -->
+        <div class="sidebar-section">
+          <span class="sidebar-title">Delhi Metro Lines</span>
+          <div class="line-pills"><!-- JS populates --></div>
+        </div>
+
+        <!-- Alerts -->
+        <div class="sidebar-section alerts-section">
+          <span class="sidebar-title">
+            <span>Service Updates</span>
+            <span id="alert-count-badge" class="alert-count-badge" style="display:none">0</span>
+          </span>
+          <div id="alerts-feed" class="alerts-feed">
+            <div class="alert-card info">
+              <span class="alert-icon">ℹ️</span>
+              <div class="alert-body">
+                <span class="alert-message">All lines operating normally on regular schedule (05:30 to 23:30).</span>
+                <span class="alert-time">Updated Today</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /tab-network -->
+
+      <!-- ── TAB 2: Trip Planner ───────────────── -->
+      <div id="content-planner" class="tab-content">
+
+        <div class="sidebar-section">
+          <span class="sidebar-title">Plan Your Journey</span>
+          <div class="planner-form">
+            <div class="input-group">
+              <label class="select-label" for="route-from">Origin Station</label>
+              <select id="route-from" class="route-select"></select>
+            </div>
+
+            <div class="swap-wrapper">
+              <button id="swap-stations-btn" class="swap-btn" title="Swap origin & destination">
+                <i data-lucide="arrow-up-down" style="width:14px;height:14px"></i>
+              </button>
+            </div>
+
+            <div class="input-group">
+              <label class="select-label" for="route-to">Destination Station</label>
+              <select id="route-to" class="route-select"></select>
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-section">
+          <span class="sidebar-title">Route Preference</span>
+          <div class="preference-grid">
+            <button class="pref-btn active" data-pref="fastest">⚡ Fastest Route</button>
+            <button class="pref-btn" data-pref="fewest_interchanges">🔀 Direct / Minimum Changes</button>
+          </div>
+          <button id="plan-trip-btn" class="plan-btn">Calculate Route</button>
+        </div>
+
+        <div id="route-results-container" class="sidebar-section route-results-section"></div>
+
+      </div><!-- /tab-planner -->
+
+      <!-- ── TAB 3: Helplines & Safety ──────────────── -->
+      <div id="content-helplines" class="tab-content">
+
+        <div class="sidebar-section helplines-tab-body">
+          
+          <!-- SECTION 1: POLICE & SECURITY HELPLINES -->
+          <div class="helpline-card emergency-border">
+            <div class="helpline-card-header">
+              <span class="helpline-icon">🚨</span>
+              <div class="helpline-header-text">
+                <h3 class="helpline-card-title">Police & Security Helplines</h3>
+                <span class="helpline-card-sub">Emergency Response & CISF Station Security</span>
+              </div>
+            </div>
+            <div class="helpline-list">
+              <div class="helpline-item">
+                <div class="helpline-info">
+                  <span class="helpline-name">National Emergency Response</span>
+                  <span class="helpline-number">112</span>
+                </div>
+                <a href="tel:112" class="call-btn btn-danger">Call 112</a>
+              </div>
+
+              <div class="helpline-item">
+                <div class="helpline-info">
+                  <span class="helpline-name">Delhi Metro Police Helpline</span>
+                  <span class="helpline-number">1511</span>
+                </div>
+                <a href="tel:1511" class="call-btn btn-danger">Call 1511</a>
+              </div>
+
+              <div class="helpline-item">
+                <div class="helpline-info">
+                  <span class="helpline-name">CISF Metro Security Control</span>
+                  <span class="helpline-number">155655</span>
+                </div>
+                <a href="tel:155655" class="call-btn btn-danger">Call 155655</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- SECTION 2: WOMEN'S SAFETY HELPLINES -->
+          <div class="helpline-card women-border">
+            <div class="helpline-card-header">
+              <span class="helpline-icon">👩</span>
+              <div class="helpline-header-text">
+                <h3 class="helpline-card-title">Women's Safety & Protection</h3>
+                <span class="helpline-card-sub">24x7 Emergency Assistance & Reserved Coach Patrol</span>
+              </div>
+            </div>
+            <div class="helpline-list">
+              <div class="helpline-item">
+                <div class="helpline-info">
+                  <span class="helpline-name">Women Safety Helpline (24x7)</span>
+                  <span class="helpline-number">1091</span>
+                </div>
+                <a href="tel:1091" class="call-btn btn-pink">Call 1091</a>
+              </div>
+
+              <div class="helpline-item">
+                <div class="helpline-info">
+                  <span class="helpline-name">Delhi Commission for Women (DCW)</span>
+                  <span class="helpline-number">181</span>
+                </div>
+                <a href="tel:181" class="call-btn btn-pink">Call 181</a>
+              </div>
+
+              <div class="helpline-item">
+                <div class="helpline-info">
+                  <span class="helpline-name">DMRC Women's Special Assistance</span>
+                  <span class="helpline-number">155370 (Press 2)</span>
+                </div>
+                <a href="tel:155370" class="call-btn btn-pink">Call 155370</a>
+              </div>
+            </div>
+            <div class="safety-note">
+              <span>ℹ️ First coach in direction of train movement is strictly reserved for women. CISF Quick Reaction Teams patrol platforms.</span>
+            </div>
+          </div>
+
+          <!-- SECTION 3: SPECIALLY ABLED & ACCESSIBILITY SUPPORT -->
+          <div class="helpline-card abled-border">
+            <div class="helpline-card-header">
+              <span class="helpline-icon">♿</span>
+              <div class="helpline-header-text">
+                <h3 class="helpline-card-title">Specially Abled & Senior Support</h3>
+                <span class="helpline-card-sub">Wheelchair Escort, Ramp Access & Assistance</span>
+              </div>
+            </div>
+            <div class="helpline-list">
+              <div class="helpline-item">
+                <div class="helpline-info">
+                  <span class="helpline-name">Divyangjan Station Escort Service</span>
+                  <span class="helpline-number">155370</span>
+                </div>
+                <a href="tel:155370" class="call-btn btn-blue">Request Escort</a>
+              </div>
+
+              <div class="helpline-item">
+                <div class="helpline-info">
+                  <span class="helpline-name">Senior Citizen & Priority Care</span>
+                  <span class="helpline-number">011-23417910</span>
+                </div>
+                <a href="tel:01123417910" class="call-btn btn-blue">Call Helpline</a>
+              </div>
+            </div>
+            <div class="accessibility-features-grid">
+              <div class="acc-feature-chip">🛗 Tactile Lifts & Braille</div>
+              <div class="acc-feature-chip">♿ Low Floor Ramps</div>
+              <div class="acc-feature-chip">🦽 Wheelchair at Customer Care</div>
+              <div class="acc-feature-chip">🔔 Station Escort on Request</div>
+            </div>
+          </div>
+
+          <!-- SECTION 4: GENERAL METRO HELPLINE & LOST/FOUND -->
+          <div class="helpline-card general-border">
+            <div class="helpline-card-header">
+              <span class="helpline-icon">📞</span>
+              <div class="helpline-header-text">
+                <h3 class="helpline-card-title">General DMRC Customer Care</h3>
+                <span class="helpline-card-sub">Toll-Free Inquiries, Tokens & Lost Items</span>
+              </div>
+            </div>
+            <div class="helpline-list">
+              <div class="helpline-item">
+                <div class="helpline-info">
+                  <span class="helpline-name">DMRC Toll-Free Helpline (24x7)</span>
+                  <span class="helpline-number">155370</span>
+                </div>
+                <a href="tel:155370" class="call-btn btn-dark">Call 155370</a>
+              </div>
+
+              <div class="helpline-item">
+                <div class="helpline-info">
+                  <span class="helpline-name">Lost & Found Office (Kashmere Gate)</span>
+                  <span class="helpline-number">011-23417910 (Ext 14558)</span>
+                </div>
+                <a href="tel:01123417910" class="call-btn btn-dark">Call Office</a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div><!-- /tab-helplines -->
+
+      <!-- ── TAB 4: Info ────────────────────────── -->
+      <div id="content-info" class="tab-content">
+
+        <div class="sidebar-section info-tab-body">
+          <span class="sidebar-title">System Overview & Services</span>
+
+          <!-- METRO CARD RECHARGE CARD -->
+          <div class="info-card recharge-card">
+            <h3 class="info-card-title">💳 Smart Card Recharge</h3>
+            <p class="info-card-body">Recharge your DMRC Metro Smart Card online directly on the official DMRC portal.</p>
+            <div class="recharge-form-group">
+              <label class="select-label" for="card-number-input">Metro Card Engraved ID (8 to 12 digits)</label>
+              <input type="text" id="card-number-input" class="search-input" placeholder="e.g. 12345678" maxlength="12">
+              
+              <div class="amount-chips-group">
+                <button type="button" class="amount-chip" onclick="setRechargeAmount(100, this)">₹100</button>
+                <button type="button" class="amount-chip active" onclick="setRechargeAmount(200, this)">₹200</button>
+                <button type="button" class="amount-chip" onclick="setRechargeAmount(500, this)">₹500</button>
+                <button type="button" class="amount-chip" onclick="setRechargeAmount(1000, this)">₹1000</button>
+              </div>
+
+              <button type="button" class="plan-btn recharge-btn" onclick="redirectToDMRCRecharge()">
+                Smart Card Recharge ↗
+              </button>
+            </div>
+            <p class="recharge-note">
+              ℹ️ Directs to official DMRC portal (<code>dmrcsmartcard.com</code>). After payment, tap your card at AVM (Add Value Machine) at any station to complete top-up.
+            </p>
+          </div>
+
+          <div class="info-card">
+            <h3 class="info-card-title">ℹ️ Delhi Metro Guide</h3>
+            <p class="info-card-body">Delhi Metro is India's largest rapid transit system, operating across Delhi NCR with high frequency and accessibility features.</p>
+            <ul class="info-list">
+              <li><strong>First Train:</strong> ~5:30 AM (Mon–Sat) / ~6:00 AM (Sun)</li>
+              <li><strong>Last Train:</strong> ~11:30 PM (Terminal departures)</li>
+              <li><strong>Token & Smart Card:</strong> Minimum fare ₹10, Maximum ₹60</li>
+              <li><strong>Peak Headways:</strong> 2 to 4 mins on major lines</li>
+            </ul>
+          </div>
+
+          <div class="info-card">
+            <h3 class="info-card-title">📋 Network Coverage</h3>
+            <div class="network-table">
+              <div class="network-row"><span class="net-line-dot" style="background:#FFD700"></span><span>Yellow Line (Samaypur Badli – Millennium City)</span><span class="net-count">37 stations</span></div>
+              <div class="network-row"><span class="net-line-dot" style="background:#0085CA"></span><span>Blue Line (Dwarka Sec 21 – Noida/Vaishali)</span><span class="net-count">44 stations</span></div>
+              <div class="network-row"><span class="net-line-dot" style="background:#E31837"></span><span>Red Line (Rithala – Shaheed Sthal)</span><span class="net-count">29 stations</span></div>
+              <div class="network-row"><span class="net-line-dot" style="background:#9400D3"></span><span>Violet Line (Kashmere Gate – Raja Nahar Singh)</span><span class="net-count">34 stations</span></div>
+              <div class="network-row"><span class="net-line-dot" style="background:#00A651"></span><span>Green Line (Inderlok – Brig. Hoshiar Singh)</span><span class="net-count">24 stations</span></div>
+              <div class="network-row"><span class="net-line-dot" style="background:#FF69B4"></span><span>Pink Line (Majlis Park – Shiv Vihar)</span><span class="net-count">38 stations</span></div>
+              <div class="network-row"><span class="net-line-dot" style="background:#C40380"></span><span>Magenta Line (Janakpuri W – Botanical Garden)</span><span class="net-count">25 stations</span></div>
+              <div class="network-row"><span class="net-line-dot" style="background:#F26522"></span><span>Airport Express (New Delhi – IGI Airport)</span><span class="net-count">6 stations</span></div>
+              <div class="network-row"><span class="net-line-dot" style="background:#9E9E9E"></span><span>Grey Line (Dwarka – Dhansa Bus Stand)</span><span class="net-count">4 stations</span></div>
+            </div>
+          </div>
+
+          <div class="info-card">
+            <h3 class="info-card-title">📞 Official Resources</h3>
+            <ul class="info-list">
+              <li><a href="https://www.delhimetrorail.com" target="_blank" rel="noopener" class="info-link">delhimetrorail.com</a> — official DMRC website</li>
+              <li><a href="https://www.dmrcsmartcard.com/" target="_blank" rel="noopener" class="info-link">dmrcsmartcard.com</a> — official DMRC smart card recharge</li>
+              <li><strong>24x7 Helpline:</strong> 155370</li>
+              <li><strong>CISF Security Helpline:</strong> 155655</li>
+            </ul>
+          </div>
+        </div>
+
+      </div><!-- /tab-info -->
+
+    </aside>
+
+    <!-- ──────────────── MAP ──────────────── -->
+    <main class="map-container-wrapper">
+      <div id="map"></div>
+
+      <!-- Station Detail Panel -->
+      <div id="details-panel" class="details-panel">
+        <div class="drawer-handle"></div>
+        <div class="details-header">
+          <div class="details-title-container">
+            <span id="station-subtitle" class="details-subtitle">DELHI METRO</span>
+            <h2 id="station-title" class="details-title">Station Info</h2>
+          </div>
+          <button id="close-details-btn" class="close-btn" title="Close">&times;</button>
+        </div>
+
+        <div class="details-content">
+          <div class="station-actions-card">
+            <button id="set-origin-btn" class="action-chip btn-origin">
+              <i data-lucide="map-pin" style="width:13px;height:13px"></i> Set as Origin
+            </button>
+            <button id="set-dest-btn" class="action-chip btn-dest">
+              <i data-lucide="navigation-2" style="width:13px;height:13px"></i> Set as Destination
+            </button>
+          </div>
+
+          <div>
+            <h3 class="details-section-title">First & Last Train Timings</h3>
+            <div id="last-train-list" class="last-train-list"></div>
+          </div>
+
+          <div>
+            <h3 class="details-section-title">Station Details</h3>
+            <div id="station-meta-box" class="meta-card-box"></div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+  </div><!-- /app-container -->
+
+  <!-- Scripts (CDN JS for rock-solid Vercel deployment) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js" crossorigin="anonymous"></script>
+  <script src="metroData.js"></script>
+  <script src="routing.js"></script>
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      if (window.lucide) lucide.createIcons();
+    });
+  </script>
+</body>
+</html>
