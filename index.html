@@ -24,6 +24,7 @@
 <body>
 
   <!-- ═══════════════════════════ HEADER ═══════════════════════════ -->
+  <!-- ═══════════════════════════ HEADER ═══════════════════════════ -->
   <header class="app-header">
     <div class="logo-container">
       <div class="logo-icon-bg">
@@ -31,18 +32,18 @@
       </div>
       <div class="logo-title-group">
         <h1 class="logo-text">Delhi Metro Navigator</h1>
-        <span class="logo-subtitle">Java 21 Powered Network Map & Helplines</span>
+        <span class="logo-subtitle">Delhi NCR Commuter & Travel Companion</span>
       </div>
     </div>
 
     <div class="header-stats">
       <div class="stat-pill">
         <span class="stat-dot"></span>
-        <span>10 Metro Lines</span>
+        <span>10 Lines • 229 Stations</span>
       </div>
-      <a href="https://www.dmrcsmartcard.com/" target="_blank" rel="noopener" class="stat-pill card-recharge-pill" title="Smart Card Recharge on DMRC Portal">
+      <a href="https://www.dmrcsmartcard.com/" target="_blank" rel="noopener" class="stat-pill card-recharge-pill" title="Smart Card Recharge on Official DMRC Portal">
         <span class="stat-icon">💳</span>
-        <span>Smart Card Recharge ↗</span>
+        <span>Card Recharge ↗</span>
       </a>
       <div class="stat-pill helpline-quick-pill" onclick="switchTab('helplines')">
         <span class="stat-icon">🚨</span>
@@ -76,12 +77,17 @@
       <!-- ── TAB 1: Network ────────────────────── -->
       <div id="content-network" class="tab-content active">
 
+        <!-- Friendly Commuter Tip -->
+        <div class="commuter-welcome-card" style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;margin:12px 14px 4px;font-size:12px;color:#334155;line-height:1.4">
+          <strong style="color:#0f172a">👋 Delhi Metro Guide:</strong> Tap any station on the map to view train timings, best exit gates, and street landmarks.
+        </div>
+
         <!-- Search -->
         <div class="sidebar-section">
           <span class="sidebar-title">Find a Station</span>
           <div class="search-wrapper">
             <input type="text" id="search-input" class="search-input"
-              placeholder="Search station name (e.g. Rajiv Chowk)…" autocomplete="off">
+              placeholder="Search station (e.g. Rajiv Chowk, Hauz Khas, Noida)…" autocomplete="off">
             <span class="search-icon">🔍</span>
             <div id="search-results" class="search-results"></div>
           </div>
@@ -89,21 +95,21 @@
 
         <!-- Lines legend -->
         <div class="sidebar-section">
-          <span class="sidebar-title">Delhi Metro Lines</span>
+          <span class="sidebar-title">Metro Lines Overview</span>
           <div id="line-pills" class="line-pills"></div>
         </div>
 
         <!-- Alerts -->
         <div class="sidebar-section alerts-section">
           <span class="sidebar-title">
-            <span>Service Updates</span>
+            <span>Daily Service Status</span>
           </span>
           <div id="alerts-feed" class="alerts-feed">
             <div class="alert-card info">
-              <span class="alert-icon">ℹ️</span>
+              <span class="alert-icon">🟢</span>
               <div class="alert-body">
-                <span class="alert-message">All 10 Metro Lines operating normally on regular schedule.</span>
-                <span class="alert-time">Java Engine Active</span>
+                <span class="alert-message">All 10 Metro Lines running normally on schedule.</span>
+                <span class="alert-time">Updated for Commuters</span>
               </div>
             </div>
           </div>
@@ -118,7 +124,7 @@
           <span class="sidebar-title">Plan Your Journey</span>
           <div class="planner-form">
             <div class="input-group">
-              <label class="select-label" for="route-from">Origin Station</label>
+              <label class="select-label" for="route-from">Where are you starting from?</label>
               <select id="route-from" class="route-select"></select>
             </div>
 
@@ -129,7 +135,7 @@
             </div>
 
             <div class="input-group">
-              <label class="select-label" for="route-to">Destination Station</label>
+              <label class="select-label" for="route-to">Where do you want to go?</label>
               <select id="route-to" class="route-select"></select>
             </div>
           </div>
@@ -139,9 +145,9 @@
           <span class="sidebar-title">Route Preference</span>
           <div class="preference-grid">
             <button id="pref-fastest" class="pref-btn active" onclick="setPreference('fastest')">⚡ Fastest Route</button>
-            <button id="pref-interchanges" class="pref-btn" onclick="setPreference('fewest_interchanges')">🔀 Direct / Minimum Changes</button>
+            <button id="pref-interchanges" class="pref-btn" onclick="setPreference('fewest_interchanges')">🔀 Fewer Transfers</button>
           </div>
-          <button id="plan-trip-btn" class="plan-btn" onclick="calculateTrip()">Calculate Route</button>
+          <button id="plan-trip-btn" class="plan-btn" onclick="calculateTrip()">Find Best Route</button>
         </div>
 
         <div id="route-results-container" class="sidebar-section route-results-section"></div>
@@ -381,7 +387,7 @@
           </div>
 
           <div>
-            <h3 class="details-section-title">Station Details & AI Exit Gates</h3>
+            <h3 class="details-section-title">Station Guide & Exit Directory</h3>
             <div id="station-meta-box" class="meta-card-box"></div>
           </div>
         </div>
@@ -597,7 +603,7 @@
           <div class="last-train-row">Last Train: <strong>${s.lastTrain} PM</strong></div>
         </div>`;
 
-      // Fetch AI Exit Gate recommendations from Java Backend
+      // Fetch Exit Gate recommendations from Backend
       fetch(`/api/exit-recommendation?station=${s.id}`)
         .then(res => res.json())
         .then(data => {
@@ -609,13 +615,13 @@
               <div class="gate-detail-card ${g.gate === exitAi.bestGate ? 'best-gate-card' : ''}">
                 <div class="gate-card-header">
                   <span class="gate-tag">${g.gate}</span>
-                  ${g.gate === exitAi.bestGate ? '<span class="ai-best-chip">⭐ Java AI Recommended Exit</span>' : ''}
+                  ${g.gate === exitAi.bestGate ? '<span class="ai-best-chip" style="background:#e0f2fe;color:#0369a1;font-weight:600">⭐ Recommended Exit</span>' : ''}
                 </div>
                 <div class="gate-landmark-title">📍 ${g.landmark}</div>
-                <div class="gate-reason-text">💡 ${g.reason}</div>
-                <div class="gate-features-row" style="margin-top:4px;font-size:11px;color:#64748b;display:flex;gap:10px">
-                  <span>⏱️ ~${g.walkMins}m walk</span>
-                  <span>🛗 ${g.lift ? 'Elevator' : 'Escalator'}</span>
+                <div class="gate-reason-text" style="font-size:12px;color:#334155;margin-top:2px">💡 ${g.reason}</div>
+                <div class="gate-features-row" style="margin-top:5px;font-size:11px;color:#64748b;display:flex;gap:12px">
+                  <span>⏱️ ~${g.walkMins} min walk to street</span>
+                  <span>🛗 ${g.lift ? 'Lifts Available' : 'Escalators Available'}</span>
                 </div>
               </div>`).join("");
           } else {
@@ -623,18 +629,18 @@
               <div class="gate-detail-card best-gate-card">
                 <div class="gate-card-header">
                   <span class="gate-tag">Gate 1</span>
-                  <span class="ai-best-chip">⭐ Main Concourse Exit</span>
+                  <span class="ai-best-chip" style="background:#e0f2fe;color:#0369a1;font-weight:600">⭐ Main Street Exit</span>
                 </div>
                 <div class="gate-landmark-title">📍 Ground Level Main Concourse Exit</div>
-                <div class="gate-reason-text">💡 Direct ramp access to main road with auto & feeder bus stands.</div>
+                <div class="gate-reason-text" style="font-size:12px;color:#334155;margin-top:2px">💡 Direct ramp access to main road with auto & feeder bus stands.</div>
               </div>`;
           }
 
           document.getElementById('station-meta-box').innerHTML = `
-            <div class="meta-row"><span class="meta-label">Station Type:</span> <span class="meta-val">${s.isInterchange ? '🔄 Interchange Hub' : '🚉 Intermediate Station'}</span></div>
-            <div class="meta-row"><span class="meta-label">Lines Served:</span> <span class="meta-val">${s.lines.join(", ")}</span></div>
+            <div class="meta-row"><span class="meta-label">Station Type:</span> <span class="meta-val">${s.isInterchange ? '🔄 Interchange Station (Direct Line Transfer)' : '🚉 Regular Metro Station (Platform Level Boarding)'}</span></div>
+            <div class="meta-row"><span class="meta-label">Lines Connected:</span> <span class="meta-val">${s.lines.join(", ")}</span></div>
             <div style="margin-top:10px;padding-top:10px;border-top:1px solid #e2e8f0">
-              <span class="meta-label" style="display:block;margin-bottom:8px;font-weight:800;color:var(--text-primary)">🤖 Java AI Smart Exit Gate Breakdown:</span>
+              <span class="meta-label" style="display:block;margin-bottom:8px;font-weight:700;color:var(--text-primary)">🚪 Station Exits & Street Landmarks:</span>
               <div class="gates-explanation-container">${gatesHtml}</div>
             </div>`;
         });
@@ -691,20 +697,20 @@
 
       const btn = document.getElementById('plan-trip-btn');
       btn.disabled = true;
-      btn.innerHTML = '<span class="spinner"></span> Java Engine calculating route...';
+      btn.innerHTML = '<span class="spinner"></span> Finding best connection...';
 
       try {
         const res = await fetch(`/api/route?from=${from}&to=${to}&pref=${selectedPref}`);
         const data = await res.json();
         btn.disabled = false;
-        btn.innerHTML = 'Calculate Route';
+        btn.innerHTML = 'Find Best Route';
 
         if (data.success && data.route) {
           renderRouteResults(data.route);
         }
       } catch (err) {
         btn.disabled = false;
-        btn.innerHTML = 'Calculate Route';
+        btn.innerHTML = 'Find Best Route';
         console.error('Error calculating route:', err);
       }
     }
@@ -722,21 +728,24 @@
         <div class="route-summary-card">
           <div class="route-metric"><span class="route-metric-val">~${r.totalTimeMins} mins</span><span class="route-metric-label">Travel Time</span></div>
           <div class="route-metric"><span class="route-metric-val">₹${r.fare}</span><span class="route-metric-label">Single Fare</span></div>
-          <div class="route-metric"><span class="route-metric-val">${r.totalStops}</span><span class="route-metric-label">Stops</span></div>
+          <div class="route-metric"><span class="route-metric-val">${r.totalStops}</span><span class="route-metric-label">Total Stops</span></div>
         </div>
 
-        <div class="smart-assistant-card exit-ai-card">
+        <div class="smart-assistant-card exit-ai-card" style="background:#f8fafc;border:1px solid #e2e8f0">
           <div class="assistant-card-header">
-            <span class="assistant-card-title">🤖 Java AI Exit Recommendation</span>
-            <span class="exit-gate-highlight-badge">⭐ Best: ${r.exitAi ? r.exitAi.bestGate : 'Gate 1'}</span>
+            <span class="assistant-card-title" style="font-weight:700">🚶 Recommended Exit & Commuter Advice</span>
+            <span class="exit-gate-highlight-badge" style="background:#2563eb;color:#fff">⭐ Recommended: ${r.exitAi ? r.exitAi.bestGate : 'Gate 1'}</span>
           </div>
           <div class="exit-reasoning-box">
-            <div class="reasoning-text">💡 ${r.exitAi ? r.exitAi.reason : 'Main exit gate'}</div>
-            <div class="exit-metrics-row">
-              <span>⏱️ Saves ~${r.exitAi ? r.exitAi.savedMins : 3} mins</span>
-              <span>🛗 ${r.exitAi && r.exitAi.lift ? 'Elevator Operational' : 'Escalators'}</span>
+            <div class="reasoning-text" style="font-size:13px;color:#1e293b;line-height:1.4">💡 ${r.exitAi ? r.exitAi.reason : 'Direct street exit with fast auto connectivity.'}</div>
+            <div class="exit-metrics-row" style="margin-top:6px;font-size:12px;color:#64748b">
+              <span>⏱️ Quickest exit (~${r.exitAi ? r.exitAi.savedMins : 3} mins faster)</span>
+              <span>🛗 ${r.exitAi && r.exitAi.lift ? 'Step-Free Elevator Access' : 'Escalators Available'}</span>
             </div>
-            <div style="margin-top:6px">${transitBadges}</div>
+            <div style="margin-top:8px">${transitBadges}</div>
+            <div style="margin-top:8px;padding-top:8px;border-top:1px dashed #cbd5e1;font-size:11px;color:#475569">
+              🤝 <strong>Commuter Tip:</strong> Board near middle coaches (Coaches 3-4) for the shortest walk to exit stairs/lifts at ${r.destName}.
+            </div>
           </div>
         </div>`;
 
