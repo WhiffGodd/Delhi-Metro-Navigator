@@ -536,7 +536,7 @@ function switchTab(tab) {
 // ─────────────────────────────────────────────
 // Trip Calculation
 // ─────────────────────────────────────────────
-function calculateTrip() {
+async function calculateTrip() {
   const from = document.getElementById("route-from").value;
   const to   = document.getElementById("route-to").value;
 
@@ -545,14 +545,88 @@ function calculateTrip() {
 
   const btn = document.getElementById("plan-trip-btn");
   btn.disabled = true;
-  btn.innerHTML = `<span class="spinner"></span> AI analyzing route, coach & exit recommendation…`;
+  btn.innerHTML = `<span class="spinner"></span> Java Engine analyzing route, coach & exit recommendation…`;
 
-  setTimeout(() => {
-    const result = router.findRoute(from, to, selectedPref);
+  try {
+    const fromId = from.toLowerCase().replace(/[^a-z0-9]/g, "_");
+    const toId = to.toLowerCase().replace(/[^a-z0-9]/g, "_");
+
+    const res = await fetch(`/api/route?from=${encodeURIComponent(fromId)}&to=${encodeURIComponent(toId)}&pref=${selectedPref}`);
+    const data = await res.json();
+
     btn.disabled = false;
     btn.innerHTML = "Calculate Route";
-    renderTripResult(result, from, to);
-  }, 60);
+
+    if (data.success && data.route) {
+      renderTripResultFromJava(data.route, from, to);
+    } else {
+      const fallbackResult = router.findRoute(from, to, selectedPref);
+      renderTripResult(fallbackResult, from, to);
+    }
+  } catch (e) {
+    btn.disabled = false;
+    btn.innerHTML = "Calculate Route";
+    const fallbackResult = router.findRoute(from, to, selectedPref);
+    renderTripResult(fallbackResult, from, to);
+  }
+}
+
+function renderTripResultFromJava(javaRoute, fromName, toName) {
+  const c = document.getElementById("route-results-container");
+  c.style.display = "flex";
+
+  const exitAi = javaRoute.exitAi || getAISmartExitRecommendation(toName);
+
+  let transitBadges = "";
+  if (exitAi.transitOptions) {
+    transitBadges = exitAi.transitOptions.map(t => `<span class="transit-chip">🚗 ${t}</span>`).join("");
+  }
+
+  c.innerHTML = `
+    <div class="route-summary-card">
+      <div class="route-metric">
+        <span class="route-metric-val">~${javaRoute.totalTimeMins} <span style="font-size:0.75rem">mins</span></span>
+        <span class="route-metric-label">Travel Time</span>
+      </div>
+      <div class="route-metric">
+        <span class="route-metric-val">₹${javaRoute.fare}</span>
+        <span class="route-metric-label">Single Fare</span>
+      </div>
+      <div class="route-metric">
+        <span class="route-metric-val">${javaRoute.totalStops}</span>
+        <span class="route-metric-label">Stops</span>
+      </div>
+    </div>
+
+    <!-- JAVA AI SMART EXIT CARD -->
+    <div class="smart-assistant-card exit-ai-card">
+      <div class="assistant-card-header">
+        <div class="assistant-card-title-group">
+          <span class="assistant-card-title">🤖 Java AI Exit Gate Recommendation</span>
+          <span class="exit-gate-highlight-badge">⭐ Recommended: ${exitAi.bestGate}</span>
+        </div>
+      </div>
+      
+      <div class="exit-reasoning-box">
+        <div class="reasoning-text">💡 <strong>Why ${exitAi.bestGate}?</strong> ${exitAi.reason}</div>
+        <div class="exit-metrics-row">
+          <div class="exit-metric-item">
+            <span class="exit-metric-icon">⏱️</span>
+            <span>Saves <strong>~${exitAi.savedMins} mins</strong> walk</span>
+          </div>
+          <div class="exit-metric-item">
+            <span class="exit-metric-icon">🛗</span>
+            <span>${exitAi.lift ? "Elevator Operational" : "Escalators Only"}</span>
+          </div>
+        </div>
+        <div class="exit-transit-row">
+          <span class="transit-label">First/Last Mile Options:</span>
+          <div class="transit-chips-group">${transitBadges}</div>
+        </div>
+      </div>
+    </div>`;
+
+  highlightRouteOnMap([fromName, toName]);
 }
 
 function showPlannerMsg(msg) {
