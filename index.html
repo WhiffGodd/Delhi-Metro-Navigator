@@ -102,7 +102,7 @@
             <div class="alert-card info">
               <span class="alert-icon">ℹ️</span>
               <div class="alert-body">
-                <span class="alert-message">All lines operating normally on regular schedule (05:30 to 23:30).</span>
+                <span class="alert-message">All 10 Metro Lines operating normally on regular schedule.</span>
                 <span class="alert-time">Java Engine Active</span>
               </div>
             </div>
@@ -381,7 +381,7 @@
           </div>
 
           <div>
-            <h3 class="details-section-title">Station Details</h3>
+            <h3 class="details-section-title">Station Details & AI Exit Gates</h3>
             <div id="station-meta-box" class="meta-card-box"></div>
           </div>
         </div>
@@ -395,7 +395,20 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js" crossorigin="anonymous"></script>
   <script>
     let map, selectedPref = 'fastest', stationsData = [], selectedStation = null;
-    let stationMarkers = {}, routePolyline = null;
+    let stationMarkers = {}, linePolylines = [];
+    let routePolyline = null;
+
+    const lineColors = {
+      "Yellow Line": "#FFD700",
+      "Blue Line": "#0085CA",
+      "Red Line": "#E31837",
+      "Violet Line": "#9400D3",
+      "Green Line": "#00A651",
+      "Pink Line": "#FF69B4",
+      "Magenta Line": "#C40380",
+      "Airport Express": "#F26522",
+      "Grey Line": "#9E9E9E"
+    };
 
     document.addEventListener("DOMContentLoaded", () => {
       if (window.lucide) lucide.createIcons();
@@ -408,11 +421,11 @@
     });
 
     function initMap() {
-      // Initialize Leaflet Map centered on Delhi Metro
+      // Initialize Leaflet Map centered on Delhi NCR
       map = L.map('map', { zoomControl: false }).setView([28.6139, 77.2090], 12);
       L.control.zoom({ position: 'bottomleft' }).addTo(map);
 
-      // 100% FREE OpenStreetMap Tiles (NO API KEY REQUIRED)
+      // 100% FREE OpenStreetMap Tile Layer (NO API KEY REQUIRED)
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -426,7 +439,8 @@
         if (data.success && data.stations) {
           stationsData = data.stations;
           populateDropdowns(stationsData);
-          renderStationsOnMap(stationsData);
+          renderAllMetroLinesOnMap(stationsData);
+          renderHighlightedStationsOnMap(stationsData);
           renderLinePills(stationsData);
         }
       } catch (err) {
@@ -440,31 +454,82 @@
       fromSel.innerHTML = '<option value="">Select Origin Station...</option>';
       toSel.innerHTML = '<option value="">Select Destination Station...</option>';
 
-      stations.sort((a,b) => a.name.localeCompare(b.name)).forEach(s => {
+      [...stations].sort((a,b) => a.name.localeCompare(b.name)).forEach(s => {
         fromSel.innerHTML += `<option value="${s.id}">${s.name}</option>`;
         toSel.innerHTML += `<option value="${s.id}">${s.name}</option>`;
       });
     }
 
-    function renderStationsOnMap(stations) {
+    // ─────────────────────────────────────────────
+    // 1. SHOW ALL METRO LINES ON THE MAP
+    // ─────────────────────────────────────────────
+    function renderAllMetroLinesOnMap(stations) {
+      // Group stations by line
+      const lineMap = {};
       stations.forEach(s => {
-        const lineColors = {
-          "Yellow Line": "#FFD700", "Blue Line": "#0085CA", "Red Line": "#E31837",
-          "Violet Line": "#9400D3", "Green Line": "#00A651", "Pink Line": "#FF69B4",
-          "Magenta Line": "#C40380", "Airport Express": "#F26522", "Grey Line": "#9E9E9E"
-        };
+        s.lines.forEach(lineName => {
+          if (!lineMap[lineName]) lineMap[lineName] = [];
+          lineMap[lineName].push(s);
+        });
+      });
 
-        const primaryColor = lineColors[s.lines[0]] || "#2563eb";
-        const iconHtml = `<div class="station-dot" style="background:${primaryColor};width:12px;height:12px;border-radius:50%;border:2px solid #fff;box-shadow:0 2px 4px rgba(0,0,0,0.3)"></div>`;
+      // Clear existing line polylines
+      linePolylines.forEach(pl => map.removeLayer(pl));
+      linePolylines = [];
 
-        const marker = L.marker([s.lat, s.lng], {
-          icon: L.divIcon({ html: iconHtml, className: 'custom-station-icon', iconSize: [12,12] })
+      // Draw polyline for each metro line
+      Object.keys(lineMap).forEach(lineName => {
+        const lineStations = lineMap[lineName];
+        const coords = lineStations.map(s => [s.lat, s.lng]);
+        const color = lineColors[lineName] || "#2563eb";
+
+        const polyline = L.polyline(coords, {
+          color: color,
+          weight: 5,
+          opacity: 0.85,
+          smoothFactor: 1
         }).addTo(map);
 
-        marker.bindTooltip(`<b>${s.name}</b><br><span style="font-size:11px;color:#64748b">${s.lines.join(", ")}</span>`, {
-          direction: 'top', offset: [0, -6]
-        });
+        polyline.bindTooltip(`<b>${lineName}</b>`, { sticky: true });
+        linePolylines.push(polyline);
+      });
+    }
 
+    // ─────────────────────────────────────────────
+    // 2. HIGHLIGHT ALL STATIONS ON THE MAP
+    // ─────────────────────────────────────────────
+    function renderHighlightedStationsOnMap(stations) {
+      stations.forEach(s => {
+        const primaryColor = lineColors[s.lines[0]] || "#2563eb";
+        const isHub = s.isInterchange;
+        
+        const size = isHub ? 14 : 11;
+        const iconHtml = `
+          <div class="station-highlight-marker" style="
+            background: ${primaryColor};
+            width: ${size}px;
+            height: ${size}px;
+            border-radius: 50%;
+            border: 2px solid #ffffff;
+            box-shadow: 0 0 8px ${primaryColor}, 0 2px 5px rgba(0,0,0,0.4);
+            cursor: pointer;
+            transition: transform 0.2s ease;
+          "></div>`;
+
+        const marker = L.marker([s.lat, s.lng], {
+          icon: L.divIcon({ html: iconHtml, className: 'custom-station-icon', iconSize: [size, size] })
+        }).addTo(map);
+
+        const lineBadges = s.lines.map(l => 
+          `<span style="background:${lineColors[l]||'#333'};color:#fff;padding:2px 6px;border-radius:4px;font-size:10px;font-weight:700;margin-right:2px">${l}</span>`
+        ).join("");
+
+        marker.bindTooltip(`
+          <div style="font-weight:700;font-size:12px;margin-bottom:3px">${s.name} ${isHub ? '🔄' : ''}</div>
+          <div>${lineBadges}</div>
+        `, { direction: 'top', offset: [0, -6] });
+
+        // 3. CLICK ON STATION -> SHOW DETAILS & EXITS
         marker.on('click', () => openStationDetails(s));
         stationMarkers[s.id] = marker;
       });
@@ -519,6 +584,9 @@
       }
     }
 
+    // ─────────────────────────────────────────────
+    // 3. STATION CLICK -> SHOW DETAILS & AI EXIT GATES
+    // ─────────────────────────────────────────────
     function openStationDetails(s) {
       selectedStation = s;
       document.getElementById('station-title').innerText = s.name;
@@ -531,22 +599,42 @@
           <div class="last-train-row">Last Train: <strong>${s.lastTrain} PM</strong></div>
         </div>`;
 
+      // Fetch AI Exit Gate recommendations from Java Backend
       fetch(`/api/exit-recommendation?station=${s.id}`)
         .then(res => res.json())
         .then(data => {
           const exitAi = data.exitAi;
-          let gatesHtml = exitAi.allGates ? exitAi.allGates.map(g => `
-            <div class="gate-detail-card ${g.gate === exitAi.bestGate ? 'best-gate-card' : ''}">
-              <div class="gate-card-header">
-                <span class="gate-tag">${g.gate}</span>
-                ${g.gate === exitAi.bestGate ? '<span class="ai-best-chip">⭐ Java AI Recommended Exit</span>' : ''}
-              </div>
-              <div class="gate-landmark-title">${g.landmark}</div>
-              <div class="gate-reason-text">💡 ${g.reason}</div>
-            </div>`).join("") : `<div style="font-size:12px;color:#64748b">Concourse ground level exits available.</div>`;
+          let gatesHtml = "";
+          
+          if (exitAi && exitAi.allGates && exitAi.allGates.length) {
+            gatesHtml = exitAi.allGates.map(g => `
+              <div class="gate-detail-card ${g.gate === exitAi.bestGate ? 'best-gate-card' : ''}">
+                <div class="gate-card-header">
+                  <span class="gate-tag">${g.gate}</span>
+                  ${g.gate === exitAi.bestGate ? '<span class="ai-best-chip">⭐ Java AI Recommended Exit</span>' : ''}
+                </div>
+                <div class="gate-landmark-title">📍 ${g.landmark}</div>
+                <div class="gate-reason-text">💡 ${g.reason}</div>
+                <div class="gate-features-row" style="margin-top:4px;font-size:11px;color:#64748b;display:flex;gap:10px">
+                  <span>⏱️ ~${g.walkMins}m walk</span>
+                  <span>🛗 ${g.lift ? 'Elevator' : 'Escalator'}</span>
+                </div>
+              </div>`).join("");
+          } else {
+            gatesHtml = `
+              <div class="gate-detail-card best-gate-card">
+                <div class="gate-card-header">
+                  <span class="gate-tag">Gate 1</span>
+                  <span class="ai-best-chip">⭐ Main Concourse Exit</span>
+                </div>
+                <div class="gate-landmark-title">📍 Ground Level Main Concourse Exit</div>
+                <div class="gate-reason-text">💡 Direct ramp access to main road with auto & feeder bus stands.</div>
+              </div>`;
+          }
 
           document.getElementById('station-meta-box').innerHTML = `
             <div class="meta-row"><span class="meta-label">Station Type:</span> <span class="meta-val">${s.isInterchange ? '🔄 Interchange Hub' : '🚉 Intermediate Station'}</span></div>
+            <div class="meta-row"><span class="meta-label">Lines Served:</span> <span class="meta-val">${s.lines.join(", ")}</span></div>
             <div style="margin-top:10px;padding-top:10px;border-top:1px solid #e2e8f0">
               <span class="meta-label" style="display:block;margin-bottom:8px;font-weight:800;color:var(--text-primary)">🤖 Java AI Smart Exit Gate Breakdown:</span>
               <div class="gates-explanation-container">${gatesHtml}</div>
