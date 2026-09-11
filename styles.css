@@ -1719,3 +1719,118 @@ html, body {
   border-radius: var(--radius-sm);
   margin-top: 0.4rem;
 }
+
+/* ──────────────── ROUTE FOCUS & HIGHLIGHT ONLY SELECTED PART ──────────────── */
+.route-focus-banner {
+  position: absolute;
+  top: 1.1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15, 23, 42, 0.94);
+  backdrop-filter: blur(10px);
+  color: #ffffff;
+  padding: 0.55rem 1.1rem;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  z-index: 1000;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.28);
+  font-size: 0.82rem;
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  animation: slideDownFade 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideDownFade {
+  from { opacity: 0; transform: translate(-50%, -15px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+.focus-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #38bdf8;
+  box-shadow: 0 0 10px #38bdf8;
+  display: inline-block;
+}
+
+.focus-reset-btn {
+  background: #2563eb;
+  color: #ffffff;
+  border: none;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-size: 0.74rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+.focus-reset-btn:hover {
+  background: #1d4ed8;
+  transform: scale(1.04);
+}
+
+/* Dimmed non-route stations */
+.station-marker-dimmed {
+  opacity: 0.12 !important;
+  filter: grayscale(80%) !important;
+  pointer-events: none !important;
+  transition: opacity 0.3s ease, filter 0.3s ease;
+}
+
+/* Active route station */
+.station-marker-active-route {
+  transform: scale(1.4) !important;
+  z-index: 9999 !important;
+  box-shadow: 0 0 16px rgba(37, 99, 235, 0.85), 0 2px 8px rgba(0, 0, 0, 0.4) !important;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* Custom Origin & Destination Markers */
+.route-endpoint-marker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  z-index: 10000 !important;
+}
+
+.route-endpoint-pill {
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 800;
+  color: #ffffff;
+  white-space: nowrap;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+  margin-bottom: 3px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.origin-pill {
+  background: #059669;
+  border: 1.5px solid #ffffff;
+}
+.dest-pill {
+  background: #dc2626;
+  border: 1.5px solid #ffffff;
+}
+
+.route-endpoint-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2.5px solid #ffffff;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+.origin-dot {
+  background: #059669;
+  box-shadow: 0 0 12px #059669, 0 2px 5px rgba(0,0,0,0.4);
+}
+.dest-dot {
+  background: #dc2626;
+  box-shadow: 0 0 12px #dc2626, 0 2px 5px rgba(0,0,0,0.4);
+}

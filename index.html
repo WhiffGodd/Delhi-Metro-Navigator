@@ -358,6 +358,13 @@
 
     <!-- ──────────────── MAP ──────────────── -->
     <main class="map-container-wrapper">
+      <!-- Floating Route Focus Banner -->
+      <div id="route-focus-banner" class="route-focus-banner" style="display: none;">
+        <span class="focus-dot"></span>
+        <span id="route-focus-text">Journey Focus</span>
+        <button class="focus-reset-btn" onclick="resetMapToFullNetwork()">Show Full Network</button>
+      </div>
+
       <div id="map"></div>
 
       <!-- Station Detail Panel -->
@@ -402,7 +409,8 @@
   <script>
     let map, selectedPref = 'fastest', stationsData = [], selectedStation = null;
     let stationMarkers = {}, linePolylines = [];
-    let routePolyline = null;
+    let routePolyline = null, routeGlowPolyline = null;
+    let originMarker = null, destMarker = null;
 
     const lineColors = {
       "Yellow Line": "#FFD700",
@@ -424,6 +432,9 @@
       document.getElementById('search-input').addEventListener('input', (e) => {
         handleSearch(e.target.value);
       });
+
+      document.getElementById('route-from').addEventListener('change', autoCheckAndHighlight);
+      document.getElementById('route-to').addEventListener('change', autoCheckAndHighlight);
     });
 
     function initMap() {
@@ -667,18 +678,30 @@
       document.getElementById('pref-interchanges').classList.toggle('active', pref === 'fewest_interchanges');
     }
 
+    function autoCheckAndHighlight() {
+      const from = document.getElementById('route-from').value;
+      const to = document.getElementById('route-to').value;
+      if (from && to && from !== to) {
+        calculateTrip();
+      } else if (!from && !to) {
+        resetMapToFullNetwork();
+      }
+    }
+
     function swapStations() {
       const fromSel = document.getElementById('route-from');
       const toSel = document.getElementById('route-to');
       const tmp = fromSel.value;
       fromSel.value = toSel.value;
       toSel.value = tmp;
+      autoCheckAndHighlight();
     }
 
     function setOriginFromPanel() {
       if (selectedStation) {
         document.getElementById('route-from').value = selectedStation.id;
         switchTab('planner');
+        autoCheckAndHighlight();
       }
     }
 
@@ -686,6 +709,7 @@
       if (selectedStation) {
         document.getElementById('route-to').value = selectedStation.id;
         switchTab('planner');
+        autoCheckAndHighlight();
       }
     }
 
@@ -749,17 +773,132 @@
           </div>
         </div>`;
 
-      // Highlight path on map
-      if (r.pathStationIds) {
-        const pathCoords = r.pathStationIds.map(id => {
-          const s = stationsData.find(st => st.id === id);
-          return s ? [s.lat, s.lng] : null;
-        }).filter(Boolean);
+      // ─────────────────────────────────────────────────────────────
+      // HIGHLIGHT ONLY SELECTED ROUTE ON THE MAP & DIM BACKGROUND
+      // ─────────────────────────────────────────────────────────────
+      if (r.pathStationIds && r.pathStationIds.length > 0) {
+        // 1. Dim all regular metro network lines
+        linePolylines.forEach(pl => {
+          pl.setStyle({ opacity: 0.12, weight: 2.5 });
+        });
 
-        if (routePolyline) map.removeLayer(routePolyline);
-        routePolyline = L.polyline(pathCoords, { color: '#2563eb', weight: 6, opacity: 0.9 }).addTo(map);
-        map.fitBounds(routePolyline.getBounds(), { padding: [40, 40] });
+        // 2. Dim all non-route stations, emphasize route stations
+        const onRouteSet = new Set(r.pathStationIds);
+        Object.keys(stationMarkers).forEach(id => {
+          const marker = stationMarkers[id];
+          const el = marker.getElement();
+          if (el) {
+            if (onRouteSet.has(id)) {
+              el.classList.add('station-marker-active-route');
+              el.classList.remove('station-marker-dimmed');
+            } else {
+              el.classList.remove('station-marker-active-route');
+              el.classList.add('station-marker-dimmed');
+            }
+          }
+        });
+
+        // 3. Clear previous route line and endpoints
+        if (routeGlowPolyline) { map.removeLayer(routeGlowPolyline); routeGlowPolyline = null; }
+        if (routePolyline) { map.removeLayer(routePolyline); routePolyline = null; }
+        if (originMarker) { map.removeLayer(originMarker); originMarker = null; }
+        if (destMarker) { map.removeLayer(destMarker); destMarker = null; }
+
+        const pathStations = r.pathStationIds.map(id => stationsData.find(st => st.id === id)).filter(Boolean);
+        const pathCoords = pathStations.map(s => [s.lat, s.lng]);
+
+        if (pathCoords.length >= 2) {
+          // Glow layer underneath route polyline
+          routeGlowPolyline = L.polyline(pathCoords, {
+            color: '#38bdf8',
+            weight: 12,
+            opacity: 0.45,
+            lineCap: 'round',
+            lineJoin: 'round'
+          }).addTo(map);
+
+          // Vibrant core polyline
+          routePolyline = L.polyline(pathCoords, {
+            color: '#2563eb',
+            weight: 6,
+            opacity: 1.0,
+            lineCap: 'round',
+            lineJoin: 'round'
+          }).addTo(map);
+
+          // Origin custom badge marker
+          const originStation = pathStations[0];
+          const originHtml = `
+            <div class="route-endpoint-marker">
+              <div class="route-endpoint-pill origin-pill">🚩 START: ${originStation.name}</div>
+              <div class="route-endpoint-dot origin-dot"></div>
+            </div>`;
+          originMarker = L.marker([originStation.lat, originStation.lng], {
+            icon: L.divIcon({ html: originHtml, className: 'endpoint-div-icon', iconSize: [140, 40], iconAnchor: [70, 36] }),
+            zIndexOffset: 1000
+          }).addTo(map);
+          originMarker.on('click', () => openStationDetails(originStation));
+
+          // Destination custom badge marker
+          const destStation = pathStations[pathStations.length - 1];
+          const destHtml = `
+            <div class="route-endpoint-marker">
+              <div class="route-endpoint-pill dest-pill">🏁 ARRIVE: ${destStation.name}</div>
+              <div class="route-endpoint-dot dest-dot"></div>
+            </div>`;
+          destMarker = L.marker([destStation.lat, destStation.lng], {
+            icon: L.divIcon({ html: destHtml, className: 'endpoint-div-icon', iconSize: [140, 40], iconAnchor: [70, 36] }),
+            zIndexOffset: 1000
+          }).addTo(map);
+          destMarker.on('click', () => openStationDetails(destStation));
+
+          // 4. Smooth camera fit around the chosen journey only
+          map.fitBounds(routePolyline.getBounds(), {
+            padding: [70, 70],
+            maxZoom: 15,
+            animate: true,
+            duration: 0.8
+          });
+
+          // 5. Update and show floating Route Focus Banner
+          const banner = document.getElementById('route-focus-banner');
+          const bannerText = document.getElementById('route-focus-text');
+          if (banner && bannerText) {
+            bannerText.innerHTML = `<strong>${originStation.name}</strong> ➔ <strong>${destStation.name}</strong> (~${r.totalTimeMins} mins)`;
+            banner.style.display = 'flex';
+          }
+        }
       }
+    }
+
+    function resetMapToFullNetwork() {
+      // 1. Restore all line polylines to normal styling
+      linePolylines.forEach(pl => {
+        pl.setStyle({ opacity: 0.85, weight: 5 });
+      });
+
+      // 2. Restore all station markers
+      Object.keys(stationMarkers).forEach(id => {
+        const marker = stationMarkers[id];
+        const el = marker.getElement();
+        if (el) {
+          el.classList.remove('station-marker-active-route');
+          el.classList.remove('station-marker-dimmed');
+        }
+      });
+
+      // 3. Remove route layers and endpoint pins
+      if (routeGlowPolyline) { map.removeLayer(routeGlowPolyline); routeGlowPolyline = null; }
+      if (routePolyline) { map.removeLayer(routePolyline); routePolyline = null; }
+      if (originMarker) { map.removeLayer(originMarker); originMarker = null; }
+      if (destMarker) { map.removeLayer(destMarker); destMarker = null; }
+
+      // 4. Hide focus banner
+      const banner = document.getElementById('route-focus-banner');
+      if (banner) banner.style.display = 'none';
+
+      // 5. Center back smoothly to whole Delhi NCR view
+      map.setView([28.6139, 77.2090], 12);
     }
 
     function setRechargeAmount(amt, el) {
