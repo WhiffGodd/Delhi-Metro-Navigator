@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- Leaflet CSS (Cloudflare CDN for ultra-reliable Vercel deployment) -->
+  <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" crossorigin="anonymous">
 
   <!-- Lucide Icons -->
@@ -19,7 +19,7 @@
   <!-- App Styles -->
   <link rel="stylesheet" href="styles.css">
 
-  <meta name="description" content="Interactive Delhi Metro network map, route planner, fare calculator, and emergency helpline directory.">
+  <meta name="description" content="Interactive Delhi Metro network map, route planner, fare calculator, and emergency helpline directory powered by Java 21.">
 </head>
 <body>
 
@@ -31,7 +31,7 @@
       </div>
       <div class="logo-title-group">
         <h1 class="logo-text">Delhi Metro Navigator</h1>
-        <span class="logo-subtitle">Network Map, Planner & Safety Helplines</span>
+        <span class="logo-subtitle">Java 21 Powered Network Map & Helplines</span>
       </div>
     </div>
 
@@ -59,16 +59,16 @@
 
       <!-- Tabs -->
       <div class="sidebar-tabs">
-        <button id="tab-network" class="tab-btn active">
+        <button id="tab-network" class="tab-btn active" onclick="switchTab('network')">
           <i data-lucide="map" style="width:14px;height:14px"></i> Network
         </button>
-        <button id="tab-planner" class="tab-btn">
+        <button id="tab-planner" class="tab-btn" onclick="switchTab('planner')">
           <i data-lucide="navigation" style="width:14px;height:14px"></i> Planner
         </button>
-        <button id="tab-helplines" class="tab-btn">
+        <button id="tab-helplines" class="tab-btn" onclick="switchTab('helplines')">
           <i data-lucide="phone-call" style="width:14px;height:14px"></i> Helplines
         </button>
-        <button id="tab-info" class="tab-btn">
+        <button id="tab-info" class="tab-btn" onclick="switchTab('info')">
           <i data-lucide="info" style="width:14px;height:14px"></i> Info
         </button>
       </div>
@@ -90,21 +90,20 @@
         <!-- Lines legend -->
         <div class="sidebar-section">
           <span class="sidebar-title">Delhi Metro Lines</span>
-          <div class="line-pills"><!-- JS populates --></div>
+          <div id="line-pills" class="line-pills"></div>
         </div>
 
         <!-- Alerts -->
         <div class="sidebar-section alerts-section">
           <span class="sidebar-title">
             <span>Service Updates</span>
-            <span id="alert-count-badge" class="alert-count-badge" style="display:none">0</span>
           </span>
           <div id="alerts-feed" class="alerts-feed">
             <div class="alert-card info">
               <span class="alert-icon">ℹ️</span>
               <div class="alert-body">
                 <span class="alert-message">All lines operating normally on regular schedule (05:30 to 23:30).</span>
-                <span class="alert-time">Updated Today</span>
+                <span class="alert-time">Java Engine Active</span>
               </div>
             </div>
           </div>
@@ -124,7 +123,7 @@
             </div>
 
             <div class="swap-wrapper">
-              <button id="swap-stations-btn" class="swap-btn" title="Swap origin & destination">
+              <button id="swap-stations-btn" class="swap-btn" title="Swap origin & destination" onclick="swapStations()">
                 <i data-lucide="arrow-up-down" style="width:14px;height:14px"></i>
               </button>
             </div>
@@ -139,10 +138,10 @@
         <div class="sidebar-section">
           <span class="sidebar-title">Route Preference</span>
           <div class="preference-grid">
-            <button class="pref-btn active" data-pref="fastest">⚡ Fastest Route</button>
-            <button class="pref-btn" data-pref="fewest_interchanges">🔀 Direct / Minimum Changes</button>
+            <button id="pref-fastest" class="pref-btn active" onclick="setPreference('fastest')">⚡ Fastest Route</button>
+            <button id="pref-interchanges" class="pref-btn" onclick="setPreference('fewest_interchanges')">🔀 Direct / Minimum Changes</button>
           </div>
-          <button id="plan-trip-btn" class="plan-btn">Calculate Route</button>
+          <button id="plan-trip-btn" class="plan-btn" onclick="calculateTrip()">Calculate Route</button>
         </div>
 
         <div id="route-results-container" class="sidebar-section route-results-section"></div>
@@ -337,22 +336,7 @@
           </div>
 
           <div class="info-card">
-            <h3 class="info-card-title">📋 Network Coverage</h3>
-            <div class="network-table">
-              <div class="network-row"><span class="net-line-dot" style="background:#FFD700"></span><span>Yellow Line (Samaypur Badli – Millennium City)</span><span class="net-count">37 stations</span></div>
-              <div class="network-row"><span class="net-line-dot" style="background:#0085CA"></span><span>Blue Line (Dwarka Sec 21 – Noida/Vaishali)</span><span class="net-count">44 stations</span></div>
-              <div class="network-row"><span class="net-line-dot" style="background:#E31837"></span><span>Red Line (Rithala – Shaheed Sthal)</span><span class="net-count">29 stations</span></div>
-              <div class="network-row"><span class="net-line-dot" style="background:#9400D3"></span><span>Violet Line (Kashmere Gate – Raja Nahar Singh)</span><span class="net-count">34 stations</span></div>
-              <div class="network-row"><span class="net-line-dot" style="background:#00A651"></span><span>Green Line (Inderlok – Brig. Hoshiar Singh)</span><span class="net-count">24 stations</span></div>
-              <div class="network-row"><span class="net-line-dot" style="background:#FF69B4"></span><span>Pink Line (Majlis Park – Shiv Vihar)</span><span class="net-count">38 stations</span></div>
-              <div class="network-row"><span class="net-line-dot" style="background:#C40380"></span><span>Magenta Line (Janakpuri W – Botanical Garden)</span><span class="net-count">25 stations</span></div>
-              <div class="network-row"><span class="net-line-dot" style="background:#F26522"></span><span>Airport Express (New Delhi – IGI Airport)</span><span class="net-count">6 stations</span></div>
-              <div class="network-row"><span class="net-line-dot" style="background:#9E9E9E"></span><span>Grey Line (Dwarka – Dhansa Bus Stand)</span><span class="net-count">4 stations</span></div>
-            </div>
-          </div>
-
-          <div class="info-card">
-            <h3 class="info-card-title">📞 Official Resources</h3>
+            <h3 class="info-card-title">📋 Official Resources</h3>
             <ul class="info-list">
               <li><a href="https://www.delhimetrorail.com" target="_blank" rel="noopener" class="info-link">delhimetrorail.com</a> — official DMRC website</li>
               <li><a href="https://www.dmrcsmartcard.com/" target="_blank" rel="noopener" class="info-link">dmrcsmartcard.com</a> — official DMRC smart card recharge</li>
@@ -378,15 +362,15 @@
             <span id="station-subtitle" class="details-subtitle">DELHI METRO</span>
             <h2 id="station-title" class="details-title">Station Info</h2>
           </div>
-          <button id="close-details-btn" class="close-btn" title="Close">&times;</button>
+          <button id="close-details-btn" class="close-btn" onclick="closeDetailsPanel()">&times;</button>
         </div>
 
         <div class="details-content">
           <div class="station-actions-card">
-            <button id="set-origin-btn" class="action-chip btn-origin">
+            <button id="set-origin-btn" class="action-chip btn-origin" onclick="setOriginFromPanel()">
               <i data-lucide="map-pin" style="width:13px;height:13px"></i> Set as Origin
             </button>
-            <button id="set-dest-btn" class="action-chip btn-dest">
+            <button id="set-dest-btn" class="action-chip btn-dest" onclick="setDestFromPanel()">
               <i data-lucide="navigation-2" style="width:13px;height:13px"></i> Set as Destination
             </button>
           </div>
@@ -407,15 +391,293 @@
 
   </div><!-- /app-container -->
 
-  <!-- Scripts (CDN JS for rock-solid Vercel deployment) -->
+  <!-- Scripts -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js" crossorigin="anonymous"></script>
-  <script src="metroData.js"></script>
-  <script src="routing.js"></script>
-  <script src="app.js"></script>
   <script>
+    let map, selectedPref = 'fastest', stationsData = [], selectedStation = null;
+    let stationMarkers = {}, routePolyline = null;
+
     document.addEventListener("DOMContentLoaded", () => {
       if (window.lucide) lucide.createIcons();
+      initMap();
+      loadStationsFromJava();
+
+      document.getElementById('search-input').addEventListener('input', (e) => {
+        handleSearch(e.target.value);
+      });
     });
+
+    function initMap() {
+      // Initialize Leaflet Map centered on Delhi Metro
+      map = L.map('map', { zoomControl: false }).setView([28.6139, 77.2090], 12);
+      L.control.zoom({ position: 'bottomleft' }).addTo(map);
+
+      // 100% FREE OpenStreetMap Tiles (NO API KEY REQUIRED)
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      }).addTo(map);
+    }
+
+    async function loadStationsFromJava() {
+      try {
+        const res = await fetch('/api/stations');
+        const data = await res.json();
+        if (data.success && data.stations) {
+          stationsData = data.stations;
+          populateDropdowns(stationsData);
+          renderStationsOnMap(stationsData);
+          renderLinePills(stationsData);
+        }
+      } catch (err) {
+        console.error('Error fetching stations from Java backend:', err);
+      }
+    }
+
+    function populateDropdowns(stations) {
+      const fromSel = document.getElementById('route-from');
+      const toSel = document.getElementById('route-to');
+      fromSel.innerHTML = '<option value="">Select Origin Station...</option>';
+      toSel.innerHTML = '<option value="">Select Destination Station...</option>';
+
+      stations.sort((a,b) => a.name.localeCompare(b.name)).forEach(s => {
+        fromSel.innerHTML += `<option value="${s.id}">${s.name}</option>`;
+        toSel.innerHTML += `<option value="${s.id}">${s.name}</option>`;
+      });
+    }
+
+    function renderStationsOnMap(stations) {
+      stations.forEach(s => {
+        const lineColors = {
+          "Yellow Line": "#FFD700", "Blue Line": "#0085CA", "Red Line": "#E31837",
+          "Violet Line": "#9400D3", "Green Line": "#00A651", "Pink Line": "#FF69B4",
+          "Magenta Line": "#C40380", "Airport Express": "#F26522", "Grey Line": "#9E9E9E"
+        };
+
+        const primaryColor = lineColors[s.lines[0]] || "#2563eb";
+        const iconHtml = `<div class="station-dot" style="background:${primaryColor};width:12px;height:12px;border-radius:50%;border:2px solid #fff;box-shadow:0 2px 4px rgba(0,0,0,0.3)"></div>`;
+
+        const marker = L.marker([s.lat, s.lng], {
+          icon: L.divIcon({ html: iconHtml, className: 'custom-station-icon', iconSize: [12,12] })
+        }).addTo(map);
+
+        marker.bindTooltip(`<b>${s.name}</b><br><span style="font-size:11px;color:#64748b">${s.lines.join(", ")}</span>`, {
+          direction: 'top', offset: [0, -6]
+        });
+
+        marker.on('click', () => openStationDetails(s));
+        stationMarkers[s.id] = marker;
+      });
+    }
+
+    function renderLinePills(stations) {
+      const pillsContainer = document.getElementById('line-pills');
+      const lines = [
+        { name: "Yellow Line", color: "#FFD700" },
+        { name: "Blue Line", color: "#0085CA" },
+        { name: "Red Line", color: "#E31837" },
+        { name: "Violet Line", color: "#9400D3" },
+        { name: "Green Line", color: "#00A651" },
+        { name: "Pink Line", color: "#FF69B4" },
+        { name: "Magenta Line", color: "#C40380" },
+        { name: "Airport Express", color: "#F26522" },
+        { name: "Grey Line", color: "#9E9E9E" }
+      ];
+
+      pillsContainer.innerHTML = lines.map(l => 
+        `<span class="line-pill" style="background:${l.color};color:#ffffff;padding:4px 10px;border-radius:12px;font-size:11px;font-weight:700;display:inline-block;margin:3px">${l.name}</span>`
+      ).join("");
+    }
+
+    function handleSearch(query) {
+      const resultsDiv = document.getElementById('search-results');
+      if (!query || query.trim().length < 2) {
+        resultsDiv.style.display = 'none';
+        return;
+      }
+      const q = query.toLowerCase().trim();
+      const matches = stationsData.filter(s => s.name.toLowerCase().includes(q)).slice(0, 6);
+
+      if (!matches.length) {
+        resultsDiv.innerHTML = '<div style="padding:8px;font-size:12px;color:#64748b">No stations found</div>';
+      } else {
+        resultsDiv.innerHTML = matches.map(s => 
+          `<div class="search-result-item" onclick="selectSearchStation('${s.id}')" style="padding:8px;cursor:pointer;font-size:13px;border-bottom:1px solid #f1f5f9">
+            <strong>${s.name}</strong> <span style="font-size:11px;color:#64748b">(${s.lines.join(", ")})</span>
+          </div>`
+        ).join("");
+      }
+      resultsDiv.style.display = 'block';
+    }
+
+    function selectSearchStation(id) {
+      document.getElementById('search-results').style.display = 'none';
+      const station = stationsData.find(s => s.id === id);
+      if (station) {
+        map.flyTo([station.lat, station.lng], 15);
+        openStationDetails(station);
+      }
+    }
+
+    function openStationDetails(s) {
+      selectedStation = s;
+      document.getElementById('station-title').innerText = s.name;
+      document.getElementById('station-subtitle').innerText = s.lines.join(" • ");
+      
+      document.getElementById('last-train-list').innerHTML = `
+        <div class="last-train-card">
+          <div class="last-train-header">⏰ Operating Hours</div>
+          <div class="last-train-row">First Train: <strong>${s.firstTrain} AM</strong></div>
+          <div class="last-train-row">Last Train: <strong>${s.lastTrain} PM</strong></div>
+        </div>`;
+
+      fetch(`/api/exit-recommendation?station=${s.id}`)
+        .then(res => res.json())
+        .then(data => {
+          const exitAi = data.exitAi;
+          let gatesHtml = exitAi.allGates ? exitAi.allGates.map(g => `
+            <div class="gate-detail-card ${g.gate === exitAi.bestGate ? 'best-gate-card' : ''}">
+              <div class="gate-card-header">
+                <span class="gate-tag">${g.gate}</span>
+                ${g.gate === exitAi.bestGate ? '<span class="ai-best-chip">⭐ Java AI Recommended Exit</span>' : ''}
+              </div>
+              <div class="gate-landmark-title">${g.landmark}</div>
+              <div class="gate-reason-text">💡 ${g.reason}</div>
+            </div>`).join("") : `<div style="font-size:12px;color:#64748b">Concourse ground level exits available.</div>`;
+
+          document.getElementById('station-meta-box').innerHTML = `
+            <div class="meta-row"><span class="meta-label">Station Type:</span> <span class="meta-val">${s.isInterchange ? '🔄 Interchange Hub' : '🚉 Intermediate Station'}</span></div>
+            <div style="margin-top:10px;padding-top:10px;border-top:1px solid #e2e8f0">
+              <span class="meta-label" style="display:block;margin-bottom:8px;font-weight:800;color:var(--text-primary)">🤖 Java AI Smart Exit Gate Breakdown:</span>
+              <div class="gates-explanation-container">${gatesHtml}</div>
+            </div>`;
+        });
+
+      document.getElementById('details-panel').classList.add('active');
+    }
+
+    function closeDetailsPanel() {
+      document.getElementById('details-panel').classList.remove('active');
+    }
+
+    function switchTab(tab) {
+      ['network','planner','helplines','info'].forEach(t => {
+        const btn = document.getElementById(`tab-${t}`);
+        const cnt = document.getElementById(`content-${t}`);
+        if (btn) btn.classList.toggle('active', t === tab);
+        if (cnt) cnt.classList.toggle('active', t === tab);
+      });
+    }
+
+    function setPreference(pref) {
+      selectedPref = pref;
+      document.getElementById('pref-fastest').classList.toggle('active', pref === 'fastest');
+      document.getElementById('pref-interchanges').classList.toggle('active', pref === 'fewest_interchanges');
+    }
+
+    function swapStations() {
+      const fromSel = document.getElementById('route-from');
+      const toSel = document.getElementById('route-to');
+      const tmp = fromSel.value;
+      fromSel.value = toSel.value;
+      toSel.value = tmp;
+    }
+
+    function setOriginFromPanel() {
+      if (selectedStation) {
+        document.getElementById('route-from').value = selectedStation.id;
+        switchTab('planner');
+      }
+    }
+
+    function setDestFromPanel() {
+      if (selectedStation) {
+        document.getElementById('route-to').value = selectedStation.id;
+        switchTab('planner');
+      }
+    }
+
+    async function calculateTrip() {
+      const from = document.getElementById('route-from').value;
+      const to = document.getElementById('route-to').value;
+      if (!from || !to) { alert('Please select both origin and destination stations.'); return; }
+      if (from === to) { alert('Origin and destination must be different.'); return; }
+
+      const btn = document.getElementById('plan-trip-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span> Java Engine calculating route...';
+
+      try {
+        const res = await fetch(`/api/route?from=${from}&to=${to}&pref=${selectedPref}`);
+        const data = await res.json();
+        btn.disabled = false;
+        btn.innerHTML = 'Calculate Route';
+
+        if (data.success && data.route) {
+          renderRouteResults(data.route);
+        }
+      } catch (err) {
+        btn.disabled = false;
+        btn.innerHTML = 'Calculate Route';
+        console.error('Error calculating route:', err);
+      }
+    }
+
+    function renderRouteResults(r) {
+      const c = document.getElementById('route-results-container');
+      c.style.display = 'flex';
+
+      let transitBadges = "";
+      if (r.exitAi && r.exitAi.transitOptions) {
+        transitBadges = r.exitAi.transitOptions.map(t => `<span class="transit-chip">🚗 ${t}</span>`).join(" ");
+      }
+
+      c.innerHTML = `
+        <div class="route-summary-card">
+          <div class="route-metric"><span class="route-metric-val">~${r.totalTimeMins} mins</span><span class="route-metric-label">Travel Time</span></div>
+          <div class="route-metric"><span class="route-metric-val">₹${r.fare}</span><span class="route-metric-label">Single Fare</span></div>
+          <div class="route-metric"><span class="route-metric-val">${r.totalStops}</span><span class="route-metric-label">Stops</span></div>
+        </div>
+
+        <div class="smart-assistant-card exit-ai-card">
+          <div class="assistant-card-header">
+            <span class="assistant-card-title">🤖 Java AI Exit Recommendation</span>
+            <span class="exit-gate-highlight-badge">⭐ Best: ${r.exitAi ? r.exitAi.bestGate : 'Gate 1'}</span>
+          </div>
+          <div class="exit-reasoning-box">
+            <div class="reasoning-text">💡 ${r.exitAi ? r.exitAi.reason : 'Main exit gate'}</div>
+            <div class="exit-metrics-row">
+              <span>⏱️ Saves ~${r.exitAi ? r.exitAi.savedMins : 3} mins</span>
+              <span>🛗 ${r.exitAi && r.exitAi.lift ? 'Elevator Operational' : 'Escalators'}</span>
+            </div>
+            <div style="margin-top:6px">${transitBadges}</div>
+          </div>
+        </div>`;
+
+      // Highlight path on map
+      if (r.pathStationIds) {
+        const pathCoords = r.pathStationIds.map(id => {
+          const s = stationsData.find(st => st.id === id);
+          return s ? [s.lat, s.lng] : null;
+        }).filter(Boolean);
+
+        if (routePolyline) map.removeLayer(routePolyline);
+        routePolyline = L.polyline(pathCoords, { color: '#2563eb', weight: 6, opacity: 0.9 }).addTo(map);
+        map.fitBounds(routePolyline.getBounds(), { padding: [40, 40] });
+      }
+    }
+
+    function setRechargeAmount(amt, el) {
+      document.querySelectorAll('.amount-chip').forEach(c => c.classList.remove('active'));
+      if (el) el.classList.add('active');
+    }
+
+    function redirectToDMRCRecharge() {
+      const cardNum = document.getElementById('card-number-input').value.trim();
+      let url = "https://www.dmrcsmartcard.com/";
+      if (cardNum) url += `?card_no=${encodeURIComponent(cardNum)}`;
+      window.open(url, "_blank", "noopener,noreferrer");
+    }
   </script>
 </body>
 </html>
