@@ -438,13 +438,14 @@
         const data = await res.json();
         if (data.success && data.stations) {
           stationsData = data.stations;
+          const lineRoutes = data.lineRoutes || {};
           populateDropdowns(stationsData);
-          renderAllMetroLinesOnMap(stationsData);
+          renderAllMetroLinesOnMap(stationsData, lineRoutes);
           renderHighlightedStationsOnMap(stationsData);
           renderLinePills(stationsData);
         }
       } catch (err) {
-        console.error('Error fetching stations from Java backend:', err);
+        console.warn('API fetch unavailable, checking static fallback:', err);
       }
     }
 
@@ -461,38 +462,35 @@
     }
 
     // ─────────────────────────────────────────────
-    // 1. SHOW ALL METRO LINES ON THE MAP
+    // 1. SHOW ALL METRO LINES ON THE MAP (EXACT TRACK ROUTES)
     // ─────────────────────────────────────────────
-    function renderAllMetroLinesOnMap(stations) {
-      // Group stations by line
-      const lineMap = {};
-      stations.forEach(s => {
-        s.lines.forEach(lineName => {
-          if (!lineMap[lineName]) lineMap[lineName] = [];
-          lineMap[lineName].push(s);
-        });
-      });
-
+    function renderAllMetroLinesOnMap(stations, lineRoutes) {
       // Clear existing line polylines
       linePolylines.forEach(pl => map.removeLayer(pl));
       linePolylines = [];
 
-      // Draw polyline for each metro line
-      Object.keys(lineMap).forEach(lineName => {
-        const lineStations = lineMap[lineName];
-        const coords = lineStations.map(s => [s.lat, s.lng]);
-        const color = lineColors[lineName] || "#2563eb";
+      const stationMapById = {};
+      stations.forEach(s => { stationMapById[s.id] = s; });
 
-        const polyline = L.polyline(coords, {
-          color: color,
-          weight: 5,
-          opacity: 0.85,
-          smoothFactor: 1
-        }).addTo(map);
+      if (lineRoutes && Object.keys(lineRoutes).length > 0) {
+        Object.keys(lineRoutes).forEach(lineName => {
+          const stationIds = lineRoutes[lineName];
+          const coords = stationIds.map(id => stationMapById[id]).filter(Boolean).map(s => [s.lat, s.lng]);
+          if (coords.length < 2) return;
 
-        polyline.bindTooltip(`<b>${lineName}</b>`, { sticky: true });
-        linePolylines.push(polyline);
-      });
+          const color = lineColors[lineName] || "#2563eb";
+
+          const polyline = L.polyline(coords, {
+            color: color,
+            weight: 5,
+            opacity: 0.85,
+            smoothFactor: 1
+          }).addTo(map);
+
+          polyline.bindTooltip(`<b>${lineName}</b>`, { sticky: true });
+          linePolylines.push(polyline);
+        });
+      }
     }
 
     // ─────────────────────────────────────────────

@@ -63,13 +63,26 @@ public class DelhiMetroServer {
             }
 
             Map<String, Station> stations = database.getAllStations();
+            Map<String, List<String>> lineRoutes = database.getLineStationsMap();
             StringBuilder json = new StringBuilder("{\"success\":true,\"stations\":[");
             int i = 0;
             for (Station s : stations.values()) {
                 json.append(s.toJson());
                 if (i++ < stations.size() - 1) json.append(",");
             }
-            json.append("]}");
+            json.append("],\"lineRoutes\":{");
+            int j = 0;
+            for (Map.Entry<String, List<String>> entry : lineRoutes.entrySet()) {
+                json.append("\"").append(entry.getKey()).append("\":[");
+                List<String> list = entry.getValue();
+                for (int k = 0; k < list.size(); k++) {
+                    json.append("\"").append(list.get(k)).append("\"");
+                    if (k < list.size() - 1) json.append(",");
+                }
+                json.append("]");
+                if (j++ < lineRoutes.size() - 1) json.append(",");
+            }
+            json.append("}}");
 
             sendJsonResponse(exchange, 200, json.toString());
         }

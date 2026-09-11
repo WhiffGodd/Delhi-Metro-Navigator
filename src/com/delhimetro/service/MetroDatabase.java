@@ -16,7 +16,7 @@ public class MetroDatabase {
     }
 
     private void initDatabase() {
-        // 1. Yellow Line
+        // 1. Yellow Line Stations
         addStation("samaypur_badli", "Samaypur Badli", 28.7456, 77.1384, List.of("Yellow Line"), "05:45", "23:00", false);
         addStation("rohini_sector_18", "Rohini Sector 18,19", 28.7368, 77.1351, List.of("Yellow Line"), "05:47", "23:02", false);
         addStation("haiderpur_badli_mor", "Haiderpur Badli Mor", 28.7241, 77.1539, List.of("Yellow Line"), "05:50", "23:05", false);
@@ -55,7 +55,7 @@ public class MetroDatabase {
         addStation("iffco_chowk", "IFFCO Chowk", 28.4721, 77.0725, List.of("Yellow Line"), "06:14", "22:46", false);
         addStation("millennium_city_center", "Millennium City Centre Gurugram", 28.4593, 77.0726, List.of("Yellow Line"), "06:00", "23:00", false);
 
-        // 2. Blue Line
+        // 2. Blue Line Stations
         addStation("dwarka_sector_21", "Dwarka Sector 21", 28.5521, 77.0583, List.of("Blue Line", "Airport Express"), "05:30", "23:30", true);
         addStation("dwarka_sector_8", "Dwarka Sector 8", 28.5642, 77.0678, List.of("Blue Line"), "05:32", "23:28", false);
         addStation("dwarka_sector_9", "Dwarka Sector 9", 28.5746, 77.0645, List.of("Blue Line"), "05:34", "23:26", false);
@@ -100,7 +100,7 @@ public class MetroDatabase {
         addStation("noida_city_centre", "Noida City Centre", 28.5746, 77.3562, List.of("Blue Line"), "06:44", "22:16", false);
         addStation("noida_electronic_city", "Noida Electronic City", 28.6272, 77.3734, List.of("Blue Line"), "06:00", "23:00", false);
 
-        // 3. Red Line
+        // 3. Red Line Stations
         addStation("rithala", "Rithala", 28.7208, 77.1071, List.of("Red Line"), "05:30", "23:00", false);
         addStation("rohini_west", "Rohini West", 28.7145, 77.1147, List.of("Red Line"), "05:32", "23:02", false);
         addStation("rohini_east", "Rohini East", 28.7118, 77.1245, List.of("Red Line"), "05:34", "23:04", false);
@@ -123,7 +123,7 @@ public class MetroDatabase {
         addStation("shahdara_bus_adda", "Major Mohit Sharma Rajendra Nagar", 28.6745, 77.3512, List.of("Red Line"), "06:03", "23:03", false);
         addStation("shaheed_sthal", "Shaheed Sthal (New Bus Adda)", 28.6712, 77.4145, List.of("Red Line"), "06:00", "23:00", false);
 
-        // 4. Violet Line
+        // 4. Violet Line Stations
         addStation("ito", "ITO", 28.6281, 77.2412, List.of("Violet Line"), "05:35", "23:25", false);
         addStation("khan_market", "Khan Market", 28.6008, 77.2272, List.of("Violet Line"), "05:40", "23:20", false);
         addStation("jawaharlal_nehru_stadium", "Jawaharlal Nehru Stadium", 28.5826, 77.2341, List.of("Violet Line"), "05:42", "23:18", false);
@@ -142,7 +142,7 @@ public class MetroDatabase {
         addStation("badarpur_border", "Badarpur Border", 28.4912, 77.3112, List.of("Violet Line"), "06:06", "22:54", false);
         addStation("raja_nahar_singh", "Raja Nahar Singh (Ballabhgarh)", 28.3378, 77.3212, List.of("Violet Line"), "06:00", "23:00", false);
 
-        // 5. Green Line
+        // 5. Green Line Stations
         addStation("ashok_park_main", "Ashok Park Main", 28.6712, 77.1589, List.of("Green Line"), "05:45", "23:15", false);
         addStation("punjabi_bagh", "Punjabi Bagh", 28.6725, 77.1489, List.of("Green Line", "Pink Line"), "05:30", "23:30", true);
         addStation("paschim_vihar_east", "Paschim Vihar East", 28.6754, 77.1125, List.of("Green Line"), "05:50", "23:10", false);
@@ -151,10 +151,9 @@ public class MetroDatabase {
         addStation("udyog_nagar", "Udyog Nagar", 28.6812, 77.0789, List.of("Green Line"), "05:57", "23:03", false);
         addStation("brigadier_hoshiar_singh", "Brigadier Hoshiar Singh (Bahadurgarh)", 28.6945, 76.9212, List.of("Green Line"), "06:00", "23:00", false);
 
-        // 6. Pink Line
+        // 6. Pink Line Stations
         addStation("majlis_park", "Majlis Park", 28.7125, 77.1812, List.of("Pink Line"), "05:30", "23:00", false);
         addStation("shalimar_bagh", "Shalimar Bagh", 28.7012, 77.1645, List.of("Pink Line"), "05:35", "23:05", false);
-        addStation("netaji_subhash_place_pink", "Netaji Subhash Place", 28.6954, 77.1523, List.of("Pink Line", "Red Line"), "05:30", "23:30", true);
         addStation("naraina_vihar", "Naraina Vihar", 28.6289, 77.1412, List.of("Pink Line"), "05:45", "23:15", false);
         addStation("mayapuri", "Mayapuri", 28.6345, 77.1325, List.of("Pink Line"), "05:47", "23:17", false);
         addStation("south_campus", "Durgabai Deshmukh South Campus", 28.5889, 77.1689, List.of("Pink Line"), "05:50", "23:20", false);
@@ -162,8 +161,7 @@ public class MetroDatabase {
         addStation("sarojini_nagar", "Sarojini Nagar", 28.5745, 77.1989, List.of("Pink Line"), "05:55", "23:25", false);
         addStation("shiv_vihar", "Shiv Vihar", 28.7212, 77.2789, List.of("Pink Line"), "06:00", "23:00", false);
 
-        // 7. Magenta Line
-        addStation("janakpuri_west_mag", "Janakpuri West", 28.6294, 77.0781, List.of("Magenta Line", "Blue Line"), "05:30", "23:30", true);
+        // 7. Magenta Line Stations
         addStation("dabri_mor", "Dabri Mor - Janakpuri South", 28.6145, 77.0895, List.of("Magenta Line"), "05:35", "23:05", false);
         addStation("dashrathpuri", "Dashrathpuri", 28.6012, 77.0945, List.of("Magenta Line"), "05:37", "23:07", false);
         addStation("palam", "Palam", 28.5912, 77.0812, List.of("Magenta Line"), "05:40", "23:10", false);
@@ -173,25 +171,24 @@ public class MetroDatabase {
         addStation("vasant_vihar", "Vasant Vihar", 28.5612, 77.1612, List.of("Magenta Line"), "05:50", "23:20", false);
         addStation("munirka", "Munirka", 28.5574, 77.1745, List.of("Magenta Line"), "05:52", "23:22", false);
         addStation("iit_delhi", "IIT", 28.5463, 77.1945, List.of("Magenta Line"), "05:54", "23:24", false);
-        addStation("hauz_khas_mag", "Hauz Khas", 28.5431, 77.2065, List.of("Magenta Line", "Yellow Line"), "05:30", "23:30", true);
         addStation("panchsheel_park", "Panchsheel Park", 28.5412, 77.2158, List.of("Magenta Line"), "05:57", "23:27", false);
         addStation("chirag_delhi", "Chirag Delhi", 28.5398, 77.2245, List.of("Magenta Line"), "05:59", "23:29", false);
         addStation("greater_kailash", "Greater Kailash", 28.5412, 77.2389, List.of("Magenta Line"), "06:01", "23:01", false);
         addStation("nehru_enclave", "Nehru Enclave", 28.5456, 77.2512, List.of("Magenta Line"), "06:03", "23:03", false);
 
-        // 8. Airport Express
-        addStation("new_delhi_ae", "New Delhi", 28.6431, 77.2223, List.of("Airport Express", "Yellow Line"), "05:30", "23:30", true);
+        // 8. Airport Express Stations
         addStation("shivaji_stadium", "Shivaji Stadium", 28.6289, 77.2145, List.of("Airport Express"), "05:00", "23:30", false);
         addStation("dhaula_kuan", "Dhaula Kuan", 28.5912, 77.1612, List.of("Airport Express"), "05:05", "23:25", false);
         addStation("delhi_aerocity", "Delhi Aerocity", 28.5498, 77.1214, List.of("Airport Express"), "05:10", "23:20", false);
         addStation("igi_airport", "IGI Airport (Terminal 3)", 28.5562, 77.0854, List.of("Airport Express"), "05:15", "23:15", false);
-        addStation("dwarka_sector_21_ae", "Dwarka Sector 21", 28.5521, 77.0583, List.of("Airport Express", "Blue Line"), "05:30", "23:30", true);
 
-        // 9. Grey Line
-        addStation("dwarka_grey", "Dwarka", 28.6151, 77.0245, List.of("Grey Line", "Blue Line"), "05:45", "23:15", true);
+        // 9. Grey Line Stations
         addStation("nangli", "Nangli", 28.6112, 76.9945, List.of("Grey Line"), "06:00", "23:00", false);
         addStation("najafgarh", "Najafgarh", 28.6145, 76.9812, List.of("Grey Line"), "06:02", "23:02", false);
         addStation("dhansa_bus_stand", "Dhansa Bus Stand", 28.6189, 76.9689, List.of("Grey Line"), "06:05", "23:05", false);
+
+        // Explicit, Exact Topological Line Routes (NO Extra/Random Lines)
+        initExplicitLineRoutes();
 
         // Exit Gates for Major Stations
         initExitGates();
@@ -200,10 +197,44 @@ public class MetroDatabase {
     private void addStation(String id, String name, double lat, double lng, List<String> lines, String firstTrain, String lastTrain, boolean isInterchange) {
         Station station = new Station(id, name, lat, lng, lines, firstTrain, lastTrain, isInterchange);
         stationMap.put(id, station);
+    }
 
-        for (String line : lines) {
-            lineStationsMap.computeIfAbsent(line, k -> new ArrayList<>()).add(id);
-        }
+    private void initExplicitLineRoutes() {
+        lineStationsMap.put("Yellow Line", List.of(
+            "samaypur_badli", "rohini_sector_18", "haiderpur_badli_mor", "jahangirpuri", "adarsh_nagar", "azadpur", "model_town", "gtb_nagar", "vishwa_vidyalaya", "vidhan_sabha", "civil_lines", "kashmere_gate", "chandni_chowk", "chawri_bazar", "new_delhi", "rajiv_chowk", "patel_chowk", "central_secretariat", "udyog_bhawan", "lok_kalyan_marg", "jor_bagh", "dilli_haat_ina", "aiims", "green_park", "hauz_khas", "malviya_nagar", "saket", "qutab_minar", "chhatarpur", "sultanpur", "ghitorni", "arjan_garh", "guru_dronacharya", "sikanderpur", "mg_road", "iffco_chowk", "millennium_city_center"
+        ));
+
+        lineStationsMap.put("Blue Line", List.of(
+            "dwarka_sector_21", "dwarka_sector_8", "dwarka_sector_9", "dwarka_sector_10", "dwarka_sector_11", "dwarka_sector_12", "dwarka_sector_13", "dwarka_sector_14", "dwarka", "dwarka_mor", "nawada", "uttam_nagar_west", "uttam_nagar_east", "janakpuri_west", "janakpuri_east", "tilak_nagar", "subhash_nagar", "tagore_garden", "rajouri_garden", "ramesh_nagar", "moti_nagar", "kirti_nagar", "shadipur", "patel_nagar", "rajendra_place", "karol_bagh", "jhandewalan", "ramakrishna_ashram_marg", "rajiv_chowk", "mandi_house", "supreme_court", "indraprastha", "yamuna_bank", "akshardham", "mayur_vihar_phase_1", "mayur_vihar_extension", "new_ashok_nagar", "noida_sector_15", "noida_sector_16", "noida_sector_18", "botanical_garden", "golf_course", "noida_city_centre", "noida_electronic_city"
+        ));
+
+        lineStationsMap.put("Red Line", List.of(
+            "rithala", "rohini_west", "rohini_east", "pitampura", "kohat_enclave", "netaji_subhash_place", "kanhiya_nagar", "indrelok", "shastri_nagar", "pratap_nagar", "pul_bangash", "tis_hazari", "kashmere_gate", "shastri_park", "seelampur", "welcome", "shahdara", "mansarovar_park", "jhilmil", "dilshad_garden", "shahdara_bus_adda", "shaheed_sthal"
+        ));
+
+        lineStationsMap.put("Violet Line", List.of(
+            "kashmere_gate", "mandi_house", "ito", "central_secretariat", "khan_market", "jawaharlal_nehru_stadium", "jangpura", "lajpat_nagar", "moolchand", "kailash_colony", "nehru_place", "kalka_ji_mandir", "govind_puri", "harkesh_nagar", "jasola_apollo", "sarita_vihar", "mohan_estate", "tughlakabad", "badarpur_border", "raja_nahar_singh"
+        ));
+
+        lineStationsMap.put("Green Line", List.of(
+            "indrelok", "kirti_nagar", "ashok_park_main", "punjabi_bagh", "paschim_vihar_east", "paschim_vihar_west", "peeragarhi", "udyog_nagar", "brigadier_hoshiar_singh"
+        ));
+
+        lineStationsMap.put("Pink Line", List.of(
+            "majlis_park", "azadpur", "shalimar_bagh", "netaji_subhash_place", "punjabi_bagh", "mayapuri", "naraina_vihar", "south_campus", "bhikaji_cama_place", "sarojini_nagar", "dilli_haat_ina", "lajpat_nagar", "mayur_vihar_phase_1", "welcome", "shiv_vihar"
+        ));
+
+        lineStationsMap.put("Magenta Line", List.of(
+            "janakpuri_west", "dabri_mor", "dashrathpuri", "palam", "sadaar_bazar_cantt", "terminal_1_igi_airport", "shankar_vihar", "vasant_vihar", "munirka", "iit_delhi", "hauz_khas", "panchsheel_park", "chirag_delhi", "greater_kailash", "nehru_enclave", "kalka_ji_mandir", "botanical_garden"
+        ));
+
+        lineStationsMap.put("Airport Express", List.of(
+            "new_delhi", "shivaji_stadium", "dhaula_kuan", "delhi_aerocity", "igi_airport", "dwarka_sector_21"
+        ));
+
+        lineStationsMap.put("Grey Line", List.of(
+            "dwarka", "nangli", "najafgarh", "dhansa_bus_stand"
+        ));
     }
 
     private void initExitGates() {
