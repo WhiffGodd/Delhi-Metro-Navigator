@@ -761,6 +761,7 @@
     </div>
     <!-- /site-content -->
     <script src="ui-enhancements.js"></script>
+    <script src="route-planner.js"></script>
     <!-- Scripts -->
     <script src="vendor/leaflet/leaflet.js" crossorigin="anonymous"></script>
     <script>
@@ -768,7 +769,9 @@
         selectedPref = "fastest",
         stationsData = [],
         selectedStation = null,
-        usingBundledNetwork = false;
+        usingBundledNetwork = false,
+        localRoutePlanner = null,
+        tripRequest = 0;
       let stationMarkers = {},
         linePolylines = [];
       let routePolyline = null,
@@ -845,8 +848,9 @@
           if (data.success && data.stations) {
             stationsData = data.stations;
             usingBundledNetwork = data.source === "bundled";
+            localRoutePlanner = createMetroRouter(data);
             document.getElementById("planner-feedback").textContent = usingBundledNetwork
-              ? "Station browsing is available. Route calculations require the metro server."
+              ? "Route planning is ready. Travel times and fares are estimates."
               : "";
             document.getElementById("network-status").innerHTML =
               "" + stationsData.length + " stations loaded";
@@ -912,7 +916,7 @@
               .map((s) => [s.lat, s.lng]);
             if (coords.length < 2) return;
 
-            const color = lineColors[lineName] || "#2563eb";
+            const color = lineColors[lineName.replace(" Branch", "")] || "#2563eb";
 
             const polyline = L.polyline(coords, {
               color: color,
@@ -1163,7 +1167,14 @@
         const to = document.getElementById("route-to").value;
         if (from && to && from !== to) {
           calculateTrip();
-        } else if (!from && !to) {
+        } else {
+          ++tripRequest;
+          const btn = document.getElementById("plan-trip-btn");
+          btn.disabled = false;
+          btn.innerHTML = 'Find route <span aria-hidden="true">↗</span>';
+          document.getElementById("route-results-container").style.display = "none";
+          document.getElementById("planner-feedback").textContent =
+            from && to ? "Choose two different stations for your journey." : "";
           resetMapToFullNetwork();
         }
       }
@@ -1194,11 +1205,7 @@
       }
 
       async function calculateTrip() {
-        if (usingBundledNetwork) {
-          document.getElementById("planner-feedback").textContent =
-            "Route calculations require the metro server. You can still explore stations on the map.";
-          return;
-        }
+        const request = ++tripRequest;
         const from = document.getElementById("route-from").value;
         const to = document.getElementById("route-to").value;
         if (!from || !to) {
@@ -1218,24 +1225,22 @@
         btn.innerHTML = '<span class="spinner"></span> Calculating route…';
 
         try {
-          const res = await fetch(
-            `/api/route?from=${from}&to=${to}&pref=${selectedPref}`,
+          const route = await fetchMetroRoute(
+            localRoutePlanner, from, to, selectedPref, usingBundledNetwork,
           );
-          const data = await res.json();
-          btn.disabled = false;
-          btn.innerHTML = 'Find route <span aria-hidden="true">↗</span>';
-
-          if (data.success && data.route) {
-            renderRouteResults(data.route);
-          } else {
-            document.getElementById("planner-feedback").textContent =
-              data.error || "No route found. Please try another journey.";
-          }
+          if (request !== tripRequest) return;
+          renderRouteResults(route);
         } catch (err) {
-          btn.disabled = false;
-          btn.innerHTML = 'Find route <span aria-hidden="true">↗</span>';
+          if (request !== tripRequest) return;
+          document.getElementById("route-results-container").style.display = "none";
+          resetMapToFullNetwork();
           document.getElementById("planner-feedback").textContent =
-            "We couldn’t find your route. Please try again.";
+            err.message || "We couldn’t find your route. Please try again.";
+        } finally {
+          if (request === tripRequest) {
+            btn.disabled = false;
+            btn.innerHTML = 'Find route <span aria-hidden="true">↗</span>';
+          }
         }
       }
 
@@ -1252,12 +1257,12 @@
 
         c.innerHTML = `
         <div class="route-summary-card">
-          <div class="route-metric"><span class="route-metric-val">~${r.totalTimeMins} mins</span><span class="route-metric-label">Travel Time</span></div>
-          <div class="route-metric"><span class="route-metric-val">₹${r.fare}</span><span class="route-metric-label">Single Fare</span></div>
+          <div class="route-metric"><span class="route-metric-val">~${r.totalTimeMins} mins</span><span class="route-metric-label">Estimated Time</span></div>
+          <div class="route-metric"><span class="route-metric-val">₹${r.fare}</span><span class="route-metric-label">${r.estimated ? "Estimated Fare" : "Single Fare"}</span></div>
           <div class="route-metric"><span class="route-metric-val">${r.totalStops}</span><span class="route-metric-label">Total Stops</span></div>
         </div>
 
-        <div class="smart-assistant-card exit-ai-card" style="background:#f8fafc;border:1px solid #e2e8f0">
+${r.exitAi ? `        <div class="smart-assistant-card exit-ai-card" style="background:#f8fafc;border:1px solid #e2e8f0">
           <div class="assistant-card-header">
             <span class="assistant-card-title" style="font-weight:700"> Arrival information</span>
             <span class="exit-gate-highlight-badge" style="background:#2563eb;color:#fff"> Recommended: ${r.exitAi ? r.exitAi.bestGate : "Gate 1"}</span>
@@ -1273,7 +1278,19 @@
                <strong>Commuter Tip:</strong> Board near middle coaches (Coaches 3-4) for the shortest walk to exit stairs/lifts at ${r.destName}.
             </div>
           </div>
-        </div>`;
+        </div>` : `
+        <div class="smart-assistant-card" style="padding:16px">
+          <strong>${r.transfers} transfer${r.transfers === 1 ? "" : "s"}</strong>
+          <ol>${r.segments.map(segment => {
+            const from = stationsData.find(s => s.id === segment.from);
+            const to = stationsData.find(s => s.id === segment.to);
+            return '<li>' + segment.line + ': ' + from.name + ' → ' + to.name +
+              ' (' + segment.stops + ' stops)</li>';
+          }).join("")}</ol>
+          <p>Time and fare estimates use the saved network, average train speed,
+          a five-minute allowance per transfer, and the app’s stop-based fare model.
+          Check the official DMRC app for current fares and service updates.</p>
+        </div>`}`;
 
         // ─────────────────────────────────────────────────────────────
         // HIGHLIGHT ONLY SELECTED ROUTE ON THE MAP & DIM BACKGROUND

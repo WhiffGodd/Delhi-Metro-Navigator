@@ -268,8 +268,14 @@ sequenceDiagram
 Static hosts (including the current Vercel deployment) do not run the Java server.
 The app tries the Java station API first and falls back to `data/stations.json`
 so the map, station search, line filters, station timings, and dropdowns still work.
-Route calculations and exit recommendations require the Java server; the static
-site displays that limitation explicitly.
+Route calculations run in the browser when the Java server is absent or the route API fails.
+Both fastest-route and fewest-transfers preferences work using the bundled topology.
+Times include a five-minute transfer allowance; fares retain the app's existing
+stop-based estimate model and are labeled estimates, not current official fares.
+Exit recommendations still require the Java server.
+
+The Vaishali branch is included as a separate service in the route graph.
+Network reference: [DMRC map](https://delhimetrorail.com/static/media/DMRC-Network-Map_Jan2026_Hindi-English-13.03.2026.147097c4.pdf).
 
 The bundled data is exported from `MetroDatabase`, not a separate hand-maintained
 station list. After updating the Java database, compile the source as described
@@ -277,7 +283,7 @@ above and regenerate the bundle:
 
 ```powershell
 java -cp bin scripts/ExportStationNetwork.java
-node --test tests/startup.test.cjs
+node --test tests/*.test.cjs
 ```
 
 Commit the regenerated `data/stations.json` along with database changes.
