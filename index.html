@@ -767,7 +767,8 @@
       let map,
         selectedPref = "fastest",
         stationsData = [],
-        selectedStation = null;
+        selectedStation = null,
+        usingBundledNetwork = false;
       let stationMarkers = {},
         linePolylines = [];
       let routePolyline = null,
@@ -843,6 +844,10 @@
           const data = await fetchStationNetwork();
           if (data.success && data.stations) {
             stationsData = data.stations;
+            usingBundledNetwork = data.source === "bundled";
+            document.getElementById("planner-feedback").textContent = usingBundledNetwork
+              ? "Station browsing is available. Route calculations require the metro server."
+              : "";
             document.getElementById("network-status").innerHTML =
               "" + stationsData.length + " stations loaded";
             const lineRoutes = data.lineRoutes || {};
@@ -1052,6 +1057,13 @@
           <div class="last-train-row">Last Train: <strong>${s.lastTrain}</strong></div>
         </div>`;
 
+        if (usingBundledNetwork) {
+          document.getElementById("station-meta-box").textContent =
+            (s.isInterchange ? "Interchange station. " : "Regular station. ") +
+            "Exit recommendations require the metro server.";
+          document.getElementById("details-panel").classList.add("active");
+          return;
+        }
         // Fetch Exit Gate recommendations from Backend
         fetch(`/api/exit-recommendation?station=${s.id}`)
           .then((res) => res.json())
@@ -1182,6 +1194,11 @@
       }
 
       async function calculateTrip() {
+        if (usingBundledNetwork) {
+          document.getElementById("planner-feedback").textContent =
+            "Route calculations require the metro server. You can still explore stations on the map.";
+          return;
+        }
         const from = document.getElementById("route-from").value;
         const to = document.getElementById("route-to").value;
         if (!from || !to) {

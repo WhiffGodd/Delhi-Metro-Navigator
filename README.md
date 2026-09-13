@@ -262,3 +262,22 @@ sequenceDiagram
 - **Emergency Helplines**: One-tap dialing for Delhi Police (`112`), Metro Police Helpline (`1511`), CISF Metro Security (`155655`), Women's Safety Helpline (`1091`, `181`), and Divyangjan Wheelchair Escort (`155370`).
 - **DMRC Smart Card Recharge**: Integrated online top-up redirection to `dmrcsmartcard.com` with quick-select amount chips (₹100, ₹200, ₹500, ₹1000).
 - **Zero API Key Requirement**: Full Leaflet GIS mapping powered by OpenStreetMap contributors.
+
+## Static hosting and station data
+
+Static hosts (including the current Vercel deployment) do not run the Java server.
+The app tries the Java station API first and falls back to `data/stations.json`
+so the map, station search, line filters, station timings, and dropdowns still work.
+Route calculations and exit recommendations require the Java server; the static
+site displays that limitation explicitly.
+
+The bundled data is exported from `MetroDatabase`, not a separate hand-maintained
+station list. After updating the Java database, compile the source as described
+above and regenerate the bundle:
+
+```powershell
+java -cp bin scripts/ExportStationNetwork.java
+node --test tests/startup.test.cjs
+```
+
+Commit the regenerated `data/stations.json` along with database changes.

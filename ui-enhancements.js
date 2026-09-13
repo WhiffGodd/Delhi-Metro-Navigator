@@ -1,6 +1,33 @@
+/* Static deployments have no Java API. Keep the checked-in network available. */
+async function fetchStationNetwork() {
+  try {
+    return await fetchLiveStationNetwork();
+  } catch (liveError) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 12000);
+    try {
+      const response = await fetch("data/stations.json", {
+        signal: controller.signal,
+        cache: "no-cache",
+      });
+      if (!response.ok) throw new Error("Bundled station network unavailable");
+      const data = await response.json();
+      if (!data.success || !Array.isArray(data.stations) ||
+          !data.stations.length || !data.lineRoutes ||
+          !Object.keys(data.lineRoutes).length) {
+        throw new Error("Invalid bundled station network");
+      }
+      return { ...data, source: "bundled" };
+    } catch (fallbackError) {
+      throw new Error("Stations could not load from the server or bundled network. Check your connection and try again.");
+    } finally {
+      clearTimeout(timeout);
+    }
+  }
+}
 /* Local startup dependencies and a retryable, bounded network request. */
 let startupPending = false;
-async function fetchStationNetwork() {
+async function fetchLiveStationNetwork() {
   for (let attempt = 0; attempt < 2; attempt++) {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 12000);
