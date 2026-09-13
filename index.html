@@ -16,12 +16,12 @@
     <!-- Leaflet CSS -->
     <link
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css"
+      href="vendor/leaflet/leaflet.css"
       crossorigin="anonymous"
     />
 
     <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="vendor/lucide.js" defer></script>
 
     <!-- App Styles -->
     <link rel="stylesheet" href="styles.css" />
@@ -65,7 +65,7 @@
           id="startup-retry"
           class="plan-btn"
           hidden
-          onclick="location.reload()"
+          onclick="retryStartup()"
         >
           Try again <span aria-hidden="true">↗</span>
         </button>
@@ -762,10 +762,7 @@
     <!-- /site-content -->
     <script src="ui-enhancements.js"></script>
     <!-- Scripts -->
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"
-      crossorigin="anonymous"
-    ></script>
+    <script src="vendor/leaflet/leaflet.js" crossorigin="anonymous"></script>
     <script>
       let map,
         selectedPref = "fastest",
@@ -791,20 +788,21 @@
       };
 
       document.addEventListener("DOMContentLoaded", () => {
-        if (window.lucide) lucide.createIcons();
+        try {
+          if (window.lucide) lucide.createIcons();
+        } catch (error) {
+          console.warn("Icons unavailable", error);
+        }
         switchTab("planner");
         document.addEventListener("keydown", (e) => {
           if (e.key === "Escape") closeDetailsPanel();
         });
-        initMagnificationDock();
         try {
-          initMap();
-          loadStationsFromJava();
+          initMagnificationDock();
         } catch (error) {
-          showStartupError(
-            "The map could not load. Check your connection and try again.",
-          );
+          console.warn("Dock animation unavailable", error);
         }
+        retryStartup();
 
         document
           .getElementById("search-input")
@@ -842,11 +840,7 @@
 
       async function loadStationsFromJava() {
         try {
-          const res = await fetch("/api/stations", {
-            signal: AbortSignal.timeout(12000),
-          });
-          if (!res.ok) throw new Error("Station request failed");
-          const data = await res.json();
+          const data = await fetchStationNetwork();
           if (data.success && data.stations) {
             stationsData = data.stations;
             document.getElementById("network-status").innerHTML =
@@ -854,6 +848,10 @@
             const lineRoutes = data.lineRoutes || {};
             populateDropdowns(stationsData);
             renderAllMetroLinesOnMap(stationsData, lineRoutes);
+            Object.values(stationMarkers).forEach((marker) =>
+              map.removeLayer(marker),
+            );
+            stationMarkers = {};
             renderHighlightedStationsOnMap(stationsData);
             renderLinePills(stationsData);
             dismissStartup();
@@ -862,12 +860,12 @@
           }
         } catch (err) {
           showStartupError(
-            "We couldn’t connect to the metro network. Please try again.",
+            err.message || "Station loading failed. Please try again.",
           );
           document.getElementById("network-status").textContent =
-            "Network unavailable · Refresh to retry";
-          document.getElementById("planner-feedback").textContent =
-            "Unable to load stations. Please check your connection and refresh.";
+            "Station network unavailable";
+          document.getElementById("planner-feedback").innerHTML =
+            'Stations could not load. <button class="focus-reset-btn" onclick="retryStartup()">Retry loading</button>';
         }
       }
 

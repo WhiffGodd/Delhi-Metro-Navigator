@@ -1,11 +1,80 @@
-/* Native adaptation of the supplied MagnificationDock: no framework migration. */
-let startupTimeout = setTimeout(() => {
-  showStartupError(
-    "This is taking longer than expected. Check your connection and try again.",
-  );
-}, 15000);
+/* Local startup dependencies and a retryable, bounded network request. */
+let startupPending = false;
+async function fetchStationNetwork() {
+  for (let attempt = 0; attempt < 2; attempt++) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 12000);
+    try {
+      const response = await fetch("/api/stations", {
+        signal: controller.signal,
+        cache: "no-store",
+      });
+      if (!response.ok)
+        throw new Error(
+          "The metro server is unavailable. Check that it is running, then try again.",
+        );
+      if (
+        !(response.headers.get("content-type") || "").includes(
+          "application/json",
+        )
+      ) {
+        throw new Error(
+          "This page is not connected to the Java metro server. Open the app through its server to load stations.",
+        );
+      }
+      const data = await response.json();
+      if (
+        !data.success ||
+        !Array.isArray(data.stations) ||
+        !data.stations.length
+      ) {
+        throw new Error(
+          "The server returned no station network. Please try again.",
+        );
+      }
+      return data;
+    } catch (error) {
+      const transient =
+        error.name === "AbortError" || error instanceof TypeError;
+      if (!transient || attempt === 1) {
+        if (transient)
+          throw new Error(
+            "The metro server did not respond. Check your connection and try again.",
+          );
+        throw error;
+      }
+      document.getElementById("startup-status").textContent =
+        "Connection interrupted. Retrying station loading…";
+    } finally {
+      clearTimeout(timeout);
+    }
+  }
+}
+async function retryStartup() {
+  if (startupPending) return;
+  startupPending = true;
+  const screen = document.getElementById("startup-screen");
+  screen.hidden = false;
+  screen.classList.remove("startup-error");
+  document.getElementById("site-content").inert = true;
+  document.getElementById("startup-status").textContent =
+    "Loading the station network and route planner.";
+  document.getElementById("startup-retry").hidden = true;
+  document.getElementById("startup-continue").hidden = true;
+  try {
+    if (!window.L)
+      throw new Error(
+        "The local map files could not load. Refresh the page to retry.",
+      );
+    if (!map) initMap();
+    await loadStationsFromJava();
+  } catch (error) {
+    showStartupError(error.message);
+  } finally {
+    startupPending = false;
+  }
+}
 function dismissStartup() {
-  clearTimeout(startupTimeout);
   const screen = document.getElementById("startup-screen");
   const hadFocus = screen.contains(document.activeElement);
   screen.hidden = true;
@@ -14,7 +83,6 @@ function dismissStartup() {
     document.getElementById("tab-planner").focus({ preventScroll: true });
 }
 function showStartupError(message) {
-  clearTimeout(startupTimeout);
   document.getElementById("startup-status").textContent = message;
   document.getElementById("startup-screen").classList.add("startup-error");
   document.getElementById("startup-retry").hidden = false;
