@@ -1,754 +1,1241 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Delhi Metro — Network Map, Route Planner & Helplines</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Delhi Metro — Network Map, Route Planner & Helplines</title>
 
-  <!-- Google Fonts: Inter -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@1,400;1,500;1,600;1,700&display=swap"
+      rel="stylesheet"
+    />
 
-  <!-- Leaflet CSS -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" crossorigin="anonymous">
+    <!-- Leaflet CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css"
+      crossorigin="anonymous"
+    />
 
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
 
-  <!-- App Styles -->
-  <link rel="stylesheet" href="styles.css">
+    <!-- App Styles -->
+    <link rel="stylesheet" href="styles.css" />
 
-  <meta name="description" content="Interactive Delhi Metro network map, route planner, fare calculator, and emergency helpline directory powered by Java 21.">
-</head>
-<body>
+    <meta
+      name="description"
+      content="Interactive Delhi Metro network map, route planner, fare calculator, and emergency helpline directory powered by Java 21."
+    />
+  </head>
+  <body>
+    <div
+      id="startup-screen"
+      class="startup-screen"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="startup-title"
+    >
+      <div class="startup-card">
+        <span class="startup-brand">metro<span>.</span></span>
+        <svg
+          class="startup-route"
+          viewBox="0 0 280 64"
+          fill="none"
+          aria-hidden="true"
+        >
+          <path d="M15 32H90Q110 32 120 18Q135 0 155 18Q165 32 185 32H265" />
+          <circle cx="15" cy="32" r="5" />
+          <circle cx="140" cy="12" r="5" />
+          <circle cx="265" cy="32" r="5" />
+          <path
+            class="startup-train"
+            d="M15 32H90Q110 32 120 18Q135 0 155 18Q165 32 185 32H265"
+          />
+        </svg>
 
-  <!-- ═══════════════════════════ HEADER ═══════════════════════════ -->
-  <!-- ═══════════════════════════ HEADER ═══════════════════════════ -->
-  <header class="app-header">
-    <div class="logo-container">
-      <div class="logo-icon-bg">
-        <span class="logo-icon">🚇</span>
-      </div>
-      <div class="logo-title-group">
-        <h1 class="logo-text">Delhi Metro Navigator</h1>
-        <span class="logo-subtitle">Delhi NCR Commuter & Travel Companion</span>
+        <h2 id="startup-title">Loading Delhi Metro</h2>
+        <p id="startup-status" role="status">
+          Loading the station network and route planner.
+        </p>
+        <button
+          id="startup-retry"
+          class="plan-btn"
+          hidden
+          onclick="location.reload()"
+        >
+          Try again <span aria-hidden="true">↗</span>
+        </button>
+        <button
+          id="startup-continue"
+          class="startup-continue"
+          hidden
+          onclick="dismissStartup()"
+        >
+          Continue to the site
+        </button>
       </div>
     </div>
-
-    <div class="header-stats">
-      <div class="stat-pill">
-        <span class="stat-dot"></span>
-        <span>10 Lines • 229 Stations</span>
-      </div>
-      <a href="https://www.dmrcsmartcard.com/" target="_blank" rel="noopener" class="stat-pill card-recharge-pill" title="Smart Card Recharge on Official DMRC Portal">
-        <span class="stat-icon">💳</span>
-        <span>Card Recharge ↗</span>
-      </a>
-      <div class="stat-pill helpline-quick-pill" onclick="switchTab('helplines')">
-        <span class="stat-icon">🚨</span>
-        <span>24x7 Helplines</span>
-      </div>
-    </div>
-  </header>
-
-  <!-- ═══════════════════════════ LAYOUT ═══════════════════════════ -->
-  <div class="app-container">
-
-    <!-- ──────────────── SIDEBAR ──────────────── -->
-    <aside class="sidebar">
-
-      <!-- Tabs -->
-      <div class="sidebar-tabs">
-        <button id="tab-network" class="tab-btn active" onclick="switchTab('network')">
-          <i data-lucide="map" style="width:14px;height:14px"></i> Network
-        </button>
-        <button id="tab-planner" class="tab-btn" onclick="switchTab('planner')">
-          <i data-lucide="navigation" style="width:14px;height:14px"></i> Planner
-        </button>
-        <button id="tab-helplines" class="tab-btn" onclick="switchTab('helplines')">
-          <i data-lucide="phone-call" style="width:14px;height:14px"></i> Helplines
-        </button>
-        <button id="tab-info" class="tab-btn" onclick="switchTab('info')">
-          <i data-lucide="info" style="width:14px;height:14px"></i> Info
-        </button>
-      </div>
-
-      <!-- ── TAB 1: Network ────────────────────── -->
-      <div id="content-network" class="tab-content active">
-
-        <!-- Friendly Commuter Tip -->
-        <div class="commuter-welcome-card" style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;margin:12px 14px 4px;font-size:12px;color:#334155;line-height:1.4">
-          <strong style="color:#0f172a">👋 Delhi Metro Guide:</strong> Tap any station on the map to view train timings, best exit gates, and street landmarks.
+    <div id="site-content" inert>
+      <!-- ═══════════════════════════ HEADER ═══════════════════════════ -->
+      <!-- ═══════════════════════════ HEADER ═══════════════════════════ -->
+      <a class="skip-link" href="#workspace">Skip to journey planner</a>
+      <header class="app-header">
+        <a class="brand" href="#"
+          ><span class="brand-mark"><i data-lucide="train-front"></i></span
+          ><span
+            >metro<span class="brand-period">.</span
+            ><small>DELHI NAVIGATOR</small></span
+          ></a
+        >
+        <nav class="header-nav" aria-label="Main navigation">
+          <a href="#workspace" onclick="switchTab('planner')">Plan a journey</a
+          ><a href="#workspace" onclick="switchTab('network')"
+            >Explore network</a
+          ><a href="#workspace" onclick="switchTab('info')"
+            >Travel information</a
+          >
+        </nav>
+        <a
+          class="header-recharge"
+          href="https://www.dmrcsmartcard.com/"
+          target="_blank"
+          rel="noopener"
+          >Recharge card <i data-lucide="arrow-up-right"></i
+        ></a>
+      </header>
+      <section
+        class="workspace-heading"
+        id="workspace"
+        aria-labelledby="page-title"
+      >
+        <div>
+          <h1 id="page-title">Delhi Metro</h1>
+          <p>Plan a route. Check fares, station timings and exits.</p>
         </div>
-
-        <!-- Search -->
-        <div class="sidebar-section">
-          <span class="sidebar-title">Find a Station</span>
-          <div class="search-wrapper">
-            <input type="text" id="search-input" class="search-input"
-              placeholder="Search station (e.g. Rajiv Chowk, Hauz Khas, Noida)…" autocomplete="off">
-            <span class="search-icon">🔍</span>
-            <div id="search-results" class="search-results"></div>
+        <div class="network-status" id="network-status" role="status">
+          Loading stations…
+        </div>
+      </section>
+      <!-- ═══════════════════════════ LAYOUT ═══════════════════════════ -->
+      <div class="app-container">
+        <!-- ──────────────── SIDEBAR ──────────────── -->
+        <aside class="sidebar" aria-label="Journey tools">
+          <div class="planner-heading">
+            <h2 id="tool-title">Plan a route</h2>
           </div>
-        </div>
 
-        <!-- Lines legend -->
-        <div class="sidebar-section">
-          <span class="sidebar-title">Metro Lines Overview</span>
-          <div id="line-pills" class="line-pills"></div>
-        </div>
+          <!-- Tabs -->
+          <div
+            class="sidebar-tabs magnification-dock"
+            role="tablist"
+            aria-label="Journey tools"
+          >
+            <button
+              id="tab-network"
+              class="tab-btn dock-item"
+              onclick="switchTab('network')"
+              aria-label="Network"
+            >
+              <span class="dock-tooltip" aria-hidden="true"
+                >Explore stations</span
+              ><span class="dock-icon"><i data-lucide="map"></i></span
+              ><span class="dock-label">Network</span></button
+            ><button
+              id="tab-planner"
+              class="tab-btn dock-item"
+              onclick="switchTab('planner')"
+              aria-label="Planner"
+            >
+              <span class="dock-tooltip" aria-hidden="true">Plan a journey</span
+              ><span class="dock-icon"><i data-lucide="navigation"></i></span
+              ><span class="dock-label">Planner</span></button
+            ><button
+              id="tab-helplines"
+              class="tab-btn dock-item"
+              onclick="switchTab('helplines')"
+              aria-label="Helplines"
+            >
+              <span class="dock-tooltip" aria-hidden="true"
+                >Safety & assistance</span
+              ><span class="dock-icon"><i data-lucide="phone-call"></i></span
+              ><span class="dock-label">Helplines</span></button
+            ><button
+              id="tab-info"
+              class="tab-btn dock-item"
+              onclick="switchTab('info')"
+              aria-label="Info"
+            >
+              <span class="dock-tooltip" aria-hidden="true"
+                >Cards & travel info</span
+              ><span class="dock-icon"><i data-lucide="info"></i></span
+              ><span class="dock-label">Info</span>
+            </button>
+          </div>
+          <!-- ── TAB 1: Network ────────────────────── -->
+          <div id="content-network" class="tab-content">
+            <!-- Friendly Commuter Tip -->
+            <div
+              class="commuter-welcome-card"
+              style="
+                background: #f1f5f9;
+                border: 1px solid #e2e8f0;
+                border-radius: 10px;
+                padding: 10px 12px;
+                margin: 12px 14px 4px;
+                font-size: 14px;
+                color: #334155;
+                line-height: 1.4;
+              "
+            >
+              <strong style="color: #0f172a"> Delhi Metro Guide:</strong> Tap
+              any station on the map to view train timings, best exit gates, and
+              street landmarks.
+            </div>
 
-        <!-- Alerts -->
-        <div class="sidebar-section alerts-section">
-          <span class="sidebar-title">
-            <span>Daily Service Status</span>
-          </span>
-          <div id="alerts-feed" class="alerts-feed">
-            <div class="alert-card info">
-              <span class="alert-icon">🟢</span>
-              <div class="alert-body">
-                <span class="alert-message">All 10 Metro Lines running normally on schedule.</span>
-                <span class="alert-time">Updated for Commuters</span>
+            <!-- Search -->
+            <div class="sidebar-section">
+              <label for="search-input" class="sidebar-title"
+                >Find a station</label
+              >
+              <div class="search-wrapper">
+                <input
+                  type="text"
+                  id="search-input"
+                  class="search-input"
+                  placeholder="Search station (e.g. Rajiv Chowk, Hauz Khas, Noida)…"
+                  autocomplete="off"
+                />
+                <span class="search-icon"></span>
+                <div id="search-results" class="search-results"></div>
+              </div>
+            </div>
+
+            <!-- Lines legend -->
+            <div class="sidebar-section">
+              <span class="sidebar-title">Metro Lines Overview</span>
+              <div id="line-pills" class="line-pills"></div>
+            </div>
+
+            <!-- Alerts -->
+            <div class="sidebar-section alerts-section">
+              <span class="sidebar-title">
+                <span>Network information</span>
+              </span>
+              <div id="alerts-feed" class="alerts-feed">
+                <div class="alert-card info">
+                  <span class="alert-icon"></span>
+                  <div class="alert-body">
+                    <span class="alert-message"
+                      >Explore the network and select a station for
+                      details.</span
+                    >
+                    <span class="alert-time"
+                      >Station information · Not a live service feed</span
+                    >
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+          <!-- /tab-network -->
 
-      </div><!-- /tab-network -->
+          <!-- ── TAB 2: Trip Planner ───────────────── -->
+          <div id="content-planner" class="tab-content active">
+            <div class="sidebar-section">
+              <div class="planner-form">
+                <div class="input-group">
+                  <label class="select-label" for="route-from">FROM</label>
+                  <select id="route-from" class="route-select"></select>
+                </div>
 
-      <!-- ── TAB 2: Trip Planner ───────────────── -->
-      <div id="content-planner" class="tab-content">
+                <div class="swap-wrapper">
+                  <button
+                    id="swap-stations-btn"
+                    class="swap-btn"
+                    title="Swap origin & destination"
+                    onclick="swapStations()"
+                  >
+                    <i
+                      data-lucide="arrow-up-down"
+                      style="width: 14px; height: 14px"
+                    ></i>
+                  </button>
+                </div>
 
-        <div class="sidebar-section">
-          <span class="sidebar-title">Plan Your Journey</span>
-          <div class="planner-form">
-            <div class="input-group">
-              <label class="select-label" for="route-from">Where are you starting from?</label>
-              <select id="route-from" class="route-select"></select>
+                <div class="input-group">
+                  <label class="select-label" for="route-to">TO</label>
+                  <select id="route-to" class="route-select"></select>
+                </div>
+              </div>
             </div>
 
-            <div class="swap-wrapper">
-              <button id="swap-stations-btn" class="swap-btn" title="Swap origin & destination" onclick="swapStations()">
-                <i data-lucide="arrow-up-down" style="width:14px;height:14px"></i>
+            <div class="sidebar-section">
+              <span class="sidebar-title">Route Preference</span>
+              <div class="preference-grid">
+                <button
+                  id="pref-fastest"
+                  class="pref-btn active"
+                  onclick="setPreference('fastest')"
+                >
+                  <i data-lucide="zap"></i> Fastest route
+                </button>
+                <button
+                  id="pref-interchanges"
+                  class="pref-btn"
+                  onclick="setPreference('fewest_interchanges')"
+                >
+                  <i data-lucide="shuffle"></i> Fewer transfers
+                </button>
+              </div>
+              <button
+                id="plan-trip-btn"
+                class="plan-btn"
+                onclick="calculateTrip()"
+              >
+                Find route <span aria-hidden="true">↗</span>
               </button>
             </div>
 
-            <div class="input-group">
-              <label class="select-label" for="route-to">Where do you want to go?</label>
-              <select id="route-to" class="route-select"></select>
-            </div>
-          </div>
-        </div>
-
-        <div class="sidebar-section">
-          <span class="sidebar-title">Route Preference</span>
-          <div class="preference-grid">
-            <button id="pref-fastest" class="pref-btn active" onclick="setPreference('fastest')">⚡ Fastest Route</button>
-            <button id="pref-interchanges" class="pref-btn" onclick="setPreference('fewest_interchanges')">🔀 Fewer Transfers</button>
-          </div>
-          <button id="plan-trip-btn" class="plan-btn" onclick="calculateTrip()">Find Best Route</button>
-        </div>
-
-        <div id="route-results-container" class="sidebar-section route-results-section"></div>
-
-      </div><!-- /tab-planner -->
-
-      <!-- ── TAB 3: Helplines & Safety ──────────────── -->
-      <div id="content-helplines" class="tab-content">
-
-        <div class="sidebar-section helplines-tab-body">
-          
-          <!-- SECTION 1: POLICE & SECURITY HELPLINES -->
-          <div class="helpline-card emergency-border">
-            <div class="helpline-card-header">
-              <span class="helpline-icon">🚨</span>
-              <div class="helpline-header-text">
-                <h3 class="helpline-card-title">Police & Security Helplines</h3>
-                <span class="helpline-card-sub">Emergency Response & CISF Station Security</span>
-              </div>
-            </div>
-            <div class="helpline-list">
-              <div class="helpline-item">
-                <div class="helpline-info">
-                  <span class="helpline-name">National Emergency Response</span>
-                  <span class="helpline-number">112</span>
-                </div>
-                <a href="tel:112" class="call-btn btn-danger">Call 112</a>
-              </div>
-
-              <div class="helpline-item">
-                <div class="helpline-info">
-                  <span class="helpline-name">Delhi Metro Police Helpline</span>
-                  <span class="helpline-number">1511</span>
-                </div>
-                <a href="tel:1511" class="call-btn btn-danger">Call 1511</a>
-              </div>
-
-              <div class="helpline-item">
-                <div class="helpline-info">
-                  <span class="helpline-name">CISF Metro Security Control</span>
-                  <span class="helpline-number">155655</span>
-                </div>
-                <a href="tel:155655" class="call-btn btn-danger">Call 155655</a>
-              </div>
-            </div>
-          </div>
-
-          <!-- SECTION 2: WOMEN'S SAFETY HELPLINES -->
-          <div class="helpline-card women-border">
-            <div class="helpline-card-header">
-              <span class="helpline-icon">👩</span>
-              <div class="helpline-header-text">
-                <h3 class="helpline-card-title">Women's Safety & Protection</h3>
-                <span class="helpline-card-sub">24x7 Emergency Assistance & Reserved Coach Patrol</span>
-              </div>
-            </div>
-            <div class="helpline-list">
-              <div class="helpline-item">
-                <div class="helpline-info">
-                  <span class="helpline-name">Women Safety Helpline (24x7)</span>
-                  <span class="helpline-number">1091</span>
-                </div>
-                <a href="tel:1091" class="call-btn btn-pink">Call 1091</a>
-              </div>
-
-              <div class="helpline-item">
-                <div class="helpline-info">
-                  <span class="helpline-name">Delhi Commission for Women (DCW)</span>
-                  <span class="helpline-number">181</span>
-                </div>
-                <a href="tel:181" class="call-btn btn-pink">Call 181</a>
-              </div>
-
-              <div class="helpline-item">
-                <div class="helpline-info">
-                  <span class="helpline-name">DMRC Women's Special Assistance</span>
-                  <span class="helpline-number">155370 (Press 2)</span>
-                </div>
-                <a href="tel:155370" class="call-btn btn-pink">Call 155370</a>
-              </div>
-            </div>
-            <div class="safety-note">
-              <span>ℹ️ First coach in direction of train movement is strictly reserved for women. CISF Quick Reaction Teams patrol platforms.</span>
-            </div>
-          </div>
-
-          <!-- SECTION 3: SPECIALLY ABLED & ACCESSIBILITY SUPPORT -->
-          <div class="helpline-card abled-border">
-            <div class="helpline-card-header">
-              <span class="helpline-icon">♿</span>
-              <div class="helpline-header-text">
-                <h3 class="helpline-card-title">Specially Abled & Senior Support</h3>
-                <span class="helpline-card-sub">Wheelchair Escort, Ramp Access & Assistance</span>
-              </div>
-            </div>
-            <div class="helpline-list">
-              <div class="helpline-item">
-                <div class="helpline-info">
-                  <span class="helpline-name">Divyangjan Station Escort Service</span>
-                  <span class="helpline-number">155370</span>
-                </div>
-                <a href="tel:155370" class="call-btn btn-blue">Request Escort</a>
-              </div>
-
-              <div class="helpline-item">
-                <div class="helpline-info">
-                  <span class="helpline-name">Senior Citizen & Priority Care</span>
-                  <span class="helpline-number">011-23417910</span>
-                </div>
-                <a href="tel:01123417910" class="call-btn btn-blue">Call Helpline</a>
-              </div>
-            </div>
-            <div class="accessibility-features-grid">
-              <div class="acc-feature-chip">🛗 Tactile Lifts & Braille</div>
-              <div class="acc-feature-chip">♿ Low Floor Ramps</div>
-              <div class="acc-feature-chip">🦽 Wheelchair at Customer Care</div>
-              <div class="acc-feature-chip">🔔 Station Escort on Request</div>
-            </div>
-          </div>
-
-          <!-- SECTION 4: GENERAL METRO HELPLINE & LOST/FOUND -->
-          <div class="helpline-card general-border">
-            <div class="helpline-card-header">
-              <span class="helpline-icon">📞</span>
-              <div class="helpline-header-text">
-                <h3 class="helpline-card-title">General DMRC Customer Care</h3>
-                <span class="helpline-card-sub">Toll-Free Inquiries, Tokens & Lost Items</span>
-              </div>
-            </div>
-            <div class="helpline-list">
-              <div class="helpline-item">
-                <div class="helpline-info">
-                  <span class="helpline-name">DMRC Toll-Free Helpline (24x7)</span>
-                  <span class="helpline-number">155370</span>
-                </div>
-                <a href="tel:155370" class="call-btn btn-dark">Call 155370</a>
-              </div>
-
-              <div class="helpline-item">
-                <div class="helpline-info">
-                  <span class="helpline-name">Lost & Found Office (Kashmere Gate)</span>
-                  <span class="helpline-number">011-23417910 (Ext 14558)</span>
-                </div>
-                <a href="tel:01123417910" class="call-btn btn-dark">Call Office</a>
-              </div>
-            </div>
-          </div>
-
-        </div>
-
-      </div><!-- /tab-helplines -->
-
-      <!-- ── TAB 4: Info ────────────────────────── -->
-      <div id="content-info" class="tab-content">
-
-        <div class="sidebar-section info-tab-body">
-          <span class="sidebar-title">System Overview & Services</span>
-
-          <!-- METRO CARD RECHARGE CARD -->
-          <div class="info-card recharge-card">
-            <h3 class="info-card-title">💳 Smart Card Recharge</h3>
-            <p class="info-card-body">Recharge your DMRC Metro Smart Card online directly on the official DMRC portal.</p>
-            <div class="recharge-form-group">
-              <label class="select-label" for="card-number-input">Metro Card Engraved ID (8 to 12 digits)</label>
-              <input type="text" id="card-number-input" class="search-input" placeholder="e.g. 12345678" maxlength="12">
-              
-              <div class="amount-chips-group">
-                <button type="button" class="amount-chip" onclick="setRechargeAmount(100, this)">₹100</button>
-                <button type="button" class="amount-chip active" onclick="setRechargeAmount(200, this)">₹200</button>
-                <button type="button" class="amount-chip" onclick="setRechargeAmount(500, this)">₹500</button>
-                <button type="button" class="amount-chip" onclick="setRechargeAmount(1000, this)">₹1000</button>
-              </div>
-
-              <button type="button" class="plan-btn recharge-btn" onclick="redirectToDMRCRecharge()">
-                Smart Card Recharge ↗
-              </button>
-            </div>
-            <p class="recharge-note">
-              ℹ️ Directs to official DMRC portal (<code>dmrcsmartcard.com</code>). After payment, tap your card at AVM (Add Value Machine) at any station to complete top-up.
+            <p id="planner-feedback" role="status" class="planner-feedback"></p>
+            <p class="planner-note">
+              Choose two stations to see the fare, travel time and recommended
+              exit.
             </p>
+            <div
+              id="route-results-container"
+              class="sidebar-section route-results-section"
+            ></div>
           </div>
+          <!-- /tab-planner -->
 
-          <div class="info-card">
-            <h3 class="info-card-title">ℹ️ Delhi Metro Guide</h3>
-            <p class="info-card-body">Delhi Metro is India's largest rapid transit system, operating across Delhi NCR with high frequency and accessibility features.</p>
-            <ul class="info-list">
-              <li><strong>First Train:</strong> ~5:30 AM (Mon–Sat) / ~6:00 AM (Sun)</li>
-              <li><strong>Last Train:</strong> ~11:30 PM (Terminal departures)</li>
-              <li><strong>Token & Smart Card:</strong> Minimum fare ₹10, Maximum ₹60</li>
-              <li><strong>Peak Headways:</strong> 2 to 4 mins on major lines</li>
-            </ul>
+          <!-- ── TAB 3: Helplines & Safety ──────────────── -->
+          <div id="content-helplines" class="tab-content">
+            <div class="sidebar-section helplines-tab-body">
+              <!-- SECTION 1: POLICE & SECURITY HELPLINES -->
+              <div class="helpline-card emergency-border">
+                <div class="helpline-card-header">
+                  <span class="helpline-icon"></span>
+                  <div class="helpline-header-text">
+                    <h3 class="helpline-card-title">
+                      Police & Security Helplines
+                    </h3>
+                    <span class="helpline-card-sub"
+                      >Emergency Response & CISF Station Security</span
+                    >
+                  </div>
+                </div>
+                <div class="helpline-list">
+                  <div class="helpline-item">
+                    <div class="helpline-info">
+                      <span class="helpline-name"
+                        >National Emergency Response</span
+                      >
+                      <span class="helpline-number">112</span>
+                    </div>
+                    <a href="tel:112" class="call-btn btn-danger">Call 112</a>
+                  </div>
+
+                  <div class="helpline-item">
+                    <div class="helpline-info">
+                      <span class="helpline-name"
+                        >Delhi Metro Police Helpline</span
+                      >
+                      <span class="helpline-number">1511</span>
+                    </div>
+                    <a href="tel:1511" class="call-btn btn-danger">Call 1511</a>
+                  </div>
+
+                  <div class="helpline-item">
+                    <div class="helpline-info">
+                      <span class="helpline-name"
+                        >CISF Metro Security Control</span
+                      >
+                      <span class="helpline-number">155655</span>
+                    </div>
+                    <a href="tel:155655" class="call-btn btn-danger"
+                      >Call 155655</a
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <!-- SECTION 2: WOMEN'S SAFETY HELPLINES -->
+              <div class="helpline-card women-border">
+                <div class="helpline-card-header">
+                  <span class="helpline-icon"></span>
+                  <div class="helpline-header-text">
+                    <h3 class="helpline-card-title">
+                      Women's Safety & Protection
+                    </h3>
+                    <span class="helpline-card-sub"
+                      >24x7 Emergency Assistance & Reserved Coach Patrol</span
+                    >
+                  </div>
+                </div>
+                <div class="helpline-list">
+                  <div class="helpline-item">
+                    <div class="helpline-info">
+                      <span class="helpline-name"
+                        >Women Safety Helpline (24x7)</span
+                      >
+                      <span class="helpline-number">1091</span>
+                    </div>
+                    <a href="tel:1091" class="call-btn btn-pink">Call 1091</a>
+                  </div>
+
+                  <div class="helpline-item">
+                    <div class="helpline-info">
+                      <span class="helpline-name"
+                        >Delhi Commission for Women (DCW)</span
+                      >
+                      <span class="helpline-number">181</span>
+                    </div>
+                    <a href="tel:181" class="call-btn btn-pink">Call 181</a>
+                  </div>
+
+                  <div class="helpline-item">
+                    <div class="helpline-info">
+                      <span class="helpline-name"
+                        >DMRC Women's Special Assistance</span
+                      >
+                      <span class="helpline-number">155370 (Press 2)</span>
+                    </div>
+                    <a href="tel:155370" class="call-btn btn-pink"
+                      >Call 155370</a
+                    >
+                  </div>
+                </div>
+                <div class="safety-note">
+                  <span
+                    >ℹ First coach in direction of train movement is strictly
+                    reserved for women. CISF Quick Reaction Teams patrol
+                    platforms.</span
+                  >
+                </div>
+              </div>
+
+              <!-- SECTION 3: SPECIALLY ABLED & ACCESSIBILITY SUPPORT -->
+              <div class="helpline-card abled-border">
+                <div class="helpline-card-header">
+                  <span class="helpline-icon"></span>
+                  <div class="helpline-header-text">
+                    <h3 class="helpline-card-title">
+                      Specially Abled & Senior Support
+                    </h3>
+                    <span class="helpline-card-sub"
+                      >Wheelchair Escort, Ramp Access & Assistance</span
+                    >
+                  </div>
+                </div>
+                <div class="helpline-list">
+                  <div class="helpline-item">
+                    <div class="helpline-info">
+                      <span class="helpline-name"
+                        >Divyangjan Station Escort Service</span
+                      >
+                      <span class="helpline-number">155370</span>
+                    </div>
+                    <a href="tel:155370" class="call-btn btn-blue"
+                      >Request Escort</a
+                    >
+                  </div>
+
+                  <div class="helpline-item">
+                    <div class="helpline-info">
+                      <span class="helpline-name"
+                        >Senior Citizen & Priority Care</span
+                      >
+                      <span class="helpline-number">011-23417910</span>
+                    </div>
+                    <a href="tel:01123417910" class="call-btn btn-blue"
+                      >Call Helpline</a
+                    >
+                  </div>
+                </div>
+                <div class="accessibility-features-grid">
+                  <div class="acc-feature-chip">Tactile Lifts & Braille</div>
+                  <div class="acc-feature-chip">Low Floor Ramps</div>
+                  <div class="acc-feature-chip">
+                    Wheelchair at Customer Care
+                  </div>
+                  <div class="acc-feature-chip">Station Escort on Request</div>
+                </div>
+              </div>
+
+              <!-- SECTION 4: GENERAL METRO HELPLINE & LOST/FOUND -->
+              <div class="helpline-card general-border">
+                <div class="helpline-card-header">
+                  <span class="helpline-icon"></span>
+                  <div class="helpline-header-text">
+                    <h3 class="helpline-card-title">
+                      General DMRC Customer Care
+                    </h3>
+                    <span class="helpline-card-sub"
+                      >Toll-Free Inquiries, Tokens & Lost Items</span
+                    >
+                  </div>
+                </div>
+                <div class="helpline-list">
+                  <div class="helpline-item">
+                    <div class="helpline-info">
+                      <span class="helpline-name"
+                        >DMRC Toll-Free Helpline (24x7)</span
+                      >
+                      <span class="helpline-number">155370</span>
+                    </div>
+                    <a href="tel:155370" class="call-btn btn-dark"
+                      >Call 155370</a
+                    >
+                  </div>
+
+                  <div class="helpline-item">
+                    <div class="helpline-info">
+                      <span class="helpline-name"
+                        >Lost & Found Office (Kashmere Gate)</span
+                      >
+                      <span class="helpline-number"
+                        >011-23417910 (Ext 14558)</span
+                      >
+                    </div>
+                    <a href="tel:01123417910" class="call-btn btn-dark"
+                      >Call Office</a
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
+          <!-- /tab-helplines -->
 
-          <div class="info-card">
-            <h3 class="info-card-title">📋 Official Resources</h3>
-            <ul class="info-list">
-              <li><a href="https://www.delhimetrorail.com" target="_blank" rel="noopener" class="info-link">delhimetrorail.com</a> — official DMRC website</li>
-              <li><a href="https://www.dmrcsmartcard.com/" target="_blank" rel="noopener" class="info-link">dmrcsmartcard.com</a> — official DMRC smart card recharge</li>
-              <li><strong>24x7 Helpline:</strong> 155370</li>
-              <li><strong>CISF Security Helpline:</strong> 155655</li>
-            </ul>
+          <!-- ── TAB 4: Info ────────────────────────── -->
+          <div id="content-info" class="tab-content">
+            <div class="sidebar-section info-tab-body">
+              <span class="sidebar-title">System Overview & Services</span>
+
+              <!-- METRO CARD RECHARGE CARD -->
+              <div class="info-card recharge-card">
+                <h3 class="info-card-title">Smart Card Recharge</h3>
+                <p class="info-card-body">
+                  Recharge your DMRC Metro Smart Card online directly on the
+                  official DMRC portal.
+                </p>
+                <div class="recharge-form-group">
+                  <label class="select-label" for="card-number-input"
+                    >Metro Card Engraved ID (8 to 12 digits)</label
+                  >
+                  <input
+                    type="text"
+                    id="card-number-input"
+                    class="search-input"
+                    placeholder="e.g. 12345678"
+                    maxlength="12"
+                  />
+
+                  <div class="amount-chips-group">
+                    <button
+                      type="button"
+                      class="amount-chip"
+                      onclick="setRechargeAmount(100, this)"
+                    >
+                      ₹100
+                    </button>
+                    <button
+                      type="button"
+                      class="amount-chip active"
+                      onclick="setRechargeAmount(200, this)"
+                    >
+                      ₹200
+                    </button>
+                    <button
+                      type="button"
+                      class="amount-chip"
+                      onclick="setRechargeAmount(500, this)"
+                    >
+                      ₹500
+                    </button>
+                    <button
+                      type="button"
+                      class="amount-chip"
+                      onclick="setRechargeAmount(1000, this)"
+                    >
+                      ₹1000
+                    </button>
+                  </div>
+
+                  <button
+                    type="button"
+                    class="plan-btn recharge-btn"
+                    onclick="redirectToDMRCRecharge()"
+                  >
+                    Smart Card Recharge ↗
+                  </button>
+                </div>
+                <p class="recharge-note">
+                  ℹ Directs to official DMRC portal
+                  (<code>dmrcsmartcard.com</code>). After payment, tap your card
+                  at AVM (Add Value Machine) at any station to complete top-up.
+                </p>
+              </div>
+
+              <div class="info-card">
+                <h3 class="info-card-title">ℹ Delhi Metro Guide</h3>
+                <p class="info-card-body">
+                  Delhi Metro is India's largest rapid transit system, operating
+                  across Delhi NCR with high frequency and accessibility
+                  features.
+                </p>
+                <ul class="info-list">
+                  <li>
+                    <strong>First Train:</strong> ~5:30 AM (Mon–Sat) / ~6:00 AM
+                    (Sun)
+                  </li>
+                  <li>
+                    <strong>Last Train:</strong> ~11:30 PM (Terminal departures)
+                  </li>
+                  <li>
+                    <strong>Token & Smart Card:</strong> Minimum fare ₹10,
+                    Maximum ₹60
+                  </li>
+                  <li>
+                    <strong>Peak Headways:</strong> 2 to 4 mins on major lines
+                  </li>
+                </ul>
+              </div>
+
+              <div class="info-card">
+                <h3 class="info-card-title">Official Resources</h3>
+                <ul class="info-list">
+                  <li>
+                    <a
+                      href="https://www.delhimetrorail.com"
+                      target="_blank"
+                      rel="noopener"
+                      class="info-link"
+                      >delhimetrorail.com</a
+                    >
+                    — official DMRC website
+                  </li>
+                  <li>
+                    <a
+                      href="https://www.dmrcsmartcard.com/"
+                      target="_blank"
+                      rel="noopener"
+                      class="info-link"
+                      >dmrcsmartcard.com</a
+                    >
+                    — official DMRC smart card recharge
+                  </li>
+                  <li><strong>24x7 Helpline:</strong> 155370</li>
+                  <li><strong>CISF Security Helpline:</strong> 155655</li>
+                </ul>
+              </div>
+            </div>
           </div>
-        </div>
+          <!-- /tab-info -->
+        </aside>
 
-      </div><!-- /tab-info -->
-
-    </aside>
-
-    <!-- ──────────────── MAP ──────────────── -->
-    <main class="map-container-wrapper">
-      <!-- Floating Route Focus Banner -->
-      <div id="route-focus-banner" class="route-focus-banner" style="display: none;">
-        <span class="focus-dot"></span>
-        <span id="route-focus-text">Journey Focus</span>
-        <button class="focus-reset-btn" onclick="resetMapToFullNetwork()">Show Full Network</button>
-      </div>
-
-      <div id="map"></div>
-
-      <!-- Station Detail Panel -->
-      <div id="details-panel" class="details-panel">
-        <div class="drawer-handle"></div>
-        <div class="details-header">
-          <div class="details-title-container">
-            <span id="station-subtitle" class="details-subtitle">DELHI METRO</span>
-            <h2 id="station-title" class="details-title">Station Info</h2>
-          </div>
-          <button id="close-details-btn" class="close-btn" onclick="closeDetailsPanel()">&times;</button>
-        </div>
-
-        <div class="details-content">
-          <div class="station-actions-card">
-            <button id="set-origin-btn" class="action-chip btn-origin" onclick="setOriginFromPanel()">
-              <i data-lucide="map-pin" style="width:13px;height:13px"></i> Set as Origin
+        <!-- ──────────────── MAP ──────────────── -->
+        <main
+          class="map-container-wrapper"
+          aria-label="Interactive Delhi Metro map"
+        >
+          <div class="map-heading">
+            <span><span class="stat-dot"></span> DELHI NCR</span
+            ><button
+              onclick="resetMapToFullNetwork()"
+              aria-label="Reset map view"
+            >
+              <i data-lucide="maximize"></i> Reset view
             </button>
-            <button id="set-dest-btn" class="action-chip btn-dest" onclick="setDestFromPanel()">
-              <i data-lucide="navigation-2" style="width:13px;height:13px"></i> Set as Destination
+          </div>
+          <!-- Floating Route Focus Banner -->
+          <div
+            id="route-focus-banner"
+            class="route-focus-banner"
+            style="display: none"
+          >
+            <span class="focus-dot"></span>
+            <span id="route-focus-text">Journey Focus</span>
+            <button class="focus-reset-btn" onclick="resetMapToFullNetwork()">
+              Show Full Network
             </button>
           </div>
 
-          <div>
-            <h3 class="details-section-title">First & Last Train Timings</h3>
-            <div id="last-train-list" class="last-train-list"></div>
+          <div
+            id="map"
+            aria-label="Metro network. Search for a station in the Network tab for keyboard access."
+          ></div>
+          <div class="map-caption">
+            <i data-lucide="mouse-pointer-2"></i> Select a station for timings
+            and exit information.<span>28.6139° N &nbsp; 77.2090° E</span>
           </div>
 
-          <div>
-            <h3 class="details-section-title">Station Guide & Exit Directory</h3>
-            <div id="station-meta-box" class="meta-card-box"></div>
+          <!-- Station Detail Panel -->
+          <div id="details-panel" class="details-panel">
+            <div class="drawer-handle"></div>
+            <div class="details-header">
+              <div class="details-title-container">
+                <span id="station-subtitle" class="details-subtitle"
+                  >DELHI METRO</span
+                >
+                <h2 id="station-title" class="details-title">Station Info</h2>
+              </div>
+              <button
+                id="close-details-btn"
+                aria-label="Close station details"
+                class="close-btn"
+                onclick="closeDetailsPanel()"
+              >
+                &times;
+              </button>
+            </div>
+
+            <div class="details-content">
+              <div class="station-actions-card">
+                <button
+                  id="set-origin-btn"
+                  class="action-chip btn-origin"
+                  onclick="setOriginFromPanel()"
+                >
+                  <i
+                    data-lucide="map-pin"
+                    style="width: 13px; height: 13px"
+                  ></i>
+                  Set as Origin
+                </button>
+                <button
+                  id="set-dest-btn"
+                  class="action-chip btn-dest"
+                  onclick="setDestFromPanel()"
+                >
+                  <i
+                    data-lucide="navigation-2"
+                    style="width: 13px; height: 13px"
+                  ></i>
+                  Set as Destination
+                </button>
+              </div>
+
+              <div>
+                <h3 class="details-section-title">
+                  First & Last Train Timings
+                </h3>
+                <div id="last-train-list" class="last-train-list"></div>
+              </div>
+
+              <div>
+                <h3 class="details-section-title">
+                  Station Guide & Exit Directory
+                </h3>
+                <div id="station-meta-box" class="meta-card-box"></div>
+              </div>
+            </div>
           </div>
-        </div>
+        </main>
       </div>
+      <!-- /app-container -->
 
-    </main>
+      <footer>
+        <a class="brand footer-brand" href="#"
+          >metro<span class="brand-period">.</span></a
+        >
+        <p>Delhi Metro Navigator</p>
+        <div>
+          <a
+            href="https://www.delhimetrorail.com"
+            target="_blank"
+            rel="noopener"
+            >Official DMRC ↗</a
+          ><a
+            href="https://github.com/WhiffGodd/Delhi-Metro-Navigator"
+            target="_blank"
+            rel="noopener"
+            >GitHub ↗</a
+          ><span>Independent route planner</span>
+        </div>
+      </footer>
+    </div>
+    <!-- /site-content -->
+    <script src="ui-enhancements.js"></script>
+    <!-- Scripts -->
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      let map,
+        selectedPref = "fastest",
+        stationsData = [],
+        selectedStation = null;
+      let stationMarkers = {},
+        linePolylines = [];
+      let routePolyline = null,
+        routeGlowPolyline = null;
+      let originMarker = null,
+        destMarker = null;
 
-  </div><!-- /app-container -->
+      const lineColors = {
+        "Yellow Line": "#FFD700",
+        "Blue Line": "#0085CA",
+        "Red Line": "#E31837",
+        "Violet Line": "#9400D3",
+        "Green Line": "#00A651",
+        "Pink Line": "#FF69B4",
+        "Magenta Line": "#C40380",
+        "Airport Express": "#F26522",
+        "Grey Line": "#9E9E9E",
+      };
 
-  <!-- Scripts -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js" crossorigin="anonymous"></script>
-  <script>
-    let map, selectedPref = 'fastest', stationsData = [], selectedStation = null;
-    let stationMarkers = {}, linePolylines = [];
-    let routePolyline = null, routeGlowPolyline = null;
-    let originMarker = null, destMarker = null;
-
-    const lineColors = {
-      "Yellow Line": "#FFD700",
-      "Blue Line": "#0085CA",
-      "Red Line": "#E31837",
-      "Violet Line": "#9400D3",
-      "Green Line": "#00A651",
-      "Pink Line": "#FF69B4",
-      "Magenta Line": "#C40380",
-      "Airport Express": "#F26522",
-      "Grey Line": "#9E9E9E"
-    };
-
-    document.addEventListener("DOMContentLoaded", () => {
-      if (window.lucide) lucide.createIcons();
-      initMap();
-      loadStationsFromJava();
-
-      document.getElementById('search-input').addEventListener('input', (e) => {
-        handleSearch(e.target.value);
-      });
-
-      document.getElementById('route-from').addEventListener('change', autoCheckAndHighlight);
-      document.getElementById('route-to').addEventListener('change', autoCheckAndHighlight);
-    });
-
-    function initMap() {
-      // Initialize Leaflet Map centered on Delhi NCR
-      map = L.map('map', { zoomControl: false }).setView([28.6139, 77.2090], 12);
-      L.control.zoom({ position: 'bottomleft' }).addTo(map);
-
-      // 100% FREE OpenStreetMap Tile Layer (NO API KEY REQUIRED)
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      }).addTo(map);
-    }
-
-    async function loadStationsFromJava() {
-      try {
-        const res = await fetch('/api/stations');
-        const data = await res.json();
-        if (data.success && data.stations) {
-          stationsData = data.stations;
-          const lineRoutes = data.lineRoutes || {};
-          populateDropdowns(stationsData);
-          renderAllMetroLinesOnMap(stationsData, lineRoutes);
-          renderHighlightedStationsOnMap(stationsData);
-          renderLinePills(stationsData);
-        }
-      } catch (err) {
-        console.warn('API fetch unavailable, checking static fallback:', err);
-      }
-    }
-
-    function populateDropdowns(stations) {
-      const fromSel = document.getElementById('route-from');
-      const toSel = document.getElementById('route-to');
-      fromSel.innerHTML = '<option value="">Select Origin Station...</option>';
-      toSel.innerHTML = '<option value="">Select Destination Station...</option>';
-
-      [...stations].sort((a,b) => a.name.localeCompare(b.name)).forEach(s => {
-        fromSel.innerHTML += `<option value="${s.id}">${s.name}</option>`;
-        toSel.innerHTML += `<option value="${s.id}">${s.name}</option>`;
-      });
-    }
-
-    // ─────────────────────────────────────────────
-    // 1. SHOW ALL METRO LINES ON THE MAP (EXACT TRACK ROUTES)
-    // ─────────────────────────────────────────────
-    function renderAllMetroLinesOnMap(stations, lineRoutes) {
-      // Clear existing line polylines
-      linePolylines.forEach(pl => map.removeLayer(pl));
-      linePolylines = [];
-
-      const stationMapById = {};
-      stations.forEach(s => { stationMapById[s.id] = s; });
-
-      if (lineRoutes && Object.keys(lineRoutes).length > 0) {
-        Object.keys(lineRoutes).forEach(lineName => {
-          const stationIds = lineRoutes[lineName];
-          const coords = stationIds.map(id => stationMapById[id]).filter(Boolean).map(s => [s.lat, s.lng]);
-          if (coords.length < 2) return;
-
-          const color = lineColors[lineName] || "#2563eb";
-
-          const polyline = L.polyline(coords, {
-            color: color,
-            weight: 5,
-            opacity: 0.85,
-            smoothFactor: 1
-          }).addTo(map);
-
-          polyline.bindTooltip(`<b>${lineName}</b>`, { sticky: true });
-          linePolylines.push(polyline);
+      document.addEventListener("DOMContentLoaded", () => {
+        if (window.lucide) lucide.createIcons();
+        switchTab("planner");
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape") closeDetailsPanel();
         });
-      }
-    }
+        initMagnificationDock();
+        try {
+          initMap();
+          loadStationsFromJava();
+        } catch (error) {
+          showStartupError(
+            "The map could not load. Check your connection and try again.",
+          );
+        }
 
-    // ─────────────────────────────────────────────
-    // 2. HIGHLIGHT ALL STATIONS ON THE MAP
-    // ─────────────────────────────────────────────
-    function renderHighlightedStationsOnMap(stations) {
-      stations.forEach(s => {
-        const primaryColor = lineColors[s.lines[0]] || "#2563eb";
-        const isHub = s.isInterchange;
-        
-        const size = isHub ? 14 : 11;
-        const iconHtml = `
+        document
+          .getElementById("search-input")
+          .addEventListener("input", (e) => {
+            handleSearch(e.target.value);
+          });
+
+        document
+          .getElementById("route-from")
+          .addEventListener("change", autoCheckAndHighlight);
+        document
+          .getElementById("route-to")
+          .addEventListener("change", autoCheckAndHighlight);
+      });
+
+      function initMap() {
+        // Initialize Leaflet Map centered on Delhi NCR
+        map = L.map("map", {
+          zoomControl: false,
+          zoomAnimation: !matchMedia("(prefers-reduced-motion: reduce)")
+            .matches,
+          fadeAnimation: !matchMedia("(prefers-reduced-motion: reduce)")
+            .matches,
+        }).setView([28.6139, 77.209], 12);
+        L.control.zoom({ position: "bottomleft" }).addTo(map);
+
+        // 100% FREE OpenStreetMap Tile Layer (NO API KEY REQUIRED)
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          maxZoom: 19,
+          className: "base-map-tiles",
+          attribution:
+            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        }).addTo(map);
+      }
+
+      async function loadStationsFromJava() {
+        try {
+          const res = await fetch("/api/stations", {
+            signal: AbortSignal.timeout(12000),
+          });
+          if (!res.ok) throw new Error("Station request failed");
+          const data = await res.json();
+          if (data.success && data.stations) {
+            stationsData = data.stations;
+            document.getElementById("network-status").innerHTML =
+              "" + stationsData.length + " stations loaded";
+            const lineRoutes = data.lineRoutes || {};
+            populateDropdowns(stationsData);
+            renderAllMetroLinesOnMap(stationsData, lineRoutes);
+            renderHighlightedStationsOnMap(stationsData);
+            renderLinePills(stationsData);
+            dismissStartup();
+          } else {
+            throw new Error("Invalid station data");
+          }
+        } catch (err) {
+          showStartupError(
+            "We couldn’t connect to the metro network. Please try again.",
+          );
+          document.getElementById("network-status").textContent =
+            "Network unavailable · Refresh to retry";
+          document.getElementById("planner-feedback").textContent =
+            "Unable to load stations. Please check your connection and refresh.";
+        }
+      }
+
+      function populateDropdowns(stations) {
+        const fromSel = document.getElementById("route-from");
+        const toSel = document.getElementById("route-to");
+        fromSel.innerHTML =
+          '<option value="">Select Origin Station...</option>';
+        toSel.innerHTML =
+          '<option value="">Select Destination Station...</option>';
+
+        [...stations]
+          .sort((a, b) => a.name.localeCompare(b.name))
+          .forEach((s) => {
+            fromSel.innerHTML += `<option value="${s.id}">${s.name}</option>`;
+            toSel.innerHTML += `<option value="${s.id}">${s.name}</option>`;
+          });
+      }
+
+      // ─────────────────────────────────────────────
+      // 1. SHOW ALL METRO LINES ON THE MAP (EXACT TRACK ROUTES)
+      // ─────────────────────────────────────────────
+      function renderAllMetroLinesOnMap(stations, lineRoutes) {
+        // Clear existing line polylines
+        linePolylines.forEach((pl) => map.removeLayer(pl));
+        linePolylines = [];
+
+        const stationMapById = {};
+        stations.forEach((s) => {
+          stationMapById[s.id] = s;
+        });
+
+        if (lineRoutes && Object.keys(lineRoutes).length > 0) {
+          Object.keys(lineRoutes).forEach((lineName) => {
+            const stationIds = lineRoutes[lineName];
+            const coords = stationIds
+              .map((id) => stationMapById[id])
+              .filter(Boolean)
+              .map((s) => [s.lat, s.lng]);
+            if (coords.length < 2) return;
+
+            const color = lineColors[lineName] || "#2563eb";
+
+            const polyline = L.polyline(coords, {
+              color: color,
+              weight: 5,
+              opacity: 0.85,
+              smoothFactor: 1,
+            }).addTo(map);
+
+            polyline.bindTooltip(`<b>${lineName}</b>`, { sticky: true });
+            linePolylines.push(polyline);
+          });
+        }
+      }
+
+      // ─────────────────────────────────────────────
+      // 2. HIGHLIGHT ALL STATIONS ON THE MAP
+      // ─────────────────────────────────────────────
+      function renderHighlightedStationsOnMap(stations) {
+        stations.forEach((s) => {
+          const primaryColor = lineColors[s.lines[0]] || "#2563eb";
+          const isHub = s.isInterchange;
+
+          const size = isHub ? 14 : 11;
+          const iconHtml = `
           <div class="station-highlight-marker" style="
             background: ${primaryColor};
             width: ${size}px;
             height: ${size}px;
             border-radius: 50%;
             border: 2px solid #ffffff;
-            box-shadow: 0 0 8px ${primaryColor}, 0 2px 5px rgba(0,0,0,0.4);
+
             cursor: pointer;
             transition: transform 0.2s ease;
           "></div>`;
 
-        const marker = L.marker([s.lat, s.lng], {
-          icon: L.divIcon({ html: iconHtml, className: 'custom-station-icon', iconSize: [size, size] })
-        }).addTo(map);
+          const marker = L.marker([s.lat, s.lng], {
+            title: s.name,
+            alt: s.name,
+            icon: L.divIcon({
+              html: iconHtml,
+              className: "custom-station-icon",
+              iconSize: [size, size],
+            }),
+          }).addTo(map);
 
-        const lineBadges = s.lines.map(l => 
-          `<span style="background:${lineColors[l]||'#333'};color:#fff;padding:2px 6px;border-radius:4px;font-size:10px;font-weight:700;margin-right:2px">${l}</span>`
-        ).join("");
+          const lineBadges = s.lines
+            .map(
+              (l) =>
+                `<span style="background:${lineColors[l] || "#333"};color:#fff;padding:2px 6px;border-radius:4px;font-size:14px;font-weight:700;margin-right:2px">${l}</span>`,
+            )
+            .join("");
 
-        marker.bindTooltip(`
-          <div style="font-weight:700;font-size:12px;margin-bottom:3px">${s.name} ${isHub ? '🔄' : ''}</div>
+          marker.bindTooltip(
+            `
+          <div style="font-weight:700;font-size:14px;margin-bottom:3px">${s.name} ${isHub ? "" : ""}</div>
           <div>${lineBadges}</div>
-        `, { direction: 'top', offset: [0, -6] });
+        `,
+            { direction: "top", offset: [0, -6] },
+          );
 
-        // 3. CLICK ON STATION -> SHOW DETAILS & EXITS
-        marker.on('click', () => openStationDetails(s));
-        stationMarkers[s.id] = marker;
-      });
-    }
-
-    function renderLinePills(stations) {
-      const pillsContainer = document.getElementById('line-pills');
-      const lines = [
-        { name: "Yellow Line", color: "#FFD700" },
-        { name: "Blue Line", color: "#0085CA" },
-        { name: "Red Line", color: "#E31837" },
-        { name: "Violet Line", color: "#9400D3" },
-        { name: "Green Line", color: "#00A651" },
-        { name: "Pink Line", color: "#FF69B4" },
-        { name: "Magenta Line", color: "#C40380" },
-        { name: "Airport Express", color: "#F26522" },
-        { name: "Grey Line", color: "#9E9E9E" }
-      ];
-
-      pillsContainer.innerHTML = lines.map(l => 
-        `<span class="line-pill" style="background:${l.color};color:#ffffff;padding:4px 10px;border-radius:12px;font-size:11px;font-weight:700;display:inline-block;margin:3px">${l.name}</span>`
-      ).join("");
-    }
-
-    function handleSearch(query) {
-      const resultsDiv = document.getElementById('search-results');
-      if (!query || query.trim().length < 2) {
-        resultsDiv.style.display = 'none';
-        return;
+          // 3. CLICK ON STATION -> SHOW DETAILS & EXITS
+          marker.on("click", () => openStationDetails(s));
+          stationMarkers[s.id] = marker;
+        });
       }
-      const q = query.toLowerCase().trim();
-      const matches = stationsData.filter(s => s.name.toLowerCase().includes(q)).slice(0, 6);
 
-      if (!matches.length) {
-        resultsDiv.innerHTML = '<div style="padding:8px;font-size:12px;color:#64748b">No stations found</div>';
-      } else {
-        resultsDiv.innerHTML = matches.map(s => 
-          `<div class="search-result-item" onclick="selectSearchStation('${s.id}')" style="padding:8px;cursor:pointer;font-size:13px;border-bottom:1px solid #f1f5f9">
-            <strong>${s.name}</strong> <span style="font-size:11px;color:#64748b">(${s.lines.join(", ")})</span>
-          </div>`
-        ).join("");
+      function renderLinePills(stations) {
+        const pillsContainer = document.getElementById("line-pills");
+        const lines = [
+          { name: "Yellow Line", color: "#FFD700" },
+          { name: "Blue Line", color: "#0085CA" },
+          { name: "Red Line", color: "#E31837" },
+          { name: "Violet Line", color: "#9400D3" },
+          { name: "Green Line", color: "#00A651" },
+          { name: "Pink Line", color: "#FF69B4" },
+          { name: "Magenta Line", color: "#C40380" },
+          { name: "Airport Express", color: "#F26522" },
+          { name: "Grey Line", color: "#9E9E9E" },
+        ];
+
+        pillsContainer.innerHTML = lines
+          .map(
+            (l) =>
+              `<span class="line-pill" style="--line-color:${l.color};background:${l.color};color:#ffffff;padding:4px 10px;border-radius:12px;font-size:14px;font-weight:700;display:inline-block;margin:3px">${l.name}</span>`,
+          )
+          .join("");
       }
-      resultsDiv.style.display = 'block';
-    }
 
-    function selectSearchStation(id) {
-      document.getElementById('search-results').style.display = 'none';
-      const station = stationsData.find(s => s.id === id);
-      if (station) {
-        map.flyTo([station.lat, station.lng], 15);
-        openStationDetails(station);
+      function handleSearch(query) {
+        const resultsDiv = document.getElementById("search-results");
+        if (!query || query.trim().length < 2) {
+          resultsDiv.style.display = "none";
+          return;
+        }
+        const q = query.toLowerCase().trim();
+        const matches = stationsData
+          .filter((s) => s.name.toLowerCase().includes(q))
+          .slice(0, 6);
+
+        if (!matches.length) {
+          resultsDiv.innerHTML =
+            '<div style="padding:8px;font-size:14px;color:#64748b">No stations found</div>';
+        } else {
+          resultsDiv.innerHTML = matches
+            .map(
+              (s) =>
+                `<button type="button" class="search-result-item" onclick="selectSearchStation('${s.id}')" style="padding:8px;cursor:pointer;font-size:14px;border-bottom:1px solid #f1f5f9">
+            <strong>${s.name}</strong> <span style="font-size:14px;color:#64748b">(${s.lines.join(", ")})</span>
+          </button>`,
+            )
+            .join("");
+        }
+        resultsDiv.style.display = "block";
       }
-    }
 
-    // ─────────────────────────────────────────────
-    // 3. STATION CLICK -> SHOW DETAILS & AI EXIT GATES
-    // ─────────────────────────────────────────────
-    function openStationDetails(s) {
-      selectedStation = s;
-      document.getElementById('station-title').innerText = s.name;
-      document.getElementById('station-subtitle').innerText = s.lines.join(" • ");
-      
-      document.getElementById('last-train-list').innerHTML = `
+      function selectSearchStation(id) {
+        document.getElementById("search-results").style.display = "none";
+        const station = stationsData.find((s) => s.id === id);
+        if (station) {
+          map.flyTo([station.lat, station.lng], 15, {
+            animate: !matchMedia("(prefers-reduced-motion: reduce)").matches,
+          });
+          openStationDetails(station);
+        }
+      }
+
+      // ─────────────────────────────────────────────
+      // 3. STATION CLICK -> SHOW DETAILS & AI EXIT GATES
+      // ─────────────────────────────────────────────
+      function openStationDetails(s) {
+        document.getElementById("station-meta-box").textContent =
+          "Loading station guide…";
+        selectedStation = s;
+        document.getElementById("station-title").innerText = s.name;
+        document.getElementById("station-subtitle").innerText =
+          s.lines.join(" • ");
+
+        document.getElementById("last-train-list").innerHTML = `
         <div class="last-train-card">
-          <div class="last-train-header">⏰ Operating Hours</div>
-          <div class="last-train-row">First Train: <strong>${s.firstTrain} AM</strong></div>
-          <div class="last-train-row">Last Train: <strong>${s.lastTrain} PM</strong></div>
+          <div class="last-train-header"> Operating Hours</div>
+          <div class="last-train-row">First Train: <strong>${s.firstTrain}</strong></div>
+          <div class="last-train-row">Last Train: <strong>${s.lastTrain}</strong></div>
         </div>`;
 
-      // Fetch Exit Gate recommendations from Backend
-      fetch(`/api/exit-recommendation?station=${s.id}`)
-        .then(res => res.json())
-        .then(data => {
-          const exitAi = data.exitAi;
-          let gatesHtml = "";
-          
-          if (exitAi && exitAi.allGates && exitAi.allGates.length) {
-            gatesHtml = exitAi.allGates.map(g => `
-              <div class="gate-detail-card ${g.gate === exitAi.bestGate ? 'best-gate-card' : ''}">
+        // Fetch Exit Gate recommendations from Backend
+        fetch(`/api/exit-recommendation?station=${s.id}`)
+          .then((res) => res.json())
+          .then((data) => {
+            if (selectedStation?.id !== s.id) return;
+            const exitAi = data.exitAi;
+            let gatesHtml = "";
+
+            if (exitAi && exitAi.allGates && exitAi.allGates.length) {
+              gatesHtml = exitAi.allGates
+                .map(
+                  (g) => `
+              <div class="gate-detail-card ${g.gate === exitAi.bestGate ? "best-gate-card" : ""}">
                 <div class="gate-card-header">
                   <span class="gate-tag">${g.gate}</span>
-                  ${g.gate === exitAi.bestGate ? '<span class="ai-best-chip" style="background:#e0f2fe;color:#0369a1;font-weight:600">⭐ Recommended Exit</span>' : ''}
+                  ${g.gate === exitAi.bestGate ? '<span class="ai-best-chip" style="background:#e0f2fe;color:#0369a1;font-weight:600"> Recommended Exit</span>' : ""}
                 </div>
-                <div class="gate-landmark-title">📍 ${g.landmark}</div>
-                <div class="gate-reason-text" style="font-size:12px;color:#334155;margin-top:2px">💡 ${g.reason}</div>
-                <div class="gate-features-row" style="margin-top:5px;font-size:11px;color:#64748b;display:flex;gap:12px">
-                  <span>⏱️ ~${g.walkMins} min walk to street</span>
-                  <span>🛗 ${g.lift ? 'Lifts Available' : 'Escalators Available'}</span>
+                <div class="gate-landmark-title"> ${g.landmark}</div>
+                <div class="gate-reason-text" style="font-size:14px;color:#334155;margin-top:2px"> ${g.reason}</div>
+                <div class="gate-features-row" style="margin-top:5px;font-size:14px;color:#64748b;display:flex;gap:12px">
+                  <span> ~${g.walkMins} min walk to street</span>
+                  <span> ${g.lift ? "Lifts Available" : "Escalators Available"}</span>
                 </div>
-              </div>`).join("");
-          } else {
-            gatesHtml = `
+              </div>`,
+                )
+                .join("");
+            } else {
+              gatesHtml = `
               <div class="gate-detail-card best-gate-card">
                 <div class="gate-card-header">
                   <span class="gate-tag">Gate 1</span>
-                  <span class="ai-best-chip" style="background:#e0f2fe;color:#0369a1;font-weight:600">⭐ Main Street Exit</span>
+                  <span class="ai-best-chip" style="background:#e0f2fe;color:#0369a1;font-weight:600"> Main Street Exit</span>
                 </div>
-                <div class="gate-landmark-title">📍 Ground Level Main Concourse Exit</div>
-                <div class="gate-reason-text" style="font-size:12px;color:#334155;margin-top:2px">💡 Direct ramp access to main road with auto & feeder bus stands.</div>
+                <div class="gate-landmark-title"> Ground Level Main Concourse Exit</div>
+                <div class="gate-reason-text" style="font-size:14px;color:#334155;margin-top:2px"> Direct ramp access to main road with auto & feeder bus stands.</div>
               </div>`;
-          }
+            }
 
-          document.getElementById('station-meta-box').innerHTML = `
-            <div class="meta-row"><span class="meta-label">Station Type:</span> <span class="meta-val">${s.isInterchange ? '🔄 Interchange Station (Direct Line Transfer)' : '🚉 Regular Metro Station (Platform Level Boarding)'}</span></div>
+            document.getElementById("station-meta-box").innerHTML = `
+            <div class="meta-row"><span class="meta-label">Station Type:</span> <span class="meta-val">${s.isInterchange ? " Interchange Station (Direct Line Transfer)" : " Regular Metro Station (Platform Level Boarding)"}</span></div>
             <div class="meta-row"><span class="meta-label">Lines Connected:</span> <span class="meta-val">${s.lines.join(", ")}</span></div>
             <div style="margin-top:10px;padding-top:10px;border-top:1px solid #e2e8f0">
-              <span class="meta-label" style="display:block;margin-bottom:8px;font-weight:700;color:var(--text-primary)">🚪 Station Exits & Street Landmarks:</span>
+              <span class="meta-label" style="display:block;margin-bottom:8px;font-weight:700;color:var(--text-primary)"> Station Exits & Street Landmarks:</span>
               <div class="gates-explanation-container">${gatesHtml}</div>
             </div>`;
+          })
+          .catch(() => {
+            if (selectedStation?.id === s.id)
+              document.getElementById("station-meta-box").textContent =
+                "Station guide unavailable. Please select the station again to retry.";
+          });
+
+        document.getElementById("details-panel").classList.add("active");
+      }
+
+      function closeDetailsPanel() {
+        document.getElementById("details-panel").classList.remove("active");
+      }
+
+      function switchTab(tab) {
+        document.getElementById("tool-title").textContent = {
+          network: "Find a station",
+          planner: "Plan a route",
+          helplines: "Helplines",
+          info: "Travel information",
+        }[tab];
+        ["network", "planner", "helplines", "info"].forEach((t) => {
+          const btn = document.getElementById(`tab-${t}`);
+          const cnt = document.getElementById(`content-${t}`);
+          if (btn) {
+            btn.classList.toggle("active", t === tab);
+            btn.setAttribute("role", "tab");
+            btn.tabIndex = t === tab ? 0 : -1;
+            btn.setAttribute("aria-selected", t === tab);
+            btn.setAttribute("aria-controls", "content-" + t);
+          }
+          if (cnt) {
+            cnt.classList.toggle("active", t === tab);
+            cnt.setAttribute("role", "tabpanel");
+            cnt.setAttribute("aria-labelledby", "tab-" + t);
+          }
         });
-
-      document.getElementById('details-panel').classList.add('active');
-    }
-
-    function closeDetailsPanel() {
-      document.getElementById('details-panel').classList.remove('active');
-    }
-
-    function switchTab(tab) {
-      ['network','planner','helplines','info'].forEach(t => {
-        const btn = document.getElementById(`tab-${t}`);
-        const cnt = document.getElementById(`content-${t}`);
-        if (btn) btn.classList.toggle('active', t === tab);
-        if (cnt) cnt.classList.toggle('active', t === tab);
-      });
-    }
-
-    function setPreference(pref) {
-      selectedPref = pref;
-      document.getElementById('pref-fastest').classList.toggle('active', pref === 'fastest');
-      document.getElementById('pref-interchanges').classList.toggle('active', pref === 'fewest_interchanges');
-    }
-
-    function autoCheckAndHighlight() {
-      const from = document.getElementById('route-from').value;
-      const to = document.getElementById('route-to').value;
-      if (from && to && from !== to) {
-        calculateTrip();
-      } else if (!from && !to) {
-        resetMapToFullNetwork();
       }
-    }
 
-    function swapStations() {
-      const fromSel = document.getElementById('route-from');
-      const toSel = document.getElementById('route-to');
-      const tmp = fromSel.value;
-      fromSel.value = toSel.value;
-      toSel.value = tmp;
-      autoCheckAndHighlight();
-    }
-
-    function setOriginFromPanel() {
-      if (selectedStation) {
-        document.getElementById('route-from').value = selectedStation.id;
-        switchTab('planner');
-        autoCheckAndHighlight();
+      function setPreference(pref) {
+        selectedPref = pref;
+        document
+          .getElementById("pref-fastest")
+          .classList.toggle("active", pref === "fastest");
+        document
+          .getElementById("pref-interchanges")
+          .classList.toggle("active", pref === "fewest_interchanges");
       }
-    }
 
-    function setDestFromPanel() {
-      if (selectedStation) {
-        document.getElementById('route-to').value = selectedStation.id;
-        switchTab('planner');
-        autoCheckAndHighlight();
-      }
-    }
-
-    async function calculateTrip() {
-      const from = document.getElementById('route-from').value;
-      const to = document.getElementById('route-to').value;
-      if (!from || !to) { alert('Please select both origin and destination stations.'); return; }
-      if (from === to) { alert('Origin and destination must be different.'); return; }
-
-      const btn = document.getElementById('plan-trip-btn');
-      btn.disabled = true;
-      btn.innerHTML = '<span class="spinner"></span> Finding best connection...';
-
-      try {
-        const res = await fetch(`/api/route?from=${from}&to=${to}&pref=${selectedPref}`);
-        const data = await res.json();
-        btn.disabled = false;
-        btn.innerHTML = 'Find Best Route';
-
-        if (data.success && data.route) {
-          renderRouteResults(data.route);
+      function autoCheckAndHighlight() {
+        const from = document.getElementById("route-from").value;
+        const to = document.getElementById("route-to").value;
+        if (from && to && from !== to) {
+          calculateTrip();
+        } else if (!from && !to) {
+          resetMapToFullNetwork();
         }
-      } catch (err) {
-        btn.disabled = false;
-        btn.innerHTML = 'Find Best Route';
-        console.error('Error calculating route:', err);
-      }
-    }
-
-    function renderRouteResults(r) {
-      const c = document.getElementById('route-results-container');
-      c.style.display = 'flex';
-
-      let transitBadges = "";
-      if (r.exitAi && r.exitAi.transitOptions) {
-        transitBadges = r.exitAi.transitOptions.map(t => `<span class="transit-chip">🚗 ${t}</span>`).join(" ");
       }
 
-      c.innerHTML = `
+      function swapStations() {
+        const fromSel = document.getElementById("route-from");
+        const toSel = document.getElementById("route-to");
+        const tmp = fromSel.value;
+        fromSel.value = toSel.value;
+        toSel.value = tmp;
+        autoCheckAndHighlight();
+      }
+
+      function setOriginFromPanel() {
+        if (selectedStation) {
+          document.getElementById("route-from").value = selectedStation.id;
+          switchTab("planner");
+          autoCheckAndHighlight();
+        }
+      }
+
+      function setDestFromPanel() {
+        if (selectedStation) {
+          document.getElementById("route-to").value = selectedStation.id;
+          switchTab("planner");
+          autoCheckAndHighlight();
+        }
+      }
+
+      async function calculateTrip() {
+        const from = document.getElementById("route-from").value;
+        const to = document.getElementById("route-to").value;
+        if (!from || !to) {
+          document.getElementById("planner-feedback").textContent =
+            "Choose a starting station and a destination to continue.";
+          return;
+        }
+        if (from === to) {
+          document.getElementById("planner-feedback").textContent =
+            "Choose two different stations for your journey.";
+          return;
+        }
+        document.getElementById("planner-feedback").textContent = "";
+
+        const btn = document.getElementById("plan-trip-btn");
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner"></span> Calculating route…';
+
+        try {
+          const res = await fetch(
+            `/api/route?from=${from}&to=${to}&pref=${selectedPref}`,
+          );
+          const data = await res.json();
+          btn.disabled = false;
+          btn.innerHTML = 'Find route <span aria-hidden="true">↗</span>';
+
+          if (data.success && data.route) {
+            renderRouteResults(data.route);
+          } else {
+            document.getElementById("planner-feedback").textContent =
+              data.error || "No route found. Please try another journey.";
+          }
+        } catch (err) {
+          btn.disabled = false;
+          btn.innerHTML = 'Find route <span aria-hidden="true">↗</span>';
+          document.getElementById("planner-feedback").textContent =
+            "We couldn’t find your route. Please try again.";
+        }
+      }
+
+      function renderRouteResults(r) {
+        const c = document.getElementById("route-results-container");
+        c.style.display = "flex";
+
+        let transitBadges = "";
+        if (r.exitAi && r.exitAi.transitOptions) {
+          transitBadges = r.exitAi.transitOptions
+            .map((t) => `<span class="transit-chip"> ${t}</span>`)
+            .join(" ");
+        }
+
+        c.innerHTML = `
         <div class="route-summary-card">
           <div class="route-metric"><span class="route-metric-val">~${r.totalTimeMins} mins</span><span class="route-metric-label">Travel Time</span></div>
           <div class="route-metric"><span class="route-metric-val">₹${r.fare}</span><span class="route-metric-label">Single Fare</span></div>
@@ -757,161 +1244,210 @@
 
         <div class="smart-assistant-card exit-ai-card" style="background:#f8fafc;border:1px solid #e2e8f0">
           <div class="assistant-card-header">
-            <span class="assistant-card-title" style="font-weight:700">🚶 Recommended Exit & Commuter Advice</span>
-            <span class="exit-gate-highlight-badge" style="background:#2563eb;color:#fff">⭐ Recommended: ${r.exitAi ? r.exitAi.bestGate : 'Gate 1'}</span>
+            <span class="assistant-card-title" style="font-weight:700"> Arrival information</span>
+            <span class="exit-gate-highlight-badge" style="background:#2563eb;color:#fff"> Recommended: ${r.exitAi ? r.exitAi.bestGate : "Gate 1"}</span>
           </div>
           <div class="exit-reasoning-box">
-            <div class="reasoning-text" style="font-size:13px;color:#1e293b;line-height:1.4">💡 ${r.exitAi ? r.exitAi.reason : 'Direct street exit with fast auto connectivity.'}</div>
-            <div class="exit-metrics-row" style="margin-top:6px;font-size:12px;color:#64748b">
-              <span>⏱️ Quickest exit (~${r.exitAi ? r.exitAi.savedMins : 3} mins faster)</span>
-              <span>🛗 ${r.exitAi && r.exitAi.lift ? 'Step-Free Elevator Access' : 'Escalators Available'}</span>
+            <div class="reasoning-text" style="font-size:14px;color:#1e293b;line-height:1.4"> ${r.exitAi ? r.exitAi.reason : "Direct street exit with fast auto connectivity."}</div>
+            <div class="exit-metrics-row" style="margin-top:6px;font-size:14px;color:#64748b">
+              <span> Quickest exit (~${r.exitAi ? r.exitAi.savedMins : 3} mins faster)</span>
+              <span> ${r.exitAi && r.exitAi.lift ? "Step-Free Elevator Access" : "Escalators Available"}</span>
             </div>
             <div style="margin-top:8px">${transitBadges}</div>
-            <div style="margin-top:8px;padding-top:8px;border-top:1px dashed #cbd5e1;font-size:11px;color:#475569">
-              🤝 <strong>Commuter Tip:</strong> Board near middle coaches (Coaches 3-4) for the shortest walk to exit stairs/lifts at ${r.destName}.
+            <div style="margin-top:8px;padding-top:8px;border-top:1px dashed #cbd5e1;font-size:14px;color:#475569">
+               <strong>Commuter Tip:</strong> Board near middle coaches (Coaches 3-4) for the shortest walk to exit stairs/lifts at ${r.destName}.
             </div>
           </div>
         </div>`;
 
-      // ─────────────────────────────────────────────────────────────
-      // HIGHLIGHT ONLY SELECTED ROUTE ON THE MAP & DIM BACKGROUND
-      // ─────────────────────────────────────────────────────────────
-      if (r.pathStationIds && r.pathStationIds.length > 0) {
-        // 1. Dim all regular metro network lines
-        linePolylines.forEach(pl => {
-          pl.setStyle({ opacity: 0.12, weight: 2.5 });
-        });
-
-        // 2. Dim all non-route stations, emphasize route stations
-        const onRouteSet = new Set(r.pathStationIds);
-        Object.keys(stationMarkers).forEach(id => {
-          const marker = stationMarkers[id];
-          const el = marker.getElement();
-          if (el) {
-            if (onRouteSet.has(id)) {
-              el.classList.add('station-marker-active-route');
-              el.classList.remove('station-marker-dimmed');
-            } else {
-              el.classList.remove('station-marker-active-route');
-              el.classList.add('station-marker-dimmed');
-            }
-          }
-        });
-
-        // 3. Clear previous route line and endpoints
-        if (routeGlowPolyline) { map.removeLayer(routeGlowPolyline); routeGlowPolyline = null; }
-        if (routePolyline) { map.removeLayer(routePolyline); routePolyline = null; }
-        if (originMarker) { map.removeLayer(originMarker); originMarker = null; }
-        if (destMarker) { map.removeLayer(destMarker); destMarker = null; }
-
-        const pathStations = r.pathStationIds.map(id => stationsData.find(st => st.id === id)).filter(Boolean);
-        const pathCoords = pathStations.map(s => [s.lat, s.lng]);
-
-        if (pathCoords.length >= 2) {
-          // Glow layer underneath route polyline
-          routeGlowPolyline = L.polyline(pathCoords, {
-            color: '#38bdf8',
-            weight: 12,
-            opacity: 0.45,
-            lineCap: 'round',
-            lineJoin: 'round'
-          }).addTo(map);
-
-          // Vibrant core polyline
-          routePolyline = L.polyline(pathCoords, {
-            color: '#2563eb',
-            weight: 6,
-            opacity: 1.0,
-            lineCap: 'round',
-            lineJoin: 'round'
-          }).addTo(map);
-
-          // Origin custom badge marker
-          const originStation = pathStations[0];
-          const originHtml = `
-            <div class="route-endpoint-marker">
-              <div class="route-endpoint-pill origin-pill">🚩 START: ${originStation.name}</div>
-              <div class="route-endpoint-dot origin-dot"></div>
-            </div>`;
-          originMarker = L.marker([originStation.lat, originStation.lng], {
-            icon: L.divIcon({ html: originHtml, className: 'endpoint-div-icon', iconSize: [140, 40], iconAnchor: [70, 36] }),
-            zIndexOffset: 1000
-          }).addTo(map);
-          originMarker.on('click', () => openStationDetails(originStation));
-
-          // Destination custom badge marker
-          const destStation = pathStations[pathStations.length - 1];
-          const destHtml = `
-            <div class="route-endpoint-marker">
-              <div class="route-endpoint-pill dest-pill">🏁 ARRIVE: ${destStation.name}</div>
-              <div class="route-endpoint-dot dest-dot"></div>
-            </div>`;
-          destMarker = L.marker([destStation.lat, destStation.lng], {
-            icon: L.divIcon({ html: destHtml, className: 'endpoint-div-icon', iconSize: [140, 40], iconAnchor: [70, 36] }),
-            zIndexOffset: 1000
-          }).addTo(map);
-          destMarker.on('click', () => openStationDetails(destStation));
-
-          // 4. Smooth camera fit around the chosen journey only
-          map.fitBounds(routePolyline.getBounds(), {
-            padding: [70, 70],
-            maxZoom: 15,
-            animate: true,
-            duration: 0.8
+        // ─────────────────────────────────────────────────────────────
+        // HIGHLIGHT ONLY SELECTED ROUTE ON THE MAP & DIM BACKGROUND
+        // ─────────────────────────────────────────────────────────────
+        if (r.pathStationIds && r.pathStationIds.length > 0) {
+          // 1. Dim all regular metro network lines
+          linePolylines.forEach((pl) => {
+            pl.setStyle({ opacity: 0.12, weight: 2.5 });
           });
 
-          // 5. Update and show floating Route Focus Banner
-          const banner = document.getElementById('route-focus-banner');
-          const bannerText = document.getElementById('route-focus-text');
-          if (banner && bannerText) {
-            bannerText.innerHTML = `<strong>${originStation.name}</strong> ➔ <strong>${destStation.name}</strong> (~${r.totalTimeMins} mins)`;
-            banner.style.display = 'flex';
+          // 2. Dim all non-route stations, emphasize route stations
+          const onRouteSet = new Set(r.pathStationIds);
+          Object.keys(stationMarkers).forEach((id) => {
+            const marker = stationMarkers[id];
+            const el = marker.getElement();
+            if (el) {
+              if (onRouteSet.has(id)) {
+                el.classList.add("station-marker-active-route");
+                el.classList.remove("station-marker-dimmed");
+              } else {
+                el.classList.remove("station-marker-active-route");
+                el.classList.add("station-marker-dimmed");
+              }
+            }
+          });
+
+          // 3. Clear previous route line and endpoints
+          if (routeGlowPolyline) {
+            map.removeLayer(routeGlowPolyline);
+            routeGlowPolyline = null;
+          }
+          if (routePolyline) {
+            map.removeLayer(routePolyline);
+            routePolyline = null;
+          }
+          if (originMarker) {
+            map.removeLayer(originMarker);
+            originMarker = null;
+          }
+          if (destMarker) {
+            map.removeLayer(destMarker);
+            destMarker = null;
+          }
+
+          const pathStations = r.pathStationIds
+            .map((id) => stationsData.find((st) => st.id === id))
+            .filter(Boolean);
+          const pathCoords = pathStations.map((s) => [s.lat, s.lng]);
+
+          if (pathCoords.length >= 2) {
+            // Glow layer underneath route polyline
+            routeGlowPolyline = L.polyline(pathCoords, {
+              color: "#a78b71",
+              weight: 12,
+              opacity: 0.45,
+              lineCap: "round",
+              lineJoin: "round",
+            }).addTo(map);
+
+            // Vibrant core polyline
+            routePolyline = L.polyline(pathCoords, {
+              color: "#e8d5b7",
+              weight: 6,
+              opacity: 1.0,
+              lineCap: "round",
+              lineJoin: "round",
+            }).addTo(map);
+
+            // Origin custom badge marker
+            const originStation = pathStations[0];
+            const originHtml = `
+            <div class="route-endpoint-marker">
+              <div class="route-endpoint-pill origin-pill"> START: ${originStation.name}</div>
+              <div class="route-endpoint-dot origin-dot"></div>
+            </div>`;
+            originMarker = L.marker([originStation.lat, originStation.lng], {
+              icon: L.divIcon({
+                html: originHtml,
+                className: "endpoint-div-icon",
+                iconSize: [140, 40],
+                iconAnchor: [70, 36],
+              }),
+              zIndexOffset: 1000,
+            }).addTo(map);
+            originMarker.on("click", () => openStationDetails(originStation));
+
+            // Destination custom badge marker
+            const destStation = pathStations[pathStations.length - 1];
+            const destHtml = `
+            <div class="route-endpoint-marker">
+              <div class="route-endpoint-pill dest-pill"> ARRIVE: ${destStation.name}</div>
+              <div class="route-endpoint-dot dest-dot"></div>
+            </div>`;
+            destMarker = L.marker([destStation.lat, destStation.lng], {
+              icon: L.divIcon({
+                html: destHtml,
+                className: "endpoint-div-icon",
+                iconSize: [140, 40],
+                iconAnchor: [70, 36],
+              }),
+              zIndexOffset: 1000,
+            }).addTo(map);
+            destMarker.on("click", () => openStationDetails(destStation));
+
+            // 4. Smooth camera fit around the chosen journey only
+            map.fitBounds(routePolyline.getBounds(), {
+              padding: [70, 70],
+              maxZoom: 15,
+              animate: !matchMedia("(prefers-reduced-motion: reduce)").matches,
+              duration: 0.8,
+            });
+
+            // 5. Update and show floating Route Focus Banner
+            const banner = document.getElementById("route-focus-banner");
+            const bannerText = document.getElementById("route-focus-text");
+            if (banner && bannerText) {
+              bannerText.innerHTML = `<strong>${originStation.name}</strong> → <strong>${destStation.name}</strong> (~${r.totalTimeMins} mins)`;
+              banner.style.display = "flex";
+            }
           }
         }
       }
-    }
 
-    function resetMapToFullNetwork() {
-      // 1. Restore all line polylines to normal styling
-      linePolylines.forEach(pl => {
-        pl.setStyle({ opacity: 0.85, weight: 5 });
-      });
+      function resetMapToFullNetwork() {
+        // 1. Restore all line polylines to normal styling
+        linePolylines.forEach((pl) => {
+          pl.setStyle({ opacity: 0.85, weight: 5 });
+        });
 
-      // 2. Restore all station markers
-      Object.keys(stationMarkers).forEach(id => {
-        const marker = stationMarkers[id];
-        const el = marker.getElement();
-        if (el) {
-          el.classList.remove('station-marker-active-route');
-          el.classList.remove('station-marker-dimmed');
+        // 2. Restore all station markers
+        Object.keys(stationMarkers).forEach((id) => {
+          const marker = stationMarkers[id];
+          const el = marker.getElement();
+          if (el) {
+            el.classList.remove("station-marker-active-route");
+            el.classList.remove("station-marker-dimmed");
+          }
+        });
+
+        // 3. Remove route layers and endpoint pins
+        if (routeGlowPolyline) {
+          map.removeLayer(routeGlowPolyline);
+          routeGlowPolyline = null;
         }
-      });
+        if (routePolyline) {
+          map.removeLayer(routePolyline);
+          routePolyline = null;
+        }
+        if (originMarker) {
+          map.removeLayer(originMarker);
+          originMarker = null;
+        }
+        if (destMarker) {
+          map.removeLayer(destMarker);
+          destMarker = null;
+        }
 
-      // 3. Remove route layers and endpoint pins
-      if (routeGlowPolyline) { map.removeLayer(routeGlowPolyline); routeGlowPolyline = null; }
-      if (routePolyline) { map.removeLayer(routePolyline); routePolyline = null; }
-      if (originMarker) { map.removeLayer(originMarker); originMarker = null; }
-      if (destMarker) { map.removeLayer(destMarker); destMarker = null; }
+        // 4. Hide focus banner
+        const banner = document.getElementById("route-focus-banner");
+        if (banner) banner.style.display = "none";
 
-      // 4. Hide focus banner
-      const banner = document.getElementById('route-focus-banner');
-      if (banner) banner.style.display = 'none';
+        // 5. Center back smoothly to whole Delhi NCR view
+        map.setView([28.6139, 77.209], 12);
+      }
 
-      // 5. Center back smoothly to whole Delhi NCR view
-      map.setView([28.6139, 77.2090], 12);
-    }
+      function openTool(tab) {
+        switchTab(tab);
+        document.getElementById("workspace").scrollIntoView({
+          behavior: matchMedia("(prefers-reduced-motion: reduce)").matches
+            ? "instant"
+            : "smooth",
+        });
+      }
 
-    function setRechargeAmount(amt, el) {
-      document.querySelectorAll('.amount-chip').forEach(c => c.classList.remove('active'));
-      if (el) el.classList.add('active');
-    }
+      function setRechargeAmount(amt, el) {
+        document
+          .querySelectorAll(".amount-chip")
+          .forEach((c) => c.classList.remove("active"));
+        if (el) el.classList.add("active");
+      }
 
-    function redirectToDMRCRecharge() {
-      const cardNum = document.getElementById('card-number-input').value.trim();
-      let url = "https://www.dmrcsmartcard.com/";
-      if (cardNum) url += `?card_no=${encodeURIComponent(cardNum)}`;
-      window.open(url, "_blank", "noopener,noreferrer");
-    }
-  </script>
-</body>
+      function redirectToDMRCRecharge() {
+        const cardNum = document
+          .getElementById("card-number-input")
+          .value.trim();
+        let url = "https://www.dmrcsmartcard.com/";
+        if (cardNum) url += `?card_no=${encodeURIComponent(cardNum)}`;
+        window.open(url, "_blank", "noopener,noreferrer");
+      }
+    </script>
+  </body>
 </html>
