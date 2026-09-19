@@ -1285,19 +1285,44 @@
 
       function enrichFallbackLegs(pathIds, roadmap) {
         if (!roadmap || !roadmap.length) return [];
-        const first = roadmap[0];
-        const last = roadmap[roadmap.length - 1];
-        return [
-          {
-            legNumber: 1,
-            lineName: first.currentLine || "Delhi Metro",
-            fromStationName: first.stationName,
-            toStationName: last.stationName,
-            direction: "",
-            stopsCount: roadmap.length - 1,
-            durationMins: Math.max(2, Math.round((roadmap.length - 1) * 2.3)),
-          },
-        ];
+        const legs = [];
+        let currentLeg = null;
+        let legNum = 1;
+
+        roadmap.forEach((step, idx) => {
+          if (!currentLeg || step.currentLine !== currentLeg.lineName) {
+            if (currentLeg) {
+              currentLeg.toStationName = roadmap[idx - 1].stationName;
+              currentLeg.toStationId = roadmap[idx - 1].stationId;
+              legs.push(currentLeg);
+              legNum++;
+            }
+            currentLeg = {
+              legNumber: legNum,
+              lineName: step.currentLine || "Delhi Metro",
+              fromStationName: step.stationName,
+              fromStationId: step.stationId,
+              toStationName: "",
+              toStationId: "",
+              direction: "",
+              stopsCount: 0,
+              durationMins: 0,
+              stationNames: [step.stationName],
+            };
+          } else {
+            currentLeg.stopsCount++;
+            currentLeg.stationNames.push(step.stationName);
+          }
+        });
+
+        if (currentLeg) {
+          currentLeg.toStationName = roadmap[roadmap.length - 1].stationName;
+          currentLeg.toStationId = roadmap[roadmap.length - 1].stationId;
+          currentLeg.durationMins = Math.max(2, Math.round(currentLeg.stopsCount * 2.3));
+          legs.push(currentLeg);
+        }
+
+        return legs;
       }
 
       function generateLegsHtml(legs, interchanges) {
@@ -1498,9 +1523,26 @@
         const c = document.getElementById("route-results-container");
         c.style.display = "flex";
 
-        // Fallback enrichment if backend roadmap/legs are missing
+        // Fallback enrichment if backend roadmap/legs/interchanges are missing
         if (!r.roadmap || r.roadmap.length === 0) {
           r.roadmap = enrichFallbackRoadmap(r.pathStationIds);
+        }
+        if (!r.interchanges || r.interchanges.length === 0) {
+          r.interchanges = [];
+          if (r.roadmap) {
+            r.roadmap.forEach((step) => {
+              if (step.hasTransfer && step.transferTo) {
+                r.interchanges.push({
+                  stationId: step.stationId,
+                  stationName: step.stationName,
+                  fromLine: step.transferFrom,
+                  toLine: step.transferTo,
+                  transferWalkMins: step.transferWalkMins || 3,
+                  nextDirection: "",
+                });
+              }
+            });
+          }
         }
         if (!r.legs || r.legs.length === 0) {
           r.legs = enrichFallbackLegs(r.pathStationIds, r.roadmap);
