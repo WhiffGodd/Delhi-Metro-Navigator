@@ -285,6 +285,12 @@ public class MetroDatabase {
             "dwarka_sector_21", "dwarka_sector_8", "dwarka_sector_9", "dwarka_sector_10", "dwarka_sector_11", "dwarka_sector_12", "dwarka_sector_13", "dwarka_sector_14", "dwarka", "dwarka_mor", "nawada", "uttam_nagar_west", "uttam_nagar_east", "janakpuri_west", "janakpuri_east", "tilak_nagar", "subhash_nagar", "tagore_garden", "rajouri_garden", "ramesh_nagar", "moti_nagar", "kirti_nagar", "shadipur", "patel_nagar", "rajendra_place", "karol_bagh", "jhandewalan", "ramakrishna_ashram_marg", "rajiv_chowk", "mandi_house", "supreme_court", "indraprastha", "yamuna_bank", "akshardham", "mayur_vihar_phase_1", "mayur_vihar_extension", "new_ashok_nagar", "noida_sector_15", "noida_sector_16", "noida_sector_18", "botanical_garden", "golf_course", "noida_city_centre", "noida_sector_34", "noida_sector_52", "noida_sector_61", "noida_sector_59", "noida_sector_62", "noida_electronic_city"
         ));
 
+        // Separate service branch connected at Yamuna Bank.
+        lineStationsMap.put("Blue Line Branch", List.of(
+            "yamuna_bank", "laxmi_nagar", "nirman_vihar", "preet_vihar",
+            "karkarduma_blue", "anand_vihar_isbt_blue", "kaushambi", "vaishali"
+        ));
+
         lineStationsMap.put("Red Line", List.of(
             "rithala", "rohini_west", "rohini_east", "pitampura", "kohat_enclave", "netaji_subhash_place", "keshav_puram", "kanhiya_nagar", "indrelok", "shastri_nagar", "pratap_nagar", "pul_bangash", "tis_hazari", "kashmere_gate", "shastri_park", "seelampur", "welcome", "shahdara", "mansarovar_park", "jhilmil", "dilshad_garden", "shahid_nagar", "raj_bagh", "shahdara_bus_adda", "shyam_park", "mohan_nagar", "arthala", "hindon_river", "shaheed_sthal"
         ));
