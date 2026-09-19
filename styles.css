@@ -1834,3 +1834,387 @@ html, body {
   background: #dc2626;
   box-shadow: 0 0 12px #dc2626, 0 2px 5px rgba(0,0,0,0.4);
 }
+
+/* Interchange Marker on Map */
+.interchange-endpoint-marker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  z-index: 10001 !important;
+}
+.interchange-pill {
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  border: 1.5px solid #ffffff;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 800;
+  color: #ffffff;
+  white-space: nowrap;
+  box-shadow: 0 3px 8px rgba(79, 70, 229, 0.4);
+  margin-bottom: 3px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.interchange-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #7c3aed;
+  border: 2.5px solid #ffffff;
+  box-shadow: 0 0 12px #7c3aed, 0 2px 5px rgba(0,0,0,0.4);
+  animation: pulseTransfer 1.8s infinite;
+}
+@keyframes pulseTransfer {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 10px #7c3aed; }
+  50% { transform: scale(1.25); box-shadow: 0 0 18px #a855f7; }
+}
+
+/* ──────────────── JOURNEY LEGS OVERVIEW ──────────────── */
+.journey-legs-container {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-md);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.legs-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 8px;
+}
+
+.legs-title {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #1e293b;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.interchange-count-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+}
+.badge-direct {
+  background: #dcfce7;
+  color: #15803d;
+}
+.badge-transfers {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.leg-card {
+  background: #ffffff;
+  border-radius: var(--radius-sm);
+  border: 1px solid #e2e8f0;
+  padding: 9px 11px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.leg-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.leg-line-pill {
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.leg-meta {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.leg-route-desc {
+  font-size: 0.78rem;
+  color: #1e293b;
+  line-height: 1.4;
+}
+
+.leg-direction-chip {
+  font-size: 0.7rem;
+  color: #475569;
+  background: #f1f5f9;
+  padding: 2px 6px;
+  border-radius: 4px;
+  display: inline-block;
+  font-weight: 600;
+}
+
+.leg-transfer-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: linear-gradient(135deg, #eff6ff 0%, #f5f3ff 100%);
+  border: 1.5px dashed #818cf8;
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  color: #3730a3;
+  font-weight: 700;
+}
+
+/* ──────────────── STATION ROADMAP / TIMELINE ──────────────── */
+.roadmap-container {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-md);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.roadmap-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 8px;
+}
+
+.roadmap-title {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #0f172a;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.roadmap-toggle-btn {
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  color: #475569;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  font-size: 0.7rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.roadmap-toggle-btn:hover {
+  background: #e2e8f0;
+  color: #1e293b;
+}
+
+.roadmap-timeline {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  margin-top: 4px;
+}
+
+.roadmap-step-row {
+  display: flex;
+  align-items: flex-start;
+  position: relative;
+  min-height: 38px;
+}
+
+/* Vertical Track Connecting Line */
+.roadmap-track {
+  width: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  align-self: stretch;
+  position: relative;
+}
+
+.track-line-segment {
+  width: 4px;
+  flex: 1;
+  background: #cbd5e1;
+}
+.track-line-segment.first-node {
+  margin-top: 14px;
+}
+.track-line-segment.last-node {
+  margin-bottom: 14px;
+}
+
+.track-node-circle {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 0 2px #cbd5e1;
+  background: #94a3b8;
+  position: absolute;
+  top: 8px;
+  z-index: 2;
+  transition: transform 0.2s ease;
+}
+
+.track-node-circle.node-origin {
+  width: 16px;
+  height: 16px;
+  top: 6px;
+  background: #059669;
+  box-shadow: 0 0 0 2px #059669, 0 0 8px rgba(5, 150, 105, 0.5);
+}
+
+.track-node-circle.node-dest {
+  width: 16px;
+  height: 16px;
+  top: 6px;
+  background: #dc2626;
+  box-shadow: 0 0 0 2px #dc2626, 0 0 8px rgba(220, 38, 38, 0.5);
+}
+
+.track-node-circle.node-transfer {
+  width: 16px;
+  height: 16px;
+  top: 6px;
+  background: #7c3aed;
+  box-shadow: 0 0 0 2px #7c3aed, 0 0 10px rgba(124, 58, 237, 0.6);
+}
+
+/* Station Row Content Box */
+.roadmap-step-content {
+  flex: 1;
+  padding: 4px 8px 12px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: background 0.15s ease;
+}
+.roadmap-step-content:hover {
+  background: #f8fafc;
+}
+
+.roadmap-station-row-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.roadmap-station-name-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.roadmap-station-name {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+.roadmap-step-row.is-origin .roadmap-station-name {
+  color: #059669;
+  font-size: 0.85rem;
+}
+.roadmap-step-row.is-dest .roadmap-station-name {
+  color: #dc2626;
+  font-size: 0.85rem;
+}
+
+.roadmap-stop-index {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #64748b;
+  background: #f1f5f9;
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+
+.roadmap-locate-btn {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #2563eb;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  padding: 2px 6px;
+  border-radius: 4px;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.roadmap-step-content:hover .roadmap-locate-btn {
+  opacity: 1;
+}
+
+.roadmap-station-sub {
+  font-size: 0.7rem;
+  color: #64748b;
+}
+
+/* ──────────────── ROADMAP TRANSFER CALLOUT CARD ──────────────── */
+.roadmap-transfer-callout {
+  margin: 6px 0 10px 0;
+  background: linear-gradient(135deg, #f5f3ff 0%, #e0e7ff 100%);
+  border: 1.5px solid #818cf8;
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  box-shadow: 0 2px 6px rgba(99, 102, 241, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.transfer-callout-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #4338ca;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.transfer-change-instruction {
+  font-size: 0.79rem;
+  font-weight: 700;
+  color: #1e1b4b;
+  line-height: 1.35;
+}
+
+.transfer-change-pills {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 2px;
+}
+
+.transfer-direction-text {
+  font-size: 0.72rem;
+  color: #312e81;
+  font-weight: 600;
+}
+
+.transfer-tip-footer {
+  font-size: 0.68rem;
+  color: #475569;
+  border-top: 1px dashed #c7d2fe;
+  padding-top: 4px;
+  margin-top: 2px;
+}
+

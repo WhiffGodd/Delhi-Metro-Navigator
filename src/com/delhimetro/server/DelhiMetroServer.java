@@ -239,8 +239,12 @@ public class DelhiMetroServer {
                 sb.append("[");
                 for (int j = 0; j < list.size(); j++) {
                     Object item = list.get(j);
-                    if (item instanceof Map) {
+                    if (item == null) {
+                        sb.append("null");
+                    } else if (item instanceof Map) {
                         sb.append(mapToJson((Map<String, Object>) item));
+                    } else if (item instanceof Boolean || item instanceof Number) {
+                        sb.append(item);
                     } else {
                         sb.append("\"").append(item.toString().replace("\"", "\\\"")).append("\"");
                     }

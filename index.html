@@ -411,6 +411,8 @@
     let stationMarkers = {}, linePolylines = [];
     let routePolyline = null, routeGlowPolyline = null;
     let originMarker = null, destMarker = null;
+    let interchangeMarkers = [];
+    let isRoadmapExpanded = true;
 
     const lineColors = {
       "Yellow Line": "#FFD700",
@@ -739,21 +741,277 @@
       }
     }
 
+    function enrichFallbackRoadmap(pathIds) {
+      if (!pathIds || !pathIds.length) return [];
+      const roadmap = [];
+      let prevLine = null;
+      for (let i = 0; i < pathIds.length; i++) {
+        const s = stationsData.find(st => st.id === pathIds[i]);
+        let curLine = s && s.lines ? s.lines[0] : "Metro Line";
+        if (prevLine && s && s.lines && s.lines.includes(prevLine)) {
+          curLine = prevLine;
+        }
+        let hasTransfer = false;
+        let transferFrom = null, transferTo = null;
+        if (i > 0 && i < pathIds.length - 1 && prevLine && curLine !== prevLine) {
+          hasTransfer = true;
+          transferFrom = prevLine;
+          transferTo = curLine;
+        }
+
+        roadmap.push({
+          stopIndex: i,
+          stationId: pathIds[i],
+          stationName: s ? s.name : pathIds[i],
+          isOrigin: i === 0,
+          isDestination: i === pathIds.length - 1,
+          lat: s ? s.lat : 0,
+          lng: s ? s.lng : 0,
+          allLines: s ? s.lines : [],
+          isInterchangeNode: s ? s.isInterchange : false,
+          currentLine: curLine,
+          hasTransfer: hasTransfer,
+          transferFrom: transferFrom,
+          transferTo: transferTo,
+          transferWalkMins: 3
+        });
+        prevLine = curLine;
+      }
+      return roadmap;
+    }
+
+    function enrichFallbackLegs(pathIds, roadmap) {
+      if (!roadmap || !roadmap.length) return [];
+      const first = roadmap[0];
+      const last = roadmap[roadmap.length - 1];
+      return [{
+        legNumber: 1,
+        lineName: first.currentLine || "Delhi Metro",
+        fromStationName: first.stationName,
+        toStationName: last.stationName,
+        direction: "",
+        stopsCount: roadmap.length - 1,
+        durationMins: Math.max(2, Math.round((roadmap.length - 1) * 2.3))
+      }];
+    }
+
+    function generateLegsHtml(legs, interchanges) {
+      if (!legs || legs.length === 0) return "";
+
+      const hasTransfers = interchanges && interchanges.length > 0;
+      const countBadge = hasTransfers 
+        ? `<span class="interchange-count-badge badge-transfers">🔀 ${interchanges.length} Line Transfer${interchanges.length > 1 ? 's' : ''}</span>`
+        : `<span class="interchange-count-badge badge-direct">🟢 Direct Line (No Transfers)</span>`;
+
+      let legsHtml = "";
+      legs.forEach((leg, idx) => {
+        const color = lineColors[leg.lineName] || "#2563eb";
+        const dirHtml = leg.direction ? `<div class="leg-direction-chip">🧭 ${leg.direction}</div>` : "";
+
+        legsHtml += `
+          <div class="leg-card">
+            <div class="leg-card-header">
+              <span class="leg-line-pill" style="background:${color};color:#ffffff">
+                🚆 Leg ${leg.legNumber}: ${leg.lineName}
+              </span>
+              <span class="leg-meta">~${leg.durationMins} mins • ${leg.stopsCount} stop${leg.stopsCount !== 1 ? 's' : ''}</span>
+            </div>
+            <div class="leg-route-desc">
+              Board at <strong>${leg.fromStationName}</strong> ➔ Ride to <strong>${leg.toStationName}</strong>
+            </div>
+            ${dirHtml}
+          </div>`;
+
+        if (hasTransfers && idx < interchanges.length) {
+          const ic = interchanges[idx];
+          const nextColor = lineColors[ic.toLine] || "#2563eb";
+          legsHtml += `
+            <div class="leg-transfer-indicator">
+              <span>🔄</span>
+              <div>
+                <strong>Transfer at ${ic.stationName}:</strong> Switch from <strong>${ic.fromLine}</strong> to 
+                <span style="color:${nextColor};font-weight:800">${ic.toLine}</span>
+                <span style="font-size:0.7rem;color:#64748b"> (~${ic.transferWalkMins || 3} min transfer walk)</span>
+              </div>
+            </div>`;
+        }
+      });
+
+      return `
+        <div class="journey-legs-container">
+          <div class="legs-header">
+            <span class="legs-title">🚆 Journey Legs & Train Transfers</span>
+            ${countBadge}
+          </div>
+          ${legsHtml}
+        </div>`;
+    }
+
+    function generateRoadmapHtml(roadmap, totalStops) {
+      if (!roadmap || roadmap.length === 0) return "";
+
+      const stepsHtml = roadmap.map((step, idx) => {
+        const isFirst = (idx === 0);
+        const isLast = (idx === roadmap.length - 1);
+        const color = lineColors[step.currentLine] || "#2563eb";
+
+        let nodeClass = "";
+        if (isFirst) nodeClass = "node-origin";
+        else if (isLast) nodeClass = "node-dest";
+        else if (step.hasTransfer) nodeClass = "node-transfer";
+
+        let segmentClasses = "track-line-segment";
+        if (isFirst) segmentClasses += " first-node";
+        if (isLast) segmentClasses += " last-node";
+
+        let rowClasses = "roadmap-step-row";
+        if (isFirst) rowClasses += " is-origin";
+        if (isLast) rowClasses += " is-dest";
+        if (step.hasTransfer) rowClasses += " is-transfer";
+
+        let transferCardHtml = "";
+        if (step.hasTransfer) {
+          const fromColor = lineColors[step.transferFrom] || "#333";
+          const toColor = lineColors[step.transferTo] || "#2563eb";
+          transferCardHtml = `
+            <div class="roadmap-transfer-callout">
+              <div class="transfer-callout-header">
+                <span>🔄</span> Line Transfer Required
+              </div>
+              <div class="transfer-change-instruction">
+                At <strong>${step.stationName}</strong>, change trains:
+              </div>
+              <div class="transfer-change-pills">
+                <span class="line-pill" style="background:${fromColor};color:#fff;font-size:10px;padding:2px 7px;border-radius:4px;font-weight:700">${step.transferFrom}</span>
+                <span style="font-weight:800;color:#6366f1">➔</span>
+                <span class="line-pill" style="background:${toColor};color:#fff;font-size:10px;padding:2px 7px;border-radius:4px;font-weight:700">${step.transferTo}</span>
+              </div>
+              ${step.transferDirection ? `<div class="transfer-direction-text">🧭 Board ${step.transferTo} <strong>${step.transferDirection}</strong></div>` : ''}
+              <div class="transfer-tip-footer">
+                🚶 Approx. ${step.transferWalkMins || 3} min walk between platforms • Follow ${step.transferTo} overhead direction signboards.
+              </div>
+            </div>`;
+        }
+
+        let subLabel = "";
+        if (isFirst) {
+          subLabel = `🚩 Journey Departure Station • Board ${step.currentLine}`;
+        } else if (isLast) {
+          subLabel = `🏁 Journey Destination • Exit here`;
+        } else if (step.allLines && step.allLines.length > 1 && !step.hasTransfer) {
+          subLabel = `🔄 Interchange Station (Connects: ${step.allLines.join(", ")})`;
+        } else {
+          subLabel = `Ride ${step.currentLine}`;
+        }
+
+        return `
+          <div class="${rowClasses}" data-step-index="${idx}">
+            <div class="roadmap-track">
+              <div class="${segmentClasses}" style="background:${color}"></div>
+              <div class="track-node-circle ${nodeClass}"></div>
+            </div>
+            <div class="roadmap-step-content" onclick="focusStationOnMap('${step.stationId}')" title="Click to view ${step.stationName} on map">
+              <div class="roadmap-station-row-top">
+                <div class="roadmap-station-name-wrap">
+                  <span class="roadmap-station-name">${step.stationName}</span>
+                  ${step.hasTransfer ? '<span class="interchange-count-badge badge-transfers" style="font-size:9px;padding:1px 5px">CHANGE LINE</span>' : ''}
+                  ${isFirst ? '<span class="interchange-count-badge badge-direct" style="font-size:9px;padding:1px 5px">START</span>' : ''}
+                  ${isLast ? '<span class="interchange-count-badge" style="background:#fee2e2;color:#b91c1c;font-size:9px;padding:1px 5px">DESTINATION</span>' : ''}
+                </div>
+                <div style="display:flex;align-items:center;gap:4px">
+                  <span class="roadmap-stop-index">#${idx + 1}</span>
+                  <span class="roadmap-locate-btn">📍 View</span>
+                </div>
+              </div>
+              <span class="roadmap-station-sub">${subLabel}</span>
+              ${transferCardHtml}
+            </div>
+          </div>`;
+      }).join("");
+
+      return `
+        <div class="roadmap-container">
+          <div class="roadmap-header">
+            <span class="roadmap-title">📍 Station-by-Station Roadmap (${totalStops + 1} Stations)</span>
+            <button type="button" class="roadmap-toggle-btn" onclick="toggleRoadmapView(this)">
+              ${isRoadmapExpanded ? 'Show Key Transfers Only' : 'Show All Stations'}
+            </button>
+          </div>
+          <div id="roadmap-timeline" class="roadmap-timeline ${isRoadmapExpanded ? 'expanded' : 'compact'}">
+            ${stepsHtml}
+          </div>
+        </div>`;
+    }
+
+    function focusStationOnMap(stationId) {
+      const s = stationsData.find(st => st.id === stationId);
+      if (s && map) {
+        map.flyTo([s.lat, s.lng], 15, { animate: true, duration: 0.5 });
+        const marker = stationMarkers[stationId];
+        if (marker) {
+          marker.openTooltip();
+        }
+        openStationDetails(s);
+      }
+    }
+
+    function toggleRoadmapView(btn) {
+      isRoadmapExpanded = !isRoadmapExpanded;
+      const timeline = document.getElementById('roadmap-timeline');
+      if (timeline) {
+        timeline.querySelectorAll('.roadmap-step-row').forEach(row => {
+          const isOrigin = row.classList.contains('is-origin');
+          const isDest = row.classList.contains('is-dest');
+          const isTransfer = row.classList.contains('is-transfer');
+          if (!isRoadmapExpanded) {
+            if (!isOrigin && !isDest && !isTransfer) {
+              row.style.display = 'none';
+            } else {
+              row.style.display = 'flex';
+            }
+          } else {
+            row.style.display = 'flex';
+          }
+        });
+      }
+      if (btn) {
+        btn.innerText = isRoadmapExpanded ? 'Show Key Transfers Only' : 'Show All Stations';
+      }
+    }
+
     function renderRouteResults(r) {
       const c = document.getElementById('route-results-container');
       c.style.display = 'flex';
+
+      // Fallback enrichment if backend roadmap/legs are missing
+      if (!r.roadmap || r.roadmap.length === 0) {
+        r.roadmap = enrichFallbackRoadmap(r.pathStationIds);
+      }
+      if (!r.legs || r.legs.length === 0) {
+        r.legs = enrichFallbackLegs(r.pathStationIds, r.roadmap);
+      }
 
       let transitBadges = "";
       if (r.exitAi && r.exitAi.transitOptions) {
         transitBadges = r.exitAi.transitOptions.map(t => `<span class="transit-chip">🚗 ${t}</span>`).join(" ");
       }
 
+      const hasTransfers = r.interchanges && r.interchanges.length > 0;
+      const transferSummaryBadge = hasTransfers
+        ? `<div class="route-metric"><span class="route-metric-val">${r.interchanges.length}</span><span class="route-metric-label">Line Transfer${r.interchanges.length > 1 ? 's' : ''}</span></div>`
+        : `<div class="route-metric"><span class="route-metric-val" style="color:#15803d">0</span><span class="route-metric-label">Direct (No Change)</span></div>`;
+
       c.innerHTML = `
         <div class="route-summary-card">
           <div class="route-metric"><span class="route-metric-val">~${r.totalTimeMins} mins</span><span class="route-metric-label">Travel Time</span></div>
           <div class="route-metric"><span class="route-metric-val">₹${r.fare}</span><span class="route-metric-label">Single Fare</span></div>
           <div class="route-metric"><span class="route-metric-val">${r.totalStops}</span><span class="route-metric-label">Total Stops</span></div>
+          ${transferSummaryBadge}
         </div>
+
+        ${generateLegsHtml(r.legs, r.interchanges)}
+
+        ${generateRoadmapHtml(r.roadmap, r.totalStops)}
 
         <div class="smart-assistant-card exit-ai-card" style="background:#f8fafc;border:1px solid #e2e8f0">
           <div class="assistant-card-header">
@@ -798,11 +1056,13 @@
           }
         });
 
-        // 3. Clear previous route line and endpoints
+        // 3. Clear previous route line, endpoints, and interchange markers
         if (routeGlowPolyline) { map.removeLayer(routeGlowPolyline); routeGlowPolyline = null; }
         if (routePolyline) { map.removeLayer(routePolyline); routePolyline = null; }
         if (originMarker) { map.removeLayer(originMarker); originMarker = null; }
         if (destMarker) { map.removeLayer(destMarker); destMarker = null; }
+        interchangeMarkers.forEach(m => map.removeLayer(m));
+        interchangeMarkers = [];
 
         const pathStations = r.pathStationIds.map(id => stationsData.find(st => st.id === id)).filter(Boolean);
         const pathCoords = pathStations.map(s => [s.lat, s.lng]);
@@ -852,7 +1112,27 @@
           }).addTo(map);
           destMarker.on('click', () => openStationDetails(destStation));
 
-          // 4. Smooth camera fit around the chosen journey only
+          // 4. Interchange custom badge markers on the map
+          if (r.interchanges && r.interchanges.length > 0) {
+            r.interchanges.forEach(ic => {
+              const icStation = stationsData.find(st => st.id === ic.stationId);
+              if (icStation) {
+                const icHtml = `
+                  <div class="interchange-endpoint-marker">
+                    <div class="interchange-pill">🔄 CHANGE: ${icStation.name}</div>
+                    <div class="interchange-dot"></div>
+                  </div>`;
+                const icMarker = L.marker([icStation.lat, icStation.lng], {
+                  icon: L.divIcon({ html: icHtml, className: 'interchange-div-icon', iconSize: [150, 42], iconAnchor: [75, 38] }),
+                  zIndexOffset: 1005
+                }).addTo(map);
+                icMarker.on('click', () => openStationDetails(icStation));
+                interchangeMarkers.push(icMarker);
+              }
+            });
+          }
+
+          // 5. Smooth camera fit around the chosen journey only
           map.fitBounds(routePolyline.getBounds(), {
             padding: [70, 70],
             maxZoom: 15,
@@ -860,11 +1140,12 @@
             duration: 0.8
           });
 
-          // 5. Update and show floating Route Focus Banner
+          // 6. Update and show floating Route Focus Banner
           const banner = document.getElementById('route-focus-banner');
           const bannerText = document.getElementById('route-focus-text');
           if (banner && bannerText) {
-            bannerText.innerHTML = `<strong>${originStation.name}</strong> ➔ <strong>${destStation.name}</strong> (~${r.totalTimeMins} mins)`;
+            const transferText = hasTransfers ? ` • ${r.interchanges.length} transfer${r.interchanges.length > 1 ? 's' : ''}` : ' • Direct';
+            bannerText.innerHTML = `<strong>${originStation.name}</strong> ➔ <strong>${destStation.name}</strong> (~${r.totalTimeMins} mins${transferText})`;
             banner.style.display = 'flex';
           }
         }
@@ -887,11 +1168,13 @@
         }
       });
 
-      // 3. Remove route layers and endpoint pins
+      // 3. Remove route layers, endpoint pins, and interchange markers
       if (routeGlowPolyline) { map.removeLayer(routeGlowPolyline); routeGlowPolyline = null; }
       if (routePolyline) { map.removeLayer(routePolyline); routePolyline = null; }
       if (originMarker) { map.removeLayer(originMarker); originMarker = null; }
       if (destMarker) { map.removeLayer(destMarker); destMarker = null; }
+      interchangeMarkers.forEach(m => map.removeLayer(m));
+      interchangeMarkers = [];
 
       // 4. Hide focus banner
       const banner = document.getElementById('route-focus-banner');
