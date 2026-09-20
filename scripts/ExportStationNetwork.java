@@ -4,7 +4,7 @@ import java.nio.file.Path;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
-/** Run after compiling src: java -cp bin scripts/ExportStationNetwork.java */
+/** Run after compiling src: java -cp build/delhi-metro.jar scripts/ExportStationNetwork.java */
 public class ExportStationNetwork {
     public static void main(String[] args) throws Exception {
         Locale.setDefault(Locale.ROOT);

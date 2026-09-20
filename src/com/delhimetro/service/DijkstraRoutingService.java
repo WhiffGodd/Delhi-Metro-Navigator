@@ -24,20 +24,8 @@ public class DijkstraRoutingService {
         }
     }
 
-    public static class NodeDistance implements Comparable<NodeDistance> {
-        String stationId;
-        double distance;
-
-        public NodeDistance(String stationId, double distance) {
-            this.stationId = stationId;
-            this.distance = distance;
-        }
-
-        @Override
-        public int compareTo(NodeDistance o) {
-            return Double.compare(this.distance, o.distance);
-        }
-    }
+    private record State(String stationId, String line) {}
+    private record Visit(State state, double minutes, int transfers, Visit previous) {}
 
     public Map<String, Object> findRoute(String originId, String destId, String preference) {
         Map<String, Station> allStations = database.getAllStations();
@@ -46,12 +34,16 @@ public class DijkstraRoutingService {
             return Map.of("error", "Invalid station selection");
         }
 
+        if (originId.equals(destId)) return Map.of("error", "Choose two different stations");
+        if (!Set.of("fastest", "fewest_interchanges").contains(preference))
+            return Map.of("error", "Invalid route preference");
+
         // Build Graph Adjacency List
         Map<String, List<Edge>> graph = new HashMap<>();
         Map<String, List<String>> lineMap = database.getLineStationsMap();
 
         for (Map.Entry<String, List<String>> entry : lineMap.entrySet()) {
-            String lineName = entry.getKey();
+            String lineName = entry.getKey().replace(" Branch", "");
             List<String> stations = entry.getValue();
 
             for (int i = 0; i < stations.size() - 1; i++) {
@@ -70,82 +62,41 @@ public class DijkstraRoutingService {
             }
         }
 
-        // Dijkstra's Shortest Path Algorithm
-        Map<String, Double> dist = new HashMap<>();
-        Map<String, String> prev = new HashMap<>();
-        Map<String, String> edgeLine = new HashMap<>();
-        PriorityQueue<NodeDistance> pq = new PriorityQueue<>();
-
-        for (String id : allStations.keySet()) {
-            dist.put(id, Double.MAX_VALUE);
-        }
-
-        dist.put(originId, 0.0);
-        pq.add(new NodeDistance(originId, 0.0));
-
-        while (!pq.isEmpty()) {
-            NodeDistance current = pq.poll();
-            String u = current.stationId;
-
-            if (u.equals(destId)) break;
-            if (current.distance > dist.get(u)) continue;
-
-            List<Edge> neighbors = graph.getOrDefault(u, Collections.emptyList());
-            for (Edge edge : neighbors) {
-                String v = edge.targetId;
-                double edgeWeight = edge.weight;
-
-                // Transfer penalty for Minimum Interchanges preference
-                if ("fewest_interchanges".equals(preference)) {
-                    String prevLine = edgeLine.get(u);
-                    if (prevLine != null && !prevLine.equals(edge.line)) {
-                        edgeWeight += 12.0; // 12 mins penalty for line change
-                    }
-                }
-
-                double newDist = dist.get(u) + edgeWeight;
-                if (newDist < dist.get(v)) {
-                    dist.put(v, newDist);
-                    prev.put(v, u);
-                    edgeLine.put(v, edge.line);
-                    pq.add(new NodeDistance(v, newDist));
+        // Arrival line is part of the state: it determines the next transfer cost.
+        Comparator<Visit> order = "fewest_interchanges".equals(preference)
+            ? Comparator.comparingInt(Visit::transfers).thenComparingDouble(Visit::minutes)
+            : Comparator.comparingDouble(Visit::minutes).thenComparingInt(Visit::transfers);
+        Map<State, Visit> best = new HashMap<>();
+        PriorityQueue<Visit> queue = new PriorityQueue<>(order);
+        Visit start = new Visit(new State(originId, null), 0, 0, null);
+        best.put(start.state(), start);
+        queue.add(start);
+        Visit finish = null;
+        while (!queue.isEmpty()) {
+            Visit current = queue.poll();
+            if (best.get(current.state()) != current) continue;
+            if (current.state().stationId().equals(destId)) { finish = current; break; }
+            for (Edge edge : graph.getOrDefault(current.state().stationId(), List.of())) {
+                int transfer = current.state().line() != null && !current.state().line().equals(edge.line) ? 1 : 0;
+                Visit next = new Visit(new State(edge.targetId, edge.line),
+                    current.minutes() + edge.weight + transfer * 5, current.transfers() + transfer, current);
+                Visit known = best.get(next.state());
+                if (known == null || order.compare(next, known) < 0) {
+                    best.put(next.state(), next);
+                    queue.add(next);
                 }
             }
         }
-
-        // Reconstruct Path
+        if (finish == null) return Map.of("error", "No connected route found");
         LinkedList<String> path = new LinkedList<>();
-        String step = destId;
-        while (step != null) {
-            path.addFirst(step);
-            step = prev.get(step);
+        LinkedList<String> segmentLines = new LinkedList<>();
+        for (Visit visit = finish; visit != null; visit = visit.previous()) {
+            path.addFirst(visit.state().stationId());
+            if (visit.previous() != null) segmentLines.addFirst(visit.state().line());
         }
-
-        int totalTime = (int) Math.round(dist.get(destId));
-        int totalStops = Math.max(0, path.size() - 1);
+        int totalTime = (int) Math.round(finish.minutes());
+        int totalStops = path.size() - 1;
         int fare = calculateFare(totalStops);
-
-        // Determine line for each segment (path[i] -> path[i+1])
-        List<String> segmentLines = new ArrayList<>();
-        for (int i = 0; i < path.size() - 1; i++) {
-            String u = path.get(i);
-            String v = path.get(i + 1);
-            String line = null;
-            String recorded = edgeLine.get(v);
-            List<Edge> edges = graph.getOrDefault(u, Collections.emptyList());
-            for (Edge e : edges) {
-                if (e.targetId.equals(v)) {
-                    if (recorded != null && e.line.equals(recorded)) {
-                        line = e.line;
-                        break;
-                    } else if (line == null) {
-                        line = e.line;
-                    }
-                }
-            }
-            if (line == null) line = (recorded != null) ? recorded : "Metro Line";
-            segmentLines.add(line);
-        }
 
         // Build Journey Legs & Station-by-Station Roadmap
         List<Map<String, Object>> legs = new ArrayList<>();
@@ -207,7 +158,7 @@ public class DijkstraRoutingService {
                         icMap.put("fromLine", currentLine);
                         icMap.put("toLine", nextLine);
                         icMap.put("nextDirection", nextDir);
-                        icMap.put("transferWalkMins", 3);
+                        icMap.put("transferWalkMins", 5);
                         icMap.put("stopNumber", i + 1);
                         interchanges.add(icMap);
                     }
@@ -256,7 +207,7 @@ public class DijkstraRoutingService {
                         String nextNextStationId = (i + 1 < path.size()) ? path.get(i + 1) : stId;
                         String nextDir = getLineDirection(outgoingLine, stId, nextNextStationId, lineMap, allStations);
                         stepMap.put("transferDirection", nextDir);
-                        stepMap.put("transferWalkMins", 3);
+                        stepMap.put("transferWalkMins", 5);
                     }
                 }
                 stepMap.put("hasTransfer", hasTransfer);
@@ -274,6 +225,9 @@ public class DijkstraRoutingService {
         result.put("totalTimeMins", totalTime);
         result.put("totalStops", totalStops);
         result.put("fare", fare);
+        result.put("estimated", true);
+        result.put("source", "java");
+        result.put("transfers", interchanges.size());
         result.put("recommendedCoach", "Coach 2-3 (Optimal Platform Exit)");
         result.put("pathStationIds", path);
         result.put("totalInterchanges", interchanges.size());
@@ -286,7 +240,11 @@ public class DijkstraRoutingService {
 
     private String getLineDirection(String lineName, String fromId, String toId,
                                     Map<String, List<String>> lineMap, Map<String, Station> allStations) {
-        List<String> stationsOnLine = lineMap.get(lineName);
+        List<String> stationsOnLine = lineMap.entrySet().stream()
+            .filter(entry -> entry.getKey().replace(" Branch", "").equals(lineName))
+            .map(Map.Entry::getValue)
+            .filter(ids -> ids.contains(fromId) && ids.contains(toId))
+            .findFirst().orElse(null);
         if (stationsOnLine == null || stationsOnLine.size() < 2) {
             return "";
         }

@@ -33,16 +33,8 @@ public class Station {
     public boolean isInterchange() { return isInterchange; }
 
     public String toJson() {
-        StringBuilder linesJson = new StringBuilder("[");
-        for (int i = 0; i < lines.size(); i++) {
-            linesJson.append("\"").append(lines.get(i)).append("\"");
-            if (i < lines.size() - 1) linesJson.append(",");
-        }
-        linesJson.append("]");
-
-        return String.format(
-            "{\"id\":\"%s\",\"name\":\"%s\",\"lat\":%f,\"lng\":%f,\"lines\":%s,\"firstTrain\":\"%s\",\"lastTrain\":\"%s\",\"isInterchange\":%b}",
-            id, name.replace("\"", "\\\""), lat, lng, linesJson.toString(), firstTrain, lastTrain, isInterchange
-        );
+        return com.delhimetro.server.Json.encode(java.util.Map.of(
+            "id", id, "name", name, "lat", lat, "lng", lng, "lines", lines,
+            "firstTrain", firstTrain, "lastTrain", lastTrain, "isInterchange", isInterchange));
     }
 }

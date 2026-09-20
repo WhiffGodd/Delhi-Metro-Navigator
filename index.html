@@ -859,7 +859,13 @@
           if (data.success && data.stations) {
             stationsData = data.stations;
             usingBundledNetwork = data.source === "bundled";
-            localRoutePlanner = createMetroRouter(data);
+            // Java owns routing on the full application. Build the browser
+            // router only if a static deployment or API outage needs it.
+            let fallbackRouter;
+            localRoutePlanner = (...args) => {
+              fallbackRouter ||= createMetroRouter(data);
+              return fallbackRouter(...args);
+            };
             document.getElementById("planner-feedback").textContent = usingBundledNetwork
               ? "Route planning is ready. Travel times and fares are estimates."
               : "";
