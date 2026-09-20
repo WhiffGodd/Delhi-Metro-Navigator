@@ -1177,6 +1177,8 @@
           document.getElementById("route-results-container").style.display = "none";
           document.getElementById("planner-feedback").textContent =
             from && to ? "Choose two different stations for your journey." : "";
+          resetMapToFullNetwork();
+        }
       }
 
       function swapStations() {
@@ -1244,84 +1246,55 @@
         }
       }
 
-      function enrichFallbackRoadmap(pathIds) {
+      function enrichFallbackRoadmap(pathIds, segments = []) {
         if (!pathIds || !pathIds.length) return [];
-        const roadmap = [];
-        let prevLine = null;
-        for (let i = 0; i < pathIds.length; i++) {
-          const s = stationsData.find((st) => st.id === pathIds[i]);
-          let curLine = s && s.lines ? s.lines[0] : "Metro Line";
-          if (prevLine && s && s.lines && s.lines.includes(prevLine)) {
-            curLine = prevLine;
+        const hops = segments.flatMap(segment => Array(segment.stops).fill(segment.line));
+        // Older Java responses may omit segments. Match each adjacent station pair.
+        if (!hops.length) {
+          for (let i = 0; i < pathIds.length - 1; i++) {
+            const from = stationsData.find(s => s.id === pathIds[i]);
+            const to = stationsData.find(s => s.id === pathIds[i + 1]);
+            const common = from.lines.filter(line => to.lines.includes(line));
+            hops.push(common.includes(hops[i - 1]) ? hops[i - 1] : common[0]);
           }
-          let hasTransfer = false;
-          let transferFrom = null, transferTo = null;
-          if (i > 0 && i < pathIds.length - 1 && prevLine && curLine !== prevLine) {
-            hasTransfer = true;
-            transferFrom = prevLine;
-            transferTo = curLine;
-          }
-
-          roadmap.push({
-            stopIndex: i,
-            stationId: pathIds[i],
-            stationName: s ? s.name : pathIds[i],
-            isOrigin: i === 0,
-            isDestination: i === pathIds.length - 1,
-            lat: s ? s.lat : 0,
-            lng: s ? s.lng : 0,
-            allLines: s ? s.lines : [],
-            isInterchangeNode: s ? s.isInterchange : false,
-            currentLine: curLine,
-            hasTransfer: hasTransfer,
-            transferFrom: transferFrom,
-            transferTo: transferTo,
-            transferWalkMins: 3,
-          });
-          prevLine = curLine;
         }
-        return roadmap;
+        return pathIds.map((id, i) => {
+          const station = stationsData.find(s => s.id === id);
+          const arriving = hops[i - 1];
+          const departing = hops[i];
+          const hasTransfer = Boolean(arriving && departing && arriving !== departing);
+          return {
+            stopIndex: i, stationId: id, stationName: station.name,
+            isOrigin: i === 0, isDestination: i === pathIds.length - 1,
+            lat: station.lat, lng: station.lng, allLines: station.lines,
+            isInterchangeNode: station.isInterchange,
+            currentLine: departing || arriving, hasTransfer,
+            transferFrom: hasTransfer ? arriving : null,
+            transferTo: hasTransfer ? departing : null,
+            transferWalkMins: 5,
+          };
+        });
       }
 
       function enrichFallbackLegs(pathIds, roadmap) {
-        if (!roadmap || !roadmap.length) return [];
         const legs = [];
-        let currentLeg = null;
-        let legNum = 1;
-
-        roadmap.forEach((step, idx) => {
-          if (!currentLeg || step.currentLine !== currentLeg.lineName) {
-            if (currentLeg) {
-              currentLeg.toStationName = roadmap[idx - 1].stationName;
-              currentLeg.toStationId = roadmap[idx - 1].stationId;
-              legs.push(currentLeg);
-              legNum++;
-            }
-            currentLeg = {
-              legNumber: legNum,
-              lineName: step.currentLine || "Delhi Metro",
-              fromStationName: step.stationName,
-              fromStationId: step.stationId,
-              toStationName: "",
-              toStationId: "",
-              direction: "",
-              stopsCount: 0,
-              durationMins: 0,
-              stationNames: [step.stationName],
-            };
-          } else {
-            currentLeg.stopsCount++;
-            currentLeg.stationNames.push(step.stationName);
+        // Each hop belongs to the departing station's line. The transfer station
+        // is both the end of one leg and the beginning of the next.
+        for (let i = 0; i < roadmap.length - 1; i++) {
+          const from = roadmap[i], to = roadmap[i + 1];
+          let leg = legs[legs.length - 1];
+          if (!leg || leg.lineName !== from.currentLine) {
+            leg = {legNumber: legs.length + 1, lineName: from.currentLine,
+              fromStationId: from.stationId, fromStationName: from.stationName,
+              direction: "", stopsCount: 0, stationNames: [from.stationName]};
+            legs.push(leg);
           }
-        });
-
-        if (currentLeg) {
-          currentLeg.toStationName = roadmap[roadmap.length - 1].stationName;
-          currentLeg.toStationId = roadmap[roadmap.length - 1].stationId;
-          currentLeg.durationMins = Math.max(2, Math.round(currentLeg.stopsCount * 2.3));
-          legs.push(currentLeg);
+          leg.toStationId = to.stationId;
+          leg.toStationName = to.stationName;
+          leg.stationNames.push(to.stationName);
+          leg.stopsCount++;
+          leg.durationMins = Math.max(2, Math.round(leg.stopsCount * 2.3));
         }
-
         return legs;
       }
 
@@ -1415,9 +1388,9 @@
                   At <strong>${step.stationName}</strong>, change trains:
                 </div>
                 <div class="transfer-change-pills">
-                  <span class="line-pill" style="background:${fromColor};color:#fff;font-size:10px;padding:2px 7px;border-radius:4px;font-weight:700">${step.transferFrom}</span>
+                  <span class="transfer-line-pill" style="--line-color:${fromColor}">${step.transferFrom}</span>
                   <span style="font-weight:800;color:#6366f1">➔</span>
-                  <span class="line-pill" style="background:${toColor};color:#fff;font-size:10px;padding:2px 7px;border-radius:4px;font-weight:700">${step.transferTo}</span>
+                  <span class="transfer-line-pill" style="--line-color:${toColor}">${step.transferTo}</span>
                 </div>
                 ${step.transferDirection ? `<div class="transfer-direction-text">🧭 Board ${step.transferTo} <strong>${step.transferDirection}</strong></div>` : ""}
                 <div class="transfer-tip-footer">
@@ -1447,7 +1420,7 @@
                 <div class="${segmentClasses}" style="background:${color}"></div>
                 <div class="track-node-circle ${nodeClass}"></div>
               </div>
-              <div class="roadmap-step-content" onclick="focusStationOnMap('${step.stationId}')" title="Click to view ${step.stationName} on map">
+              <div class="roadmap-step-content" role="button" tabindex="0" onkeydown="if(event.key === 'Enter' || event.key === ' '){event.preventDefault();this.click()}" onclick="focusStationOnMap('${step.stationId}')" title="Click to view ${step.stationName} on map">
                 <div class="roadmap-station-row-top">
                   <div class="roadmap-station-name-wrap">
                     <span class="roadmap-station-name">${step.stationName}</span>
@@ -1470,8 +1443,8 @@
         return `
           <div class="roadmap-container">
             <div class="roadmap-header">
-              <span class="roadmap-title">📍 Station-by-Station Roadmap (${totalStops + 1} Stations)</span>
-              <button type="button" class="roadmap-toggle-btn" onclick="toggleRoadmapView(this)">
+              <span class="roadmap-title">📍 Station-by-Station Roadmap (${roadmap.length} Stations)</span>
+              <button type="button" class="roadmap-toggle-btn" aria-expanded="${isRoadmapExpanded}" aria-controls="roadmap-timeline" onclick="toggleRoadmapView(this)">
                 ${isRoadmapExpanded ? "Show Key Transfers Only" : "Show All Stations"}
               </button>
             </div>
@@ -1513,6 +1486,7 @@
           });
         }
         if (btn) {
+          btn.setAttribute("aria-expanded", String(isRoadmapExpanded));
           btn.innerText = isRoadmapExpanded
             ? "Show Key Transfers Only"
             : "Show All Stations";
@@ -1522,10 +1496,11 @@
       function renderRouteResults(r) {
         const c = document.getElementById("route-results-container");
         c.style.display = "flex";
+        isRoadmapExpanded = true;
 
         // Fallback enrichment if backend roadmap/legs/interchanges are missing
         if (!r.roadmap || r.roadmap.length === 0) {
-          r.roadmap = enrichFallbackRoadmap(r.pathStationIds);
+          r.roadmap = enrichFallbackRoadmap(r.pathStationIds, r.segments);
         }
         if (!r.interchanges || r.interchanges.length === 0) {
           r.interchanges = [];
