@@ -2307,3 +2307,9 @@ footer > div {
 .companion-actions button:disabled { opacity: .4; cursor: default; }
 .companion-actions button:focus-visible { outline: 2px solid #f0d7ad; outline-offset: 3px; }
 .companion-transfer { padding: 10px; background: #44331d; border-left: 3px solid #dfb977; border-radius: 4px; }
+
+/* Draw complete metro paths while dragging. The map container still clips the
+   result to its edges; the moving SVG viewport must not clip it a second time. */
+#map .leaflet-overlay-pane > svg {
+  overflow: visible;
+}

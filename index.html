@@ -829,12 +829,20 @@
         // Initialize Leaflet Map centered on Delhi NCR
         map = L.map("map", {
           zoomControl: false,
+          renderer: L.svg(),
           zoomAnimation: !matchMedia("(prefers-reduced-motion: reduce)")
             .matches,
           fadeAnimation: !matchMedia("(prefers-reduced-motion: reduce)")
             .matches,
         }).setView([28.6139, 77.209], 12);
         L.control.zoom({ position: "bottomleft" }).addTo(map);
+        // Route results and responsive layout can resize the map without a
+        // window resize. Keep Leaflet's viewport in sync with its container.
+        const mapResizeObserver = new ResizeObserver(() => {
+          map.invalidateSize({ pan: false, debounceMoveend: true });
+        });
+        mapResizeObserver.observe(map.getContainer());
+        map.on("unload", () => mapResizeObserver.disconnect());
 
         // 100% FREE OpenStreetMap Tile Layer (NO API KEY REQUIRED)
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -922,6 +930,7 @@
             const color = lineColors[lineName.replace(" Branch", "")] || "#2563eb";
 
             const polyline = L.polyline(coords, {
+              noClip: true,
               color: color,
               weight: 5,
               opacity: 0.85,
@@ -1632,6 +1641,7 @@
           if (pathCoords.length >= 2) {
             // Glow layer underneath route polyline
             routeGlowPolyline = L.polyline(pathCoords, {
+              noClip: true,
               color: "#38bdf8",
               weight: 12,
               opacity: 0.45,
@@ -1641,6 +1651,7 @@
 
             // Vibrant core polyline
             routePolyline = L.polyline(pathCoords, {
+              noClip: true,
               color: "#2563eb",
               weight: 6,
               opacity: 1.0,

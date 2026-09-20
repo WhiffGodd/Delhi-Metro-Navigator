@@ -299,3 +299,12 @@ train updates, and progress is not saved when the page is reloaded.
 
 The roadmap and journey legs use the site's charcoal and sand palette while
 retaining metro line colours on the tracks and line labels.
+
+### Map panning regression check
+
+With Playwright and its Chromium browser installed, run
+`node tests/browser/map-pan.cjs`. Set `BROWSER_CHANNEL=msedge` to use an installed
+Microsoft Edge instead. The check starts a temporary local static server and
+checks metro line coverage while the pointer is still held during upward and
+downward drags, on desktop and mobile layouts, with and without a selected route.
+This catches paths that disappear during a drag but return on release.
