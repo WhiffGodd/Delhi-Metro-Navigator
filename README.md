@@ -287,3 +287,15 @@ node --test tests/*.test.cjs
 ```
 
 Commit the regenerated `data/stations.json` along with database changes.
+
+## Journey companion
+
+Plan a route and select **Start my journey** to track your ride manually. Use
+**Reached next stop** as you arrive at each station. The companion shows the next
+station, remaining stops, journey progress, and an approaching-transfer reminder.
+**Previous stop** corrects an accidental tap; **Reset** returns to the start.
+Planning a different route resets tracking. This feature does not use GPS or live
+train updates, and progress is not saved when the page is reloaded.
+
+The roadmap and journey legs use the site's charcoal and sand palette while
+retaining metro line colours on the tracks and line labels.

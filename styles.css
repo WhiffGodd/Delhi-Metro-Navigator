@@ -1914,8 +1914,8 @@ footer > div {
 
 /* ──────────────── JOURNEY LEGS OVERVIEW ──────────────── */
 .journey-legs-container {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: #171613;
+  border: 1px solid #3a342b;
   border-radius: var(--radius-md);
   padding: 12px;
   display: flex;
@@ -1927,14 +1927,14 @@ footer > div {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid #3a342b;
   padding-bottom: 8px;
 }
 
 .legs-title {
   font-size: 0.82rem;
   font-weight: 800;
-  color: #1e293b;
+  color: #eee7db;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -1947,18 +1947,18 @@ footer > div {
   border-radius: var(--radius-full);
 }
 .badge-direct {
-  background: #dcfce7;
-  color: #15803d;
+  background: #25332a;
+  color: #aed2b4;
 }
 .badge-transfers {
-  background: #fef3c7;
-  color: #b45309;
+  background: #3b3020;
+  color: #e8c58a;
 }
 
 .leg-card {
-  background: #ffffff;
+  background: #191815;
   border-radius: var(--radius-sm);
-  border: 1px solid #e2e8f0;
+  border: 1px solid #3a342b;
   padding: 9px 11px;
   display: flex;
   flex-direction: column;
@@ -1976,7 +1976,7 @@ footer > div {
   border-radius: 4px;
   font-size: 0.72rem;
   font-weight: 800;
-  color: #ffffff;
+  color: #191815;
   display: inline-flex;
   align-items: center;
   gap: 5px;
@@ -1985,19 +1985,19 @@ footer > div {
 .leg-meta {
   font-size: 0.7rem;
   font-weight: 600;
-  color: #64748b;
+  color: #b4aa9a;
 }
 
 .leg-route-desc {
   font-size: 0.78rem;
-  color: #1e293b;
+  color: #eee7db;
   line-height: 1.4;
 }
 
 .leg-direction-chip {
   font-size: 0.7rem;
-  color: #475569;
-  background: #f1f5f9;
+  color: #c1b5a1;
+  background: #25221c;
   padding: 2px 6px;
   border-radius: 4px;
   display: inline-block;
@@ -2009,18 +2009,18 @@ footer > div {
   align-items: center;
   gap: 8px;
   padding: 6px 10px;
-  background: linear-gradient(135deg, #eff6ff 0%, #f5f3ff 100%);
-  border: 1.5px dashed #818cf8;
+  background: linear-gradient(135deg, #28231c 0%, #28231c 100%);
+  border: 1.5px dashed #8b7756;
   border-radius: var(--radius-sm);
   font-size: 0.75rem;
-  color: #3730a3;
+  color: #ddc7a0;
   font-weight: 700;
 }
 
 /* ──────────────── STATION ROADMAP / TIMELINE ──────────────── */
 .roadmap-container {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: #191815;
+  border: 1px solid #3a342b;
   border-radius: var(--radius-md);
   padding: 12px;
   display: flex;
@@ -2032,23 +2032,23 @@ footer > div {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid #25221c;
   padding-bottom: 8px;
 }
 
 .roadmap-title {
   font-size: 0.82rem;
   font-weight: 800;
-  color: #0f172a;
+  color: #eee7db;
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
 .roadmap-toggle-btn {
-  background: #f1f5f9;
-  border: 1px solid #cbd5e1;
-  color: #475569;
+  background: #25221c;
+  border: 1px solid #504738;
+  color: #c1b5a1;
   padding: 3px 8px;
   border-radius: var(--radius-full);
   font-size: 0.7rem;
@@ -2057,8 +2057,8 @@ footer > div {
   transition: all 0.2s ease;
 }
 .roadmap-toggle-btn:hover {
-  background: #e2e8f0;
-  color: #1e293b;
+  background: #3a342b;
+  color: #eee7db;
 }
 
 .roadmap-timeline {
@@ -2089,7 +2089,7 @@ footer > div {
 .track-line-segment {
   width: 4px;
   flex: 1;
-  background: #cbd5e1;
+  background: #504738;
 }
 .track-line-segment.first-node {
   margin-top: 14px;
@@ -2102,8 +2102,8 @@ footer > div {
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  border: 2px solid #ffffff;
-  box-shadow: 0 0 0 2px #cbd5e1;
+  border: 2px solid #191815;
+  box-shadow: 0 0 0 2px #504738;
   background: #94a3b8;
   position: absolute;
   top: 8px;
@@ -2115,16 +2115,16 @@ footer > div {
   width: 16px;
   height: 16px;
   top: 6px;
-  background: #059669;
-  box-shadow: 0 0 0 2px #059669, 0 0 8px rgba(5, 150, 105, 0.5);
+  background: #95c5a3;
+  box-shadow: 0 0 0 2px #95c5a3, 0 0 8px rgba(5, 150, 105, 0.5);
 }
 
 .track-node-circle.node-dest {
   width: 16px;
   height: 16px;
   top: 6px;
-  background: #dc2626;
-  box-shadow: 0 0 0 2px #dc2626, 0 0 8px rgba(220, 38, 38, 0.5);
+  background: #e1b699;
+  box-shadow: 0 0 0 2px #e1b699, 0 0 8px rgba(220, 38, 38, 0.5);
 }
 
 .track-node-circle.node-transfer {
@@ -2147,7 +2147,7 @@ footer > div {
   transition: background 0.15s ease;
 }
 .roadmap-step-content:hover {
-  background: #f8fafc;
+  background: #171613;
 }
 
 .roadmap-station-row-top {
@@ -2165,22 +2165,22 @@ footer > div {
 .roadmap-station-name {
   font-size: 0.8rem;
   font-weight: 700;
-  color: #1e293b;
+  color: #eee7db;
 }
 .roadmap-step-row.is-origin .roadmap-station-name {
-  color: #059669;
+  color: #95c5a3;
   font-size: 0.85rem;
 }
 .roadmap-step-row.is-dest .roadmap-station-name {
-  color: #dc2626;
+  color: #e1b699;
   font-size: 0.85rem;
 }
 
 .roadmap-stop-index {
   font-size: 0.65rem;
   font-weight: 700;
-  color: #64748b;
-  background: #f1f5f9;
+  color: #b4aa9a;
+  background: #25221c;
   padding: 1px 5px;
   border-radius: 3px;
 }
@@ -2188,9 +2188,9 @@ footer > div {
 .roadmap-locate-btn {
   font-size: 0.65rem;
   font-weight: 700;
-  color: #2563eb;
-  background: #eff6ff;
-  border: 1px solid #bfdbfe;
+  color: #d4bb91;
+  background: #28231c;
+  border: 1px solid #544832;
   padding: 2px 6px;
   border-radius: 4px;
   opacity: 0;
@@ -2202,14 +2202,14 @@ footer > div {
 
 .roadmap-station-sub {
   font-size: 0.7rem;
-  color: #64748b;
+  color: #b4aa9a;
 }
 
 /* ──────────────── ROADMAP TRANSFER CALLOUT CARD ──────────────── */
 .roadmap-transfer-callout {
   margin: 6px 0 10px 0;
-  background: linear-gradient(135deg, #f5f3ff 0%, #e0e7ff 100%);
-  border: 1.5px solid #818cf8;
+  background: linear-gradient(135deg, #28231c 0%, #221f19 100%);
+  border: 1.5px solid #8b7756;
   border-radius: var(--radius-sm);
   padding: 8px 10px;
   box-shadow: 0 2px 6px rgba(99, 102, 241, 0.12);
@@ -2224,7 +2224,7 @@ footer > div {
   gap: 6px;
   font-size: 0.72rem;
   font-weight: 800;
-  color: #4338ca;
+  color: #ddc7a0;
   text-transform: uppercase;
   letter-spacing: 0.4px;
 }
@@ -2232,7 +2232,7 @@ footer > div {
 .transfer-change-instruction {
   font-size: 0.79rem;
   font-weight: 700;
-  color: #1e1b4b;
+  color: #eee7db;
   line-height: 1.35;
 }
 
@@ -2246,14 +2246,14 @@ footer > div {
 
 .transfer-direction-text {
   font-size: 0.72rem;
-  color: #312e81;
+  color: #ddc7a0;
   font-weight: 600;
 }
 
 .transfer-tip-footer {
   font-size: 0.68rem;
-  color: #475569;
-  border-top: 1px dashed #c7d2fe;
+  color: #c1b5a1;
+  border-top: 1px dashed #544832;
   padding-top: 4px;
   margin-top: 2px;
 }
@@ -2261,8 +2261,8 @@ footer > div {
 
 /* Keep transfer labels readable independently of the dark network legend. */
 .transfer-line-pill {
-  background: #fff;
-  color: #1e293b;
+  background: #191815;
+  color: #eee7db;
   border-left: 4px solid var(--line-color);
   padding: 4px 7px;
   border-radius: 4px;
@@ -2270,9 +2270,40 @@ footer > div {
   font-weight: 700;
 }
 .roadmap-step-content:focus-visible {
-  outline: 2px solid #2563eb;
+  outline: 2px solid #d4bb91;
   outline-offset: 2px;
 }
 .roadmap-step-content:focus-visible .roadmap-locate-btn {
   opacity: 1;
 }
+
+/* Warm charcoal surfaces and sand accents match the main planner. */
+.roadmap-header, .legs-header { gap: 12px; align-items: flex-start; }
+.roadmap-title, .legs-title { line-height: 1.5; }
+.roadmap-toggle-btn { flex-shrink: 0; max-width: 115px; min-height: 40px; }
+.roadmap-step-content { min-width: 0; }
+.roadmap-station-name-wrap { flex-wrap: wrap; }
+.roadmap-station-sub { line-height: 1.6; }
+.leg-card-header { gap: 8px; flex-wrap: wrap; }
+.leg-line-pill { background: #26231d; color: #eee7db; border-left: 3px solid var(--line-color); }
+.leg-transfer-indicator { font-weight: 500; line-height: 1.6; }
+.roadmap-step-row.is-current .roadmap-step-content { background: #332c20; box-shadow: inset 2px 0 #d4bb91; }
+.roadmap-step-row.is-passed .roadmap-station-name { color: #a69c8e; }
+.roadmap-step-row.is-current .roadmap-station-name::after { content: ' • YOU ARE HERE'; font-size: 9px; color: #e6cc9f; }
+.journey-companion { padding: 18px; border: 1px solid #7e6947; border-radius: 12px; background: radial-gradient(ellipse at top right, #423422 0, #211d17 60%); color: #eee7db; }
+.companion-eyebrow { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #d8bf96; margin: 0 0 10px; }
+.journey-companion h3 { font-family: Georgia, serif; font-size: 25px; font-weight: 400; margin: 0 0 10px; line-height: 1.2; }
+.journey-companion p { font-size: 13px; line-height: 1.6; margin: 8px 0; }
+.companion-note { color: #bdb19e; font-size: 11px !important; }
+.companion-next { padding: 12px 0; border-block: 1px solid #ffffff18; margin: 14px 0; }
+.companion-next span { display: block; color: #bdb19e; font-size: 11px; margin-bottom: 5px; }
+.companion-next strong { font-size: 17px; font-weight: 500; }
+.journey-companion progress { width: 100%; height: 6px; border: 0; border-radius: 8px; overflow: hidden; accent-color: #d4bb91; }
+.journey-companion progress::-webkit-progress-bar { background: #443b2c; }
+.journey-companion progress::-webkit-progress-value { background: #d4bb91; }
+.companion-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.companion-actions button { min-height: 44px; padding: 9px 13px; border-radius: 7px; border: 1px solid #746347; background: #d4bf9b; color: #1b1812; cursor: pointer; font: inherit; font-size: 12px; font-weight: 600; }
+.companion-actions button.secondary { background: transparent; color: #ddceb5; }
+.companion-actions button:disabled { opacity: .4; cursor: default; }
+.companion-actions button:focus-visible { outline: 2px solid #f0d7ad; outline-offset: 3px; }
+.companion-transfer { padding: 10px; background: #44331d; border-left: 3px solid #dfb977; border-radius: 4px; }

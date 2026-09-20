@@ -762,6 +762,7 @@
     <!-- /site-content -->
     <script src="ui-enhancements.js"></script>
     <script src="route-planner.js"></script>
+    <script src="journey-companion.js"></script>
     <!-- Scripts -->
     <script src="vendor/leaflet/leaflet.js" crossorigin="anonymous"></script>
     <script>
@@ -1171,6 +1172,7 @@
           calculateTrip();
         } else {
           ++tripRequest;
+          clearJourney();
           const btn = document.getElementById("plan-trip-btn");
           btn.disabled = false;
           btn.innerHTML = 'Find route <span aria-hidden="true">↗</span>';
@@ -1235,6 +1237,7 @@
         } catch (err) {
           if (request !== tripRequest) return;
           document.getElementById("route-results-container").style.display = "none";
+          clearJourney();
           resetMapToFullNetwork();
           document.getElementById("planner-feedback").textContent =
             err.message || "We couldn’t find your route. Please try again.";
@@ -1316,7 +1319,7 @@
           legsHtml += `
             <div class="leg-card">
               <div class="leg-card-header">
-                <span class="leg-line-pill" style="background:${color};color:#ffffff">
+                <span class="leg-line-pill" style="--line-color:${color}">
                   🚆 Leg ${leg.legNumber}: ${leg.lineName}
                 </span>
                 <span class="leg-meta">~${leg.durationMins} mins • ${leg.stopsCount} stop${leg.stopsCount !== 1 ? "s" : ""}</span>
@@ -1426,7 +1429,7 @@
                     <span class="roadmap-station-name">${step.stationName}</span>
                     ${step.hasTransfer ? '<span class="interchange-count-badge badge-transfers" style="font-size:9px;padding:1px 5px">CHANGE LINE</span>' : ""}
                     ${isFirst ? '<span class="interchange-count-badge badge-direct" style="font-size:9px;padding:1px 5px">START</span>' : ""}
-                    ${isLast ? '<span class="interchange-count-badge" style="background:#fee2e2;color:#b91c1c;font-size:9px;padding:1px 5px">DESTINATION</span>' : ""}
+                    ${isLast ? '<span class="interchange-count-badge" style="background:#382820;color:#e5bca4;font-size:9px;padding:1px 5px">DESTINATION</span>' : ""}
                   </div>
                   <div style="display:flex;align-items:center;gap:4px">
                     <span class="roadmap-stop-index">#${idx + 1}</span>
@@ -1533,7 +1536,7 @@
         const hasTransfers = r.interchanges && r.interchanges.length > 0;
         const transferSummaryBadge = hasTransfers
           ? `<div class="route-metric"><span class="route-metric-val">${r.interchanges.length}</span><span class="route-metric-label">Line Transfer${r.interchanges.length > 1 ? "s" : ""}</span></div>`
-          : `<div class="route-metric"><span class="route-metric-val" style="color:#15803d">0</span><span class="route-metric-label">Direct (No Change)</span></div>`;
+          : `<div class="route-metric"><span class="route-metric-val" style="color:#9ccba5">0</span><span class="route-metric-label">Direct (No Change)</span></div>`;
 
         c.innerHTML = `
         <div class="route-summary-card">
@@ -1542,6 +1545,8 @@
           <div class="route-metric"><span class="route-metric-val">${r.totalStops}</span><span class="route-metric-label">Total Stops</span></div>
           ${transferSummaryBadge}
         </div>
+
+        <section id="journey-companion" class="journey-companion" aria-label="Journey companion"></section>
 
         ${generateLegsHtml(r.legs, r.interchanges)}
 
@@ -1571,6 +1576,8 @@
           a five-minute allowance per transfer, and the app’s stop-based fare model.
           Check the official DMRC app for current fares and service updates.</p>
         </div>`}`;
+
+        prepareJourney(r.roadmap);
 
         // ─────────────────────────────────────────────────────────────
         // HIGHLIGHT ONLY SELECTED ROUTE ON THE MAP & DIM BACKGROUND
