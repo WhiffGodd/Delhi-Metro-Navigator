@@ -121,3 +121,15 @@ java -cp build/delhi-metro.jar scripts/ExportStationNetwork.java
 
 Commit `data/stations.json` alongside database changes and rebuild the JAR to
 include the updated fallback. Compiled classes and build output are ignored.
+
+### Railway deployment
+
+`railway.json` selects the existing Dockerfile and checks `/api/health` before
+accepting a deployment. Connect this repository's `main` branch to a Railway
+service with the repository root as its source directory. The Docker image starts
+the Java application using the host-provided `PORT`; no extra start command is
+needed. Generate a public domain for the service after it becomes healthy.
+
+Verify `/api/health` returns `backend: java`, `/api/stations` returns
+`source: java`, and a planned route contains `source: java`. Open the public URL
+and test a journey from Vaishali to Hauz Khas before replacing any existing link.
