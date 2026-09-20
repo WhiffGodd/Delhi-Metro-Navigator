@@ -27,13 +27,18 @@ public class BackendTest {
                 var path = (List<String>) route.get("pathStationIds");
                 var roadmap = (List<Map<String, Object>>) route.get("roadmap");
                 check(path.size() == roadmap.size(), "Every stop has roadmap metadata");
-                check(path.size() - 1 == (int) route.get("totalStops"), "Stop count");
+                long walks = roadmap.stream().limit(roadmap.size() - 1).filter(step -> step.get("currentLine").equals("Walking transfer")).count();
+                check(path.size() - 1 - walks == (int) route.get("totalStops"), "Train stops exclude walking connections");
                 for (int i = 1; i < path.size(); i++) {
                     final String from = path.get(i - 1), to = path.get(i);
-                    check(db.getLineStationsMap().values().stream().anyMatch(line -> {
-                        int a = line.indexOf(from), b = line.indexOf(to);
-                        return a >= 0 && b >= 0 && Math.abs(a - b) == 1;
-                    }), "Adjacent stations " + from + " / " + to);
+                    check(db.getLineStationsMap().entrySet().stream().anyMatch(entry -> {
+                        var line = entry.getValue();
+                        for (int j = 1; j < line.size(); j++) {
+                            if (line.get(j-1).equals(from) && line.get(j).equals(to)) return true;
+                            if (!db.getOneWayLines().contains(entry.getKey()) && line.get(j-1).equals(to) && line.get(j).equals(from)) return true;
+                        }
+                        return false;
+                    }), "Adjacent directed stations " + from + " / " + to);
                 }
                 var fewest = router.findRoute("rajiv_chowk", destination, "fewest_interchanges");
                 check((int) fewest.get("transfers") <= (int) route.get("transfers"), "Fewest transfers objective");
@@ -46,6 +51,21 @@ public class BackendTest {
         var cross = router.findRoute("vaishali", "hauz_khas", "fastest");
         var transfers = (List<Map<String, Object>>) cross.get("interchanges");
         check(transfers.size() == 1 && transfers.get(0).get("stationId").equals("rajiv_chowk"), "Correct interchange");
+        check(db.getAllStations().size() == 260, "Expanded NCR station count");
+        check(db.getLineStationsMap().get("Aqua Line").size() == 21, "All Aqua Line stations");
+        var walk = router.findRoute("noida_sector_52", "noida_sector_51", "fastest");
+        check((int) walk.get("totalTimeMins") == 8 && (int) walk.get("totalStops") == 0, "Walking connection duration and stops");
+        for (String preference : List.of("fastest", "fewest_interchanges")) {
+            for (String[] pair : List.of(new String[]{"depot_station", "rapid_sector_55_56"}, new String[]{"rapid_sector_55_56", "depot_station"})) {
+                var ncr = router.findRoute(pair[0], pair[1], preference);
+                var path = (List<String>) ncr.get("pathStationIds");
+                check(path.containsAll(List.of("noida_sector_51", "noida_sector_52", "sikanderpur")), "Cross NCR interchanges");
+                check(ncr.get("fare") == null, "No invented combined fare");
+                check(preference.equals("fewest_interchanges") ? (int) ncr.get("transfers") == 3 : (int) ncr.get("transfers") >= 3, "Cross operator changes");
+            }
+        }
+        var loop = (List<String>) router.findRoute("rapid_belvedere_towers", "rapid_phase_2", "fastest").get("pathStationIds");
+        check(loop.equals(List.of("rapid_belvedere_towers", "rapid_cyber_city", "rapid_moulsari_avenue", "rapid_phase_3", "rapid_phase_2")), "Rapid loop cannot run backwards");
         MetroDatabase synthetic = new MetroDatabase();
         synthetic.getAllStations().clear();
         synthetic.getLineStationsMap().clear();

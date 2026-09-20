@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Delhi Metro — Network Map, Route Planner & Helplines</title>
+    <title>NCR Metro Navigator — Network Map, Route Planner & Helplines</title>
 
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -28,7 +28,7 @@
 
     <meta
       name="description"
-      content="Interactive Delhi Metro network map, route planner, fare calculator, and emergency helpline directory powered by Java 21."
+      content="Interactive Delhi NCR Metro network map, route planner, fare calculator, and emergency helpline directory powered by Java 21."
     />
   </head>
   <body>
@@ -57,7 +57,7 @@
           />
         </svg>
 
-        <h2 id="startup-title">Loading Delhi Metro</h2>
+        <h2 id="startup-title">Loading NCR Metro Navigator</h2>
         <p id="startup-status" role="status">
           Loading the station network and route planner.
         </p>
@@ -113,8 +113,8 @@
         aria-labelledby="page-title"
       >
         <div>
-          <h1 id="page-title">Delhi Metro</h1>
-          <p>Plan a route. Check fares, station timings and exits.</p>
+          <h1 id="page-title">NCR Metro Navigator</h1>
+          <p>Delhi • Noida • Greater Noida • Gurugram (Gurgaon)</p>
         </div>
         <div class="network-status" id="network-status" role="status">
           Loading stations…
@@ -641,7 +641,7 @@
         <!-- ──────────────── MAP ──────────────── -->
         <main
           class="map-container-wrapper"
-          aria-label="Interactive Delhi Metro map"
+          aria-label="Interactive Delhi NCR Metro map"
         >
           <div class="map-heading">
             <span><span class="stat-dot"></span> DELHI NCR</span
@@ -743,7 +743,7 @@
         <a class="brand footer-brand" href="#"
           >metro<span class="brand-period">.</span></a
         >
-        <p>Delhi Metro Navigator</p>
+        <p>NCR Metro Navigator</p>
         <div>
           <a
             href="https://www.delhimetrorail.com"
@@ -792,6 +792,9 @@
         "Magenta Line": "#C40380",
         "Airport Express": "#F26522",
         "Grey Line": "#9E9E9E",
+        "Aqua Line": "#24b6ae",
+        "Rapid Metro": "#63b5e5",
+        "Walking transfer": "#aeb7c2",
       };
 
       document.addEventListener("DOMContentLoaded", () => {
@@ -933,11 +936,12 @@
               .map((s) => [s.lat, s.lng]);
             if (coords.length < 2) return;
 
-            const color = lineColors[lineName.replace(" Branch", "")] || "#2563eb";
+            const color = lineColors[lineName.replace(" Branch", "").replace(" Loop", "")] || "#2563eb";
 
             const polyline = L.polyline(coords, {
               noClip: true,
               color: color,
+              dashArray: lineName === "Walking transfer" ? "5 7" : null,
               weight: 5,
               opacity: 0.85,
               smoothFactor: 1,
@@ -1013,6 +1017,8 @@
           { name: "Magenta Line", color: "#C40380" },
           { name: "Airport Express", color: "#F26522" },
           { name: "Grey Line", color: "#9E9E9E" },
+          { name: "Aqua Line", color: "#24b6ae" },
+          { name: "Rapid Metro", color: "#63b5e5" },
         ];
 
         pillsContainer.innerHTML = lines
@@ -1023,6 +1029,12 @@
           .join("");
       }
 
+      function stationSearchText(s) {
+        const rapid = s.lines.includes("Rapid Metro") || ["guru_dronacharya", "sikanderpur", "mg_road", "iffco_chowk", "millennium_city_center"].includes(s.id);
+        const greater = ["knowledge_park_ii", "pari_chowk", "alpha_1", "delta_1", "gnida_office", "depot_station"].includes(s.id);
+        return [s.name, ...s.lines, rapid ? "Gurugram Gurgaon" : greater ? "Greater Noida" : s.lines.includes("Aqua Line") ? "Noida" : ""].join(" ").toLowerCase();
+      }
+
       function handleSearch(query) {
         const resultsDiv = document.getElementById("search-results");
         if (!query || query.trim().length < 2) {
@@ -1031,7 +1043,7 @@
         }
         const q = query.toLowerCase().trim();
         const matches = stationsData
-          .filter((s) => s.name.toLowerCase().includes(q))
+          .filter((s) => stationSearchText(s).includes(q))
           .slice(0, 6);
 
         if (!matches.length) {
@@ -1113,15 +1125,7 @@
                 )
                 .join("");
             } else {
-              gatesHtml = `
-              <div class="gate-detail-card best-gate-card">
-                <div class="gate-card-header">
-                  <span class="gate-tag">Gate 1</span>
-                  <span class="ai-best-chip" style="background:#e0f2fe;color:#0369a1;font-weight:600"> Main Street Exit</span>
-                </div>
-                <div class="gate-landmark-title"> Ground Level Main Concourse Exit</div>
-                <div class="gate-reason-text" style="font-size:14px;color:#334155;margin-top:2px"> Direct ramp access to main road with auto & feeder bus stands.</div>
-              </div>`;
+              gatesHtml = `<div class="gate-detail-card">Verified exit details are not available. Follow station signs or ask station staff for your destination and accessibility needs.</div>`;
             }
 
             document.getElementById("station-meta-box").innerHTML = `
@@ -1280,7 +1284,7 @@
           const station = stationsData.find(s => s.id === id);
           const arriving = hops[i - 1];
           const departing = hops[i];
-          const hasTransfer = Boolean(arriving && departing && arriving !== departing);
+          const hasTransfer = Boolean(arriving && arriving !== "Walking transfer" && departing && arriving !== departing);
           return {
             stopIndex: i, stationId: id, stationName: station.name,
             isOrigin: i === 0, isDestination: i === pathIds.length - 1,
@@ -1289,7 +1293,7 @@
             currentLine: departing || arriving, hasTransfer,
             transferFrom: hasTransfer ? arriving : null,
             transferTo: hasTransfer ? departing : null,
-            transferWalkMins: 5,
+            transferWalkMins: departing === "Walking transfer" ? 8 : 5,
           };
         });
       }
@@ -1310,8 +1314,8 @@
           leg.toStationId = to.stationId;
           leg.toStationName = to.stationName;
           leg.stationNames.push(to.stationName);
-          leg.stopsCount++;
-          leg.durationMins = Math.max(2, Math.round(leg.stopsCount * 2.3));
+          if (leg.lineName !== "Walking transfer") leg.stopsCount++;
+          leg.durationMins = leg.lineName === "Walking transfer" ? 8 : Math.max(2, Math.round(leg.stopsCount * 2.3));
         }
         return legs;
       }
@@ -1322,10 +1326,11 @@
         const hasTransfers = interchanges && interchanges.length > 0;
         const countBadge = hasTransfers
           ? `<span class="interchange-count-badge badge-transfers">🔀 ${interchanges.length} Line Transfer${interchanges.length > 1 ? "s" : ""}</span>`
-          : `<span class="interchange-count-badge badge-direct">🟢 Direct Line (No Transfers)</span>`;
+          : `<span class="interchange-count-badge badge-direct">🟢 No Line Changes</span>`;
 
         let legsHtml = "";
         legs.forEach((leg, idx) => {
+          const walking = leg.lineName === "Walking transfer";
           const color = lineColors[leg.lineName] || "#2563eb";
           const dirHtml = leg.direction
             ? `<div class="leg-direction-chip">🧭 ${leg.direction}</div>`
@@ -1335,18 +1340,19 @@
             <div class="leg-card">
               <div class="leg-card-header">
                 <span class="leg-line-pill" style="--line-color:${color}">
-                  🚆 Leg ${leg.legNumber}: ${leg.lineName}
+                  ${walking ? "🚶" : "🚆"} Leg ${leg.legNumber}: ${leg.lineName}
                 </span>
                 <span class="leg-meta">~${leg.durationMins} mins • ${leg.stopsCount} stop${leg.stopsCount !== 1 ? "s" : ""}</span>
               </div>
               <div class="leg-route-desc">
-                Board at <strong>${leg.fromStationName}</strong> ➔ Ride to <strong>${leg.toStationName}</strong>
+                ${walking ? "Walk from" : "Board at"} <strong>${leg.fromStationName}</strong> ➔ ${walking ? "Walk to" : "Ride to"} <strong>${leg.toStationName}</strong>
+                ${walking ? "<p>Exit the paid area and follow signs to the connecting station. Buy the onward operator’s ticket. Allow about 8 minutes; actual walking time varies.</p>" : ""}
               </div>
               ${dirHtml}
             </div>`;
 
-          if (hasTransfers && idx < interchanges.length) {
-            const ic = interchanges[idx];
+          const ic = (interchanges || []).find(change => change.stationId === leg.toStationId);
+          if (ic && ic.toLine !== "Walking transfer") {
             const nextColor = lineColors[ic.toLine] || "#2563eb";
             legsHtml += `
               <div class="leg-transfer-indicator">
@@ -1394,7 +1400,7 @@
             if (step.hasTransfer) rowClasses += " is-transfer";
 
             let transferCardHtml = "";
-            if (step.hasTransfer) {
+            if (step.hasTransfer && step.transferTo !== "Walking transfer") {
               const fromColor = lineColors[step.transferFrom] || "#333";
               const toColor = lineColors[step.transferTo] || "#2563eb";
               transferCardHtml = `
@@ -1430,6 +1436,11 @@
               subLabel = `🔄 Interchange Station (Connects: ${step.allLines.join(", ")})`;
             } else {
               subLabel = `Ride ${step.currentLine}`;
+            }
+
+            if (!isLast && step.currentLine === "Walking transfer") {
+              subLabel = `🚶 Walk to ${roadmap[idx + 1].stationName} • allow ~8 min`;
+              transferCardHtml = `<div class="roadmap-transfer-callout">Leave the paid area and follow signs to the connecting station. Separate operator ticket required.</div>`;
             }
 
             return `
@@ -1551,23 +1562,24 @@
         const hasTransfers = r.interchanges && r.interchanges.length > 0;
         const transferSummaryBadge = hasTransfers
           ? `<div class="route-metric"><span class="route-metric-val">${r.interchanges.length}</span><span class="route-metric-label">Line Transfer${r.interchanges.length > 1 ? "s" : ""}</span></div>`
-          : `<div class="route-metric"><span class="route-metric-val" style="color:#9ccba5">0</span><span class="route-metric-label">Direct (No Change)</span></div>`;
+          : `<div class="route-metric"><span class="route-metric-val" style="color:#9ccba5">0</span><span class="route-metric-label">No Line Changes</span></div>`;
 
         c.innerHTML = `
         <div class="route-summary-card">
           <div class="route-metric"><span class="route-metric-val">~${r.totalTimeMins} mins</span><span class="route-metric-label">Estimated Time</span></div>
-          <div class="route-metric"><span class="route-metric-val">₹${r.fare}</span><span class="route-metric-label">${r.estimated ? "Estimated Fare" : "Single Fare"}</span></div>
+          <div class="route-metric"><span class="route-metric-val">${r.fare == null ? "Check operator" : `₹${r.fare}`}</span><span class="route-metric-label">${r.fare == null ? "Separate operator fares" : r.estimated ? "Estimated Fare" : "Single Fare"}</span></div>
           <div class="route-metric"><span class="route-metric-val">${r.totalStops}</span><span class="route-metric-label">Total Stops</span></div>
           ${transferSummaryBadge}
         </div>
 
+        <p class="ncr-fare-note">${r.fareNote || "Fares and travel times are estimates."}</p>
         <section id="journey-companion" class="journey-companion" aria-label="Journey companion"></section>
 
         ${generateLegsHtml(r.legs, r.interchanges)}
 
         ${generateRoadmapHtml(r.roadmap, r.totalStops)}
 
-        ${r.exitAi ? `
+        ${r.exitAi && r.exitAi.available !== false ? `
         <div class="smart-assistant-card exit-ai-card" style="background:#f8fafc;border:1px solid #e2e8f0">
           <div class="assistant-card-header">
             <span class="assistant-card-title" style="font-weight:700"> Arrival information</span>
@@ -1588,8 +1600,8 @@
         <div class="smart-assistant-card" style="padding:16px">
           <strong>${r.transfers || 0} transfer${r.transfers === 1 ? "" : "s"}</strong>
           <p>Time and fare estimates use the saved network, average train speed,
-          a five-minute allowance per transfer, and the app’s stop-based fare model.
-          Check the official DMRC app for current fares and service updates.</p>
+          a five-minute allowance per rail interchange and eight minutes for the Noida walking connection.
+          Check DMRC and NMRC for current fares and service updates.</p>
         </div>`}`;
 
         prepareJourney(r.roadmap);
@@ -1646,7 +1658,8 @@
 
           if (pathCoords.length >= 2) {
             // Glow layer underneath route polyline
-            routeGlowPolyline = L.polyline(pathCoords, {
+            const trainCoords = pathCoords.slice(1).flatMap((point, i) => r.roadmap[i].currentLine === "Walking transfer" ? [] : [[pathCoords[i], point]]);
+            routeGlowPolyline = L.polyline(trainCoords.length === pathCoords.length - 1 ? pathCoords : trainCoords, {
               noClip: true,
               color: "#38bdf8",
               weight: 12,
@@ -1656,7 +1669,7 @@
             }).addTo(map);
 
             // Vibrant core polyline
-            routePolyline = L.polyline(pathCoords, {
+            routePolyline = L.polyline(trainCoords.length === pathCoords.length - 1 ? pathCoords : trainCoords, {
               noClip: true,
               color: "#2563eb",
               weight: 6,
@@ -1664,6 +1677,11 @@
               lineCap: "round",
               lineJoin: "round",
             }).addTo(map);
+
+            pathCoords.slice(1).forEach((point, i) => {
+              if (r.roadmap[i].currentLine === "Walking transfer") interchangeMarkers.push(
+                L.polyline([pathCoords[i], point], {noClip:true, color:"#e2e8f0", weight:5, dashArray:"5 7"}).bindTooltip("Walk between stations · separate tickets").addTo(map));
+            });
 
             // Origin custom badge marker
             const originStation = pathStations[0];
@@ -1727,7 +1745,7 @@
             }
 
             // 5. Smooth camera fit around the chosen journey only
-            map.fitBounds(routePolyline.getBounds(), {
+            map.fitBounds(L.latLngBounds(pathCoords), {
               padding: [70, 70],
               maxZoom: 15,
               animate: !matchMedia("(prefers-reduced-motion: reduce)").matches,

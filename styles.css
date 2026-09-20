@@ -2313,3 +2313,5 @@ footer > div {
 #map .leaflet-overlay-pane > svg {
   overflow: visible;
 }
+
+.ncr-fare-note { color: #c5d4d9; font-size: .85rem; line-height: 1.5; margin: 0 0 14px; }

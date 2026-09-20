@@ -56,7 +56,7 @@ public final class DelhiMetroServer implements AutoCloseable {
                     database.getAllStations().values().forEach(s -> stations.add(Map.of(
                         "id", s.getId(), "name", s.getName(), "lat", s.getLat(), "lng", s.getLng(),
                         "lines", s.getLines(), "firstTrain", s.getFirstTrain(), "lastTrain", s.getLastTrain(), "isInterchange", s.isInterchange())));
-                    json(request, 200, Map.of("success", true, "source", "java", "stations", stations, "lineRoutes", database.getLineStationsMap()));
+                    json(request, 200, Map.of("success", true, "source", "java", "stations", stations, "lineRoutes", database.getLineStationsMap(), "oneWayLines", database.getOneWayLines()));
                 }
                 case "/api/route" -> {
                     String from = params.get("from"), to = params.get("to");

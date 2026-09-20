@@ -13,6 +13,7 @@ public class MetroDatabase {
 
     public MetroDatabase() {
         initDatabase();
+        initNcrNetwork();
     }
 
     private void initDatabase() {
@@ -50,7 +51,7 @@ public class MetroDatabase {
         addStation("ghitorni", "Ghitorni", 28.4930, 77.1504, List.of("Yellow Line"), "06:04", "22:56", false);
         addStation("arjan_garh", "Arjan Garh", 28.4806, 77.1261, List.of("Yellow Line"), "06:06", "22:54", false);
         addStation("guru_dronacharya", "Guru Dronacharya", 28.4816, 77.1042, List.of("Yellow Line"), "06:08", "22:52", false);
-        addStation("sikanderpur", "Sikanderpur", 28.4819, 77.0926, List.of("Yellow Line"), "06:10", "22:50", false);
+        addStation("sikanderpur", "Sikanderpur", 28.4819, 77.0926, List.of("Yellow Line", "Rapid Metro"), "06:10", "22:50", true);
         addStation("mg_road", "MG Road", 28.4795, 77.0801, List.of("Yellow Line"), "06:12", "22:48", false);
         addStation("iffco_chowk", "IFFCO Chowk", 28.4721, 77.0725, List.of("Yellow Line"), "06:14", "22:46", false);
         addStation("millennium_city_center", "Millennium City Centre Gurugram", 28.4593, 77.0726, List.of("Yellow Line"), "06:00", "23:00", false);
@@ -99,7 +100,7 @@ public class MetroDatabase {
         addStation("golf_course", "Golf Course", 28.5604, 77.3445, List.of("Blue Line"), "06:42", "22:18", false);
         addStation("noida_city_centre", "Noida City Centre", 28.5746, 77.3562, List.of("Blue Line"), "06:44", "22:16", false);
         addStation("noida_sector_34", "Noida Sector 34", 28.5812, 77.3621, List.of("Blue Line"), "06:46", "22:14", false);
-        addStation("noida_sector_52", "Noida Sector 52", 28.5914, 77.3684, List.of("Blue Line"), "06:48", "22:12", false);
+        addStation("noida_sector_52", "Noida Sector 52", 28.5866997, 77.3728392, List.of("Blue Line"), "06:48", "22:12", false);
         addStation("noida_sector_61", "Noida Sector 61", 28.6002, 77.3712, List.of("Blue Line"), "06:50", "22:10", false);
         addStation("noida_sector_59", "Noida Sector 59", 28.6114, 77.3732, List.of("Blue Line"), "06:52", "22:08", false);
         addStation("noida_sector_62", "Noida Sector 62", 28.6212, 77.3738, List.of("Blue Line"), "06:54", "22:06", false);
@@ -319,6 +320,47 @@ public class MetroDatabase {
             "dwarka", "nangli", "najafgarh", "dhansa_bus_stand"
         ));
     }
+
+
+    private void initNcrNetwork() {
+        addStation("noida_sector_51", "Noida Sector 51", 28.5857, 77.3753, List.of("Aqua Line"), "Check operator", "Check operator", false);
+        addStation("noida_sector_50", "Noida Sector 50", 28.574518, 77.3772057, List.of("Aqua Line"), "Check operator", "Check operator", false);
+        addStation("noida_sector_76", "Noida Sector 76", 28.5653, 77.3797, List.of("Aqua Line"), "Check operator", "Check operator", false);
+        addStation("noida_sector_101", "Noida Sector 101", 28.556402, 77.384798, List.of("Aqua Line"), "Check operator", "Check operator", false);
+        addStation("noida_sector_81", "Noida Sector 81", 28.549476, 77.389988, List.of("Aqua Line"), "Check operator", "Check operator", false);
+        addStation("nsez", "NSEZ", 28.5323, 77.3948, List.of("Aqua Line"), "Check operator", "Check operator", false);
+        addStation("noida_sector_83", "Noida Sector 83", 28.522206, 77.396545, List.of("Aqua Line"), "Check operator", "Check operator", false);
+        addStation("noida_sector_137", "Noida Sector 137", 28.51087, 77.403453, List.of("Aqua Line"), "Check operator", "Check operator", false);
+        addStation("noida_sector_142", "Noida Sector 142", 28.499084, 77.412611, List.of("Aqua Line"), "Check operator", "Check operator", false);
+        addStation("noida_sector_143", "Noida Sector 143", 28.494461, 77.422179, List.of("Aqua Line"), "Check operator", "Check operator", false);
+        addStation("noida_sector_144", "Noida Sector 144", 28.486483, 77.432877, List.of("Aqua Line"), "Check operator", "Check operator", false);
+        addStation("noida_sector_145", "Noida Sector 145", 28.479, 77.4425, List.of("Aqua Line"), "Check operator", "Check operator", false);
+        addStation("noida_sector_146", "Noida Sector 146", 28.468877, 77.454964, List.of("Aqua Line"), "Check operator", "Check operator", false);
+        addStation("noida_sector_147", "Noida Sector 147", 28.459502, 77.465914, List.of("Aqua Line"), "Check operator", "Check operator", false);
+        addStation("noida_sector_148", "Noida Sector 148", 28.4481, 77.4766, List.of("Aqua Line"), "Check operator", "Check operator", false);
+        addStation("knowledge_park_ii", "Knowledge Park II", 28.456956, 77.500189, List.of("Aqua Line"), "Check operator", "Check operator", false);
+        addStation("pari_chowk", "Pari Chowk", 28.463276, 77.508196, List.of("Aqua Line"), "Check operator", "Check operator", false);
+        addStation("alpha_1", "Alpha 1", 28.470948, 77.512593, List.of("Aqua Line"), "Check operator", "Check operator", false);
+        addStation("delta_1", "Delta 1", 28.478448, 77.525704, List.of("Aqua Line"), "Check operator", "Check operator", false);
+        addStation("gnida_office", "GNIDA Office", 28.4846, 77.5365, List.of("Aqua Line"), "Check operator", "Check operator", false);
+        addStation("depot_station", "Depot Station", 28.488962, 77.543994, List.of("Aqua Line"), "Check operator", "Check operator", false);
+        addStation("rapid_phase_1", "DLF Phase 1", 28.471408, 77.093933, List.of("Rapid Metro"), "Check operator", "Check operator", false);
+        addStation("rapid_phase_2", "DLF Phase 2", 28.487534, 77.092947, List.of("Rapid Metro"), "Check operator", "Check operator", false);
+        addStation("rapid_phase_3", "DLF Phase 3", 28.493512, 77.093676, List.of("Rapid Metro"), "Check operator", "Check operator", false);
+        addStation("rapid_belvedere_towers", "Belvedere Towers", 28.491664, 77.088139, List.of("Rapid Metro"), "Check operator", "Check operator", false);
+        addStation("rapid_cyber_city", "Cyber City", 28.497963, 77.089168, List.of("Rapid Metro"), "Check operator", "Check operator", false);
+        addStation("rapid_moulsari_avenue", "Moulsari Avenue", 28.500697, 77.0946, List.of("Rapid Metro"), "Check operator", "Check operator", false);
+        addStation("rapid_sector_42_43", "Sector 42-43", 28.457392, 77.096895, List.of("Rapid Metro"), "Check operator", "Check operator", false);
+        addStation("rapid_sector_53_54", "Sector 53-54", 28.446374, 77.100435, List.of("Rapid Metro"), "Check operator", "Check operator", false);
+        addStation("rapid_sector_54_chowk", "Sector 54 Chowk", 28.432921, 77.104921, List.of("Rapid Metro"), "Check operator", "Check operator", false);
+        addStation("rapid_sector_55_56", "Sector 55-56", 28.423278, 77.105221, List.of("Rapid Metro"), "Check operator", "Check operator", false);
+        lineStationsMap.put("Aqua Line", List.of("noida_sector_51", "noida_sector_50", "noida_sector_76", "noida_sector_101", "noida_sector_81", "nsez", "noida_sector_83", "noida_sector_137", "noida_sector_142", "noida_sector_143", "noida_sector_144", "noida_sector_145", "noida_sector_146", "noida_sector_147", "noida_sector_148", "knowledge_park_ii", "pari_chowk", "alpha_1", "delta_1", "gnida_office", "depot_station"));
+        lineStationsMap.put("Rapid Metro", List.of("rapid_phase_2", "sikanderpur", "rapid_phase_1", "rapid_sector_42_43", "rapid_sector_53_54", "rapid_sector_54_chowk", "rapid_sector_55_56"));
+        lineStationsMap.put("Rapid Metro Loop", List.of("rapid_phase_2", "rapid_belvedere_towers", "rapid_cyber_city", "rapid_moulsari_avenue", "rapid_phase_3", "rapid_phase_2"));
+        lineStationsMap.put("Walking transfer", List.of("noida_sector_52", "noida_sector_51"));
+    }
+
+    public List<String> getOneWayLines() { return List.of("Rapid Metro Loop"); }
 
     private void initExitGates() {
         stationGatesMap.put("rajiv_chowk", List.of(

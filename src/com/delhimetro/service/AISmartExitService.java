@@ -17,12 +17,8 @@ public class AISmartExitService {
         Map<String, Object> result = new LinkedHashMap<>();
 
         if (gates == null || gates.isEmpty()) {
-            result.put("bestGate", "Gate 1 (Main Exit)");
-            result.put("reason", "Main concourse exit with ground ramp access.");
-            result.put("savedMins", 3);
-            result.put("lift", true);
-            result.put("escalator", true);
-            result.put("transitOptions", List.of("Auto Stand", "DTC Bus"));
+            result.put("available", false);
+            result.put("reason", "Verified exit details are unavailable. Follow station signs or ask station staff.");
             return result;
         }
 

@@ -27,8 +27,8 @@ test('Vaishali branch is reachable and routes through Yamuna Bank', () => {
 });
 test('every listed station is reachable with valid adjacent hops for both preferences', () => {
   const edges = new Set();
-  for (const ids of Object.values(network.lineRoutes)) for (let i=1;i<ids.length;i++) {
-    edges.add(JSON.stringify([ids[i-1],ids[i]])); edges.add(JSON.stringify([ids[i],ids[i-1]]));
+  for (const [service, ids] of Object.entries(network.lineRoutes)) for (let i=1;i<ids.length;i++) {
+    edges.add(JSON.stringify([ids[i-1],ids[i]])); if (!(network.oneWayLines || []).includes(service)) edges.add(JSON.stringify([ids[i],ids[i-1]]));
   }
   for (const preference of ['fastest','fewest_interchanges']) for (const station of network.stations) {
     if (station.id === 'rajiv_chowk') continue;
@@ -74,4 +74,24 @@ test('inline page scripts compile and route planner dependency exists', () => {
 
 test('Blue branch through journeys do not count a line change at Yamuna Bank', () => {
   assert.equal(route('vaishali', 'rajiv_chowk').transfers, 0);
+});
+
+test('Aqua and Rapid network coverage and directed loop', () => {
+  assert.equal(network.stations.length, 260);
+  assert.equal(network.lineRoutes['Aqua Line'].length, 21);
+  assert.equal(new Set([...network.lineRoutes['Rapid Metro'], ...network.lineRoutes['Rapid Metro Loop']]).size, 11);
+  assert.deepEqual(route('rapid_belvedere_towers', 'rapid_phase_2').pathStationIds,
+    ['rapid_belvedere_towers','rapid_cyber_city','rapid_moulsari_avenue','rapid_phase_3','rapid_phase_2']);
+  assert.equal(route('rapid_phase_2','rapid_belvedere_towers').totalStops, 1);
+});
+test('cross NCR journeys use the walking connection and separate fares', () => {
+  for (const [from,to] of [['depot_station','rapid_sector_55_56'],['rapid_sector_55_56','depot_station']]) {
+    const r = route(from,to,'fewest_interchanges');
+    assert.equal(r.transfers,3);
+    assert.equal(r.fare,null);
+    assert.ok(['noida_sector_51','noida_sector_52','sikanderpur'].every(id=>r.pathStationIds.includes(id)));
+    assert.equal(r.totalStops,r.pathStationIds.length-2);
+  }
+  const walk = route('noida_sector_51','noida_sector_52');
+  assert.equal(walk.totalStops,0);assert.equal(walk.totalTimeMins,8);assert.equal(walk.fare,0);
 });

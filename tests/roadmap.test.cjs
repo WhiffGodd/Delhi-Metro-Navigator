@@ -39,3 +39,16 @@ test('boarding at an interchange uses the actual departing train line',()=>{
   assert.equal(roadmap[0].currentLine,'Blue Line');
   assert.equal(roadmap.filter(s=>s.hasTransfer).length,0);
 });
+
+test('walking roadmap describes the separate station connection without boarding a train',()=>{
+  for(const [from,to] of [['depot_station','rapid_sector_55_56'],['rapid_sector_55_56','depot_station'],['noida_sector_51','noida_sector_52']]) {
+    const trip=route(from,to,'fewest_interchanges');
+    const roadmap=app.enrichFallbackRoadmap(trip.pathStationIds,trip.segments);
+    assert.equal(roadmap.filter(s=>s.hasTransfer).length,trip.transfers);
+    const legs=app.enrichFallbackLegs(trip.pathStationIds,roadmap);
+    assert.equal(legs.reduce((n,l)=>n+l.stopsCount,0),trip.totalStops);
+    assert.match(app.generateLegsHtml(legs,[]),/Walk from/);
+    assert.match(app.generateRoadmapHtml(roadmap,trip.totalStops),/Separate operator ticket required/);
+    assert.doesNotMatch(app.generateRoadmapHtml(roadmap,trip.totalStops),/Board Walking transfer/);
+  }
+});

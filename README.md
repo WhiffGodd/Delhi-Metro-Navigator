@@ -1,9 +1,48 @@
-# Delhi Metro Navigator — Java 21
+# NCR Metro Navigator — Java 21
 
-A Java application that serves the Delhi Metro website and its backend together.
+A Java application for metro journeys across Delhi, Noida, Greater Noida and
+Gurugram (Gurgaon), serving the website and its backend together.
 The browser handles the interactive map and journey companion; Java owns the
 station catalogue, routing, transfers, journey roadmap, estimated fares and
 station exit recommendations. No Node.js server or external framework is required.
+
+
+## NCR coverage
+
+The catalogue now contains **260 unique stations**, retaining the existing Delhi
+Metro routes and adding all **21 Aqua Line** stations and **11 Rapid Metro**
+stations (Sikanderpur is shared with the existing Yellow Line).
+
+- Aqua Line: Noida Sector 51, 50, 76, 101, 81, NSEZ, 83, 137, 142, 143,
+  144, 145, 146, 147, 148, Knowledge Park II, Pari Chowk, Alpha 1, Delta 1,
+  GNIDA Office and Depot Station.
+- Rapid Metro: Sector 55-56, Sector 54 Chowk, Sector 53-54, Sector 42-43,
+  DLF Phase 1, Sikanderpur, DLF Phase 2, Belvedere Towers, Cyber City,
+  Moulsari Avenue and DLF Phase 3.
+- Noida Sector 52 (Blue) and Sector 51 (Aqua) are connected by an explicitly
+  labelled walk, with an **estimated eight-minute allowance**, separate paid
+  areas and onward ticket guidance. A walking hop is not counted as a train stop.
+- Rapid Metro's loop runs Phase 2 → Belvedere Towers → Cyber City →
+  Moulsari Avenue → Phase 3 → Phase 2; routing respects this direction.
+  `oneWayLines` accompanies `lineRoutes` in both the API and bundled network.
+  The `Walking transfer` topology entry is a pedestrian connection, not a train.
+- Journey roadmaps show every intermediate station. Search supports line names,
+  Greater Noida, Gurugram and Gurgaon aliases. Aqua/Rapid fares are left unset
+  (`fare: null`) with operator guidance; no combined fare is fabricated.
+- New station first/last trains say “Check operator”; missing exit information
+  does not invent a gate or accessibility facilities. Travel times remain estimates.
+
+Sources checked 20 September 2026:
+[NMRC station list](https://www.nmrcnoida.com/Content/pdf/policy2202019_Annexure1.pdf),
+[DMRC operational network map](https://delhimetrorail.com/static/media/DMRC-Network-Map_Jan2026_Hindi-English-13.03.2026.147097c4.pdf),
+[NMRC upcoming projects](https://www.nmrcnoida.com/Projects/Upcoming-projects).
+Station marker coordinates were cross-checked against the corresponding
+Wikipedia station pages; they are approximate map locations, not exit locations.
+[Phase 2 service directions](https://en.wikipedia.org/wiki/Phase_2_metro_station)
+provide the Rapid loop topology. Planned Greater Noida West/Boraki extensions
+and planned Gurugram routes are not represented as operating services. The
+existing Delhi catalogue is retained; this expansion is not a claim of a complete
+2026 audit of every Delhi line.
 
 ## Build and run
 

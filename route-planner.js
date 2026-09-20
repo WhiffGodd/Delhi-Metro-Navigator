@@ -2,16 +2,16 @@ function createMetroRouter(network) {
   const stations = new Map(network.stations.map(s => [s.id, s]));
   const graph = new Map([...stations.keys()].map(id => [id, []]));
   for (const [service, ids] of Object.entries(network.lineRoutes)) {
-    const line = service.replace(" Branch", "");
+    const line = service.replace(" Branch", "").replace(" Loop", "");
     for (let i = 1; i < ids.length; i++) {
       const a = stations.get(ids[i - 1]), b = stations.get(ids[i]);
       if (!a || !b) throw new Error('The network contains an unknown station.');
       const rad = value => value * Math.PI / 180;
       const h = Math.sin(rad(b.lat - a.lat) / 2) ** 2 + Math.cos(rad(a.lat)) * Math.cos(rad(b.lat)) * Math.sin(rad(b.lng - a.lng) / 2) ** 2;
       const km = 6371 * 2 * Math.asin(Math.sqrt(Math.min(1, h)));
-      const minutes = km / 35 * 60 + 1.2;
+      const minutes = line === 'Walking transfer' ? 8 : km / 35 * 60 + 1.2;
       graph.get(a.id).push({id:b.id, line, minutes});
-      graph.get(b.id).push({id:a.id, line, minutes});
+      if (!(network.oneWayLines || []).includes(service)) graph.get(b.id).push({id:a.id, line, minutes});
     }
   }
   return function findRoute(from, to, preference = 'fastest') {
@@ -33,9 +33,9 @@ function createMetroRouter(network) {
       if (best.get(key(current.id, current.line)) !== current) continue;
       if (current.id === to) { finish = current; break; }
       for (const edge of graph.get(current.id)) {
-        const transfer = current.line !== null && current.line !== edge.line ? 1 : 0;
+        const transfer = current.line !== null && current.line !== 'Walking transfer' && current.line !== edge.line ? 1 : 0;
         const next = {id:edge.id, line:edge.line,
-          minutes:current.minutes + edge.minutes + transfer * 5,
+          minutes:current.minutes + edge.minutes + (edge.line === 'Walking transfer' ? 0 : transfer * 5),
           transfers:current.transfers + transfer, previous:current};
         const stateKey = key(next.id, next.line);
         if (!best.has(stateKey) || compare(next, best.get(stateKey)) < 0) {
@@ -47,9 +47,10 @@ function createMetroRouter(network) {
     if (!finish) throw new Error('No connected route was found between these stations.');
     const states = [];
     for (let step = finish; step; step = step.previous) states.unshift(step);
-    const stops = states.length - 1;
+    const stops = states.slice(1).filter(s => s.line !== 'Walking transfer').length;
     // Preserve the existing application's stop-based estimate model.
-    const fare = stops <= 2 ? 10 : stops <= 5 ? 20 : stops <= 12 ? 30 : stops <= 21 ? 40 : stops <= 32 ? 50 : 60;
+    const separateOperator = states.some(s => ['Aqua Line', 'Rapid Metro'].includes(s.line));
+    const fare = separateOperator ? null : stops === 0 ? 0 : stops <= 2 ? 10 : stops <= 5 ? 20 : stops <= 12 ? 30 : stops <= 21 ? 40 : stops <= 32 ? 50 : 60;
     const segments = [];
     for (let i = 1; i < states.length; i++) {
       const step = states[i], last = segments[segments.length - 1];
@@ -58,7 +59,7 @@ function createMetroRouter(network) {
     }
     return {originId:from, destId:to, originName:stations.get(from).name,
       destName:stations.get(to).name, totalTimeMins:Math.round(finish.minutes),
-      totalStops:stops, fare, transfers:finish.transfers,
+      totalStops:stops, fare, fareNote: separateOperator ? "Check operator fares. NMRC and Rapid Metro tickets are separate from Delhi Metro." : "Estimated fare", transfers:finish.transfers,
       pathStationIds:states.map(s => s.id), segments, estimated:true};
   };
 }

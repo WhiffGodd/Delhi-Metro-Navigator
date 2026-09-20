@@ -47,12 +47,13 @@ function renderCompanion() {
   if (p.transfer) hint = p.untilTransfer === 0
     ? `Change here to ${name(p.transfer.transferTo)} before continuing.`
     : `Change in ${p.untilTransfer} stop${p.untilTransfer === 1 ? '' : 's'} at ${name(p.transfer.stationName)} to ${name(p.transfer.transferTo)}.`;
+  if (p.current.currentLine === 'Walking transfer' && p.next) hint = `Walk to ${name(p.next.stationName)}. Leave the paid area and buy the onward operator’s ticket; allow about 8 minutes.`;
   if (p.arrived) hint = 'Your journey is complete. Check station signs for your exit.';
   host.innerHTML = `
     <p class="companion-eyebrow">Metro. / Journey companion</p>
     <div role="status" aria-live="polite" aria-atomic="true">
       <h3>${!started ? 'Your ride, one stop at a time.' : p.arrived ? 'You’ve arrived.' : name(p.current.stationName)}</h3>
-      ${!started ? `<p>Keep your place through every stop and line change. Ready to board at <strong>${name(p.current.stationName)}</strong>?</p>` : `
+      ${!started ? `<p>Keep your place through every stop and line change. Ready to start at <strong>${name(p.current.stationName)}</strong>?</p>` : `
         <p>${p.remaining} stop${p.remaining === 1 ? '' : 's'} to ${name(roadmap.at(-1).stationName)}</p>
         <progress value="${p.completed}" max="${p.total}" aria-label="Journey progress"></progress>
         ${p.next ? `<div class="companion-next"><span>NEXT STATION</span><strong>${name(p.next.stationName)}</strong></div>` : ''}

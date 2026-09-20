@@ -43,7 +43,7 @@ public class DijkstraRoutingService {
         Map<String, List<String>> lineMap = database.getLineStationsMap();
 
         for (Map.Entry<String, List<String>> entry : lineMap.entrySet()) {
-            String lineName = entry.getKey().replace(" Branch", "");
+            String lineName = entry.getKey().replace(" Branch", "").replace(" Loop", "");
             List<String> stations = entry.getValue();
 
             for (int i = 0; i < stations.size() - 1; i++) {
@@ -54,10 +54,10 @@ public class DijkstraRoutingService {
 
                 if (sU != null && sV != null) {
                     double dist = calculateDistance(sU.getLat(), sU.getLng(), sV.getLat(), sV.getLng());
-                    double timeMins = (dist / 35.0) * 60.0 + 1.2; // average 35 km/h train speed + dwell
+                    double timeMins = lineName.equals("Walking transfer") ? 8 : (dist / 35.0) * 60.0 + 1.2; // average 35 km/h train speed + dwell
 
                     graph.computeIfAbsent(u, k -> new ArrayList<>()).add(new Edge(v, timeMins, lineName));
-                    graph.computeIfAbsent(v, k -> new ArrayList<>()).add(new Edge(u, timeMins, lineName));
+                    if (!database.getOneWayLines().contains(entry.getKey())) graph.computeIfAbsent(v, k -> new ArrayList<>()).add(new Edge(u, timeMins, lineName));
                 }
             }
         }
@@ -77,9 +77,9 @@ public class DijkstraRoutingService {
             if (best.get(current.state()) != current) continue;
             if (current.state().stationId().equals(destId)) { finish = current; break; }
             for (Edge edge : graph.getOrDefault(current.state().stationId(), List.of())) {
-                int transfer = current.state().line() != null && !current.state().line().equals(edge.line) ? 1 : 0;
+                int transfer = current.state().line() != null && !current.state().line().equals("Walking transfer") && !current.state().line().equals(edge.line) ? 1 : 0;
                 Visit next = new Visit(new State(edge.targetId, edge.line),
-                    current.minutes() + edge.weight + transfer * 5, current.transfers() + transfer, current);
+                    current.minutes() + edge.weight + (edge.line.equals("Walking transfer") ? 0 : transfer * 5), current.transfers() + transfer, current);
                 Visit known = best.get(next.state());
                 if (known == null || order.compare(next, known) < 0) {
                     best.put(next.state(), next);
@@ -95,7 +95,7 @@ public class DijkstraRoutingService {
             if (visit.previous() != null) segmentLines.addFirst(visit.state().line());
         }
         int totalTime = (int) Math.round(finish.minutes());
-        int totalStops = path.size() - 1;
+        int totalStops = (int) segmentLines.stream().filter(line -> !line.equals("Walking transfer")).count();
         int fare = calculateFare(totalStops);
 
         // Build Journey Legs & Station-by-Station Roadmap
@@ -126,8 +126,8 @@ public class DijkstraRoutingService {
                         legStationNames.add(st != null ? st.getName() : stId);
                     }
 
-                    int legStops = (i + 1) - legStart;
-                    int legTime = (int) Math.round(legStops * 2.3);
+                    int legStops = currentLine.equals("Walking transfer") ? 0 : (i + 1) - legStart;
+                    int legTime = currentLine.equals("Walking transfer") ? 8 : (int) Math.round(legStops * 2.3);
 
                     Map<String, Object> legMap = new LinkedHashMap<>();
                     legMap.put("legNumber", legs.size() + 1);
@@ -145,7 +145,7 @@ public class DijkstraRoutingService {
                     legMap.put("stationIds", legStationIds);
                     legs.add(legMap);
 
-                    if (lineChangesNext) {
+                    if (lineChangesNext && !currentLine.equals("Walking transfer")) {
                         String icStationId = path.get(i + 1);
                         String nextLine = segmentLines.get(i + 1);
                         String nextNextStationId = (i + 2 < path.size()) ? path.get(i + 2) : icStationId;
@@ -158,7 +158,7 @@ public class DijkstraRoutingService {
                         icMap.put("fromLine", currentLine);
                         icMap.put("toLine", nextLine);
                         icMap.put("nextDirection", nextDir);
-                        icMap.put("transferWalkMins", 5);
+                        icMap.put("transferWalkMins", nextLine.equals("Walking transfer") ? 8 : 5);
                         icMap.put("stopNumber", i + 1);
                         interchanges.add(icMap);
                     }
@@ -200,14 +200,14 @@ public class DijkstraRoutingService {
                 if (!isOrigin && !isDest) {
                     String incomingLine = segmentLines.get(i - 1);
                     String outgoingLine = segmentLines.get(i);
-                    if (!incomingLine.equals(outgoingLine)) {
+                    if (!incomingLine.equals("Walking transfer") && !incomingLine.equals(outgoingLine)) {
                         hasTransfer = true;
                         stepMap.put("transferFrom", incomingLine);
                         stepMap.put("transferTo", outgoingLine);
                         String nextNextStationId = (i + 1 < path.size()) ? path.get(i + 1) : stId;
                         String nextDir = getLineDirection(outgoingLine, stId, nextNextStationId, lineMap, allStations);
                         stepMap.put("transferDirection", nextDir);
-                        stepMap.put("transferWalkMins", 5);
+                        stepMap.put("transferWalkMins", outgoingLine.equals("Walking transfer") ? 8 : 5);
                     }
                 }
                 stepMap.put("hasTransfer", hasTransfer);
@@ -224,7 +224,9 @@ public class DijkstraRoutingService {
         result.put("destName", allStations.get(destId).getName());
         result.put("totalTimeMins", totalTime);
         result.put("totalStops", totalStops);
-        result.put("fare", fare);
+        boolean separateOperator = segmentLines.contains("Aqua Line") || segmentLines.contains("Rapid Metro");
+        result.put("fare", separateOperator ? null : totalStops == 0 ? 0 : fare);
+        result.put("fareNote", separateOperator ? "Check operator fares. NMRC and Rapid Metro tickets are separate from Delhi Metro." : "Estimated fare");
         result.put("estimated", true);
         result.put("source", "java");
         result.put("transfers", interchanges.size());
@@ -240,8 +242,10 @@ public class DijkstraRoutingService {
 
     private String getLineDirection(String lineName, String fromId, String toId,
                                     Map<String, List<String>> lineMap, Map<String, Station> allStations) {
+        if (lineName.equals("Walking transfer")) return "Exit the paid area; follow signs to the connecting station. Separate ticket required. Allow about 8 minutes.";
+        if (lineName.equals("Rapid Metro")) return "Follow the platform display; the Cyber City loop operates one way.";
         List<String> stationsOnLine = lineMap.entrySet().stream()
-            .filter(entry -> entry.getKey().replace(" Branch", "").equals(lineName))
+            .filter(entry -> entry.getKey().replace(" Branch", "").replace(" Loop", "").equals(lineName))
             .map(Map.Entry::getValue)
             .filter(ids -> ids.contains(fromId) && ids.contains(toId))
             .findFirst().orElse(null);

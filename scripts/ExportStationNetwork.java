@@ -19,6 +19,6 @@ public class ExportStationNetwork {
         Files.createDirectories(Path.of("data"));
         Files.writeString(Path.of("data/stations.json"),
             "{\"success\":true,\"stations\":[\n" + stations +
-            "\n],\"lineRoutes\":{\n" + lines + "\n}}\n");
+            "\n],\"oneWayLines\":[\"Rapid Metro Loop\"],\"lineRoutes\":{\n" + lines + "\n}}\n");
     }
 }
