@@ -2315,3 +2315,7 @@ footer > div {
 }
 
 .ncr-fare-note { color: #c5d4d9; font-size: .85rem; line-height: 1.5; margin: 0 0 14px; }
+
+.input-group:has(input[list]) .route-select { margin-top: 8px; font-size: 13px; }
+.planner-form input[list] { min-height: 44px; }
+.planner-form .swap-wrapper { position: static; display: flex; justify-content: center; margin: -10px 0; }

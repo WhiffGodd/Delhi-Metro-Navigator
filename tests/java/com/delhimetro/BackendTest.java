@@ -19,6 +19,19 @@ public class BackendTest {
     public static void main(String[] args) throws Exception {
         MetroDatabase db = new MetroDatabase();
         DijkstraRoutingService router = new DijkstraRoutingService(db);
+        double[] distances = {2, 2.01, 5, 5.01, 12, 12.01, 21, 21.01, 32, 32.01};
+        int[] fares = {11, 21, 21, 32, 32, 43, 43, 54, 54, 64};
+        for (int i = 0; i < fares.length; i++)
+            check(DijkstraRoutingService.calculateFare(distances[i]) == fares[i], "Distance fare boundary");
+        check(router.findRoute("new_delhi", "igi_airport", "fastest").get("fare") == null, "Separate Airport tariff");
+        check(router.findRoute("indrelok", "kirti_nagar", "fastest").get("pathStationIds")
+            .equals(List.of("indrelok", "ashok_park_main", "kirti_nagar")), "Green branch junction");
+        var exits = new com.delhimetro.service.AISmartExitService(db);
+        var knownExit = exits.getExitRecommendation("rajiv_chowk");
+        check(Boolean.TRUE.equals(knownExit.get("available")) && knownExit.containsKey("walkMins"), "Stored exit recommendation");
+        check(!knownExit.containsKey("savedMins"), "No fabricated time saving");
+        var unknownExit = exits.getExitRecommendation("vaishali");
+        check(Boolean.FALSE.equals(unknownExit.get("available")) && !unknownExit.containsKey("bestGate"), "No fabricated gate");
         for (String preference : List.of("fastest", "fewest_interchanges")) {
             for (String destination : db.getAllStations().keySet()) {
                 if (destination.equals("rajiv_chowk")) continue;

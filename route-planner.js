@@ -1,3 +1,6 @@
+function estimateMetroFare(km) {
+  return km <= 2 ? 11 : km <= 5 ? 21 : km <= 12 ? 32 : km <= 21 ? 43 : km <= 32 ? 54 : 64;
+}
 function createMetroRouter(network) {
   const stations = new Map(network.stations.map(s => [s.id, s]));
   const graph = new Map([...stations.keys()].map(id => [id, []]));
@@ -10,8 +13,8 @@ function createMetroRouter(network) {
       const h = Math.sin(rad(b.lat - a.lat) / 2) ** 2 + Math.cos(rad(a.lat)) * Math.cos(rad(b.lat)) * Math.sin(rad(b.lng - a.lng) / 2) ** 2;
       const km = 6371 * 2 * Math.asin(Math.sqrt(Math.min(1, h)));
       const minutes = line === 'Walking transfer' ? 8 : km / 35 * 60 + 1.2;
-      graph.get(a.id).push({id:b.id, line, minutes});
-      if (!(network.oneWayLines || []).includes(service)) graph.get(b.id).push({id:a.id, line, minutes});
+      graph.get(a.id).push({id:b.id, line, minutes, km});
+      if (!(network.oneWayLines || []).includes(service)) graph.get(b.id).push({id:a.id, line, minutes, km});
     }
   }
   return function findRoute(from, to, preference = 'fastest') {
@@ -23,7 +26,7 @@ function createMetroRouter(network) {
     const compare = (a, b) => preference === 'fewest_interchanges'
       ? a.transfers - b.transfers || a.minutes - b.minutes
       : a.minutes - b.minutes || a.transfers - b.transfers;
-    const start = {id:from, line:null, minutes:0, transfers:0, previous:null};
+    const start = {id:from, line:null, minutes:0, transfers:0, distanceKm:0, previous:null};
     const best = new Map([[key(from, null), start]]);
     const pending = [start];
     let finish;
@@ -36,7 +39,7 @@ function createMetroRouter(network) {
         const transfer = current.line !== null && current.line !== 'Walking transfer' && current.line !== edge.line ? 1 : 0;
         const next = {id:edge.id, line:edge.line,
           minutes:current.minutes + edge.minutes + (edge.line === 'Walking transfer' ? 0 : transfer * 5),
-          transfers:current.transfers + transfer, previous:current};
+          transfers:current.transfers + transfer, distanceKm:current.distanceKm + (edge.line === "Walking transfer" ? 0 : edge.km), previous:current};
         const stateKey = key(next.id, next.line);
         if (!best.has(stateKey) || compare(next, best.get(stateKey)) < 0) {
           best.set(stateKey, next);
@@ -48,9 +51,8 @@ function createMetroRouter(network) {
     const states = [];
     for (let step = finish; step; step = step.previous) states.unshift(step);
     const stops = states.slice(1).filter(s => s.line !== 'Walking transfer').length;
-    // Preserve the existing application's stop-based estimate model.
-    const separateOperator = states.some(s => ['Aqua Line', 'Rapid Metro'].includes(s.line));
-    const fare = separateOperator ? null : stops === 0 ? 0 : stops <= 2 ? 10 : stops <= 5 ? 20 : stops <= 12 ? 30 : stops <= 21 ? 40 : stops <= 32 ? 50 : 60;
+    const separateOperator = states.some(s => ['Aqua Line', 'Rapid Metro', 'Airport Express'].includes(s.line));
+    const fare = separateOperator ? null : stops === 0 ? 0 : estimateMetroFare(finish.distanceKm);
     const segments = [];
     for (let i = 1; i < states.length; i++) {
       const step = states[i], last = segments[segments.length - 1];
@@ -59,7 +61,7 @@ function createMetroRouter(network) {
     }
     return {originId:from, destId:to, originName:stations.get(from).name,
       destName:stations.get(to).name, totalTimeMins:Math.round(finish.minutes),
-      totalStops:stops, fare, fareNote: separateOperator ? "Check operator fares. NMRC and Rapid Metro tickets are separate from Delhi Metro." : "Estimated fare", transfers:finish.transfers,
+      totalStops:stops, fare, distanceKm: Math.round(finish.distanceKm * 10) / 10, fareNote: separateOperator ? "Airport Express, NMRC and Rapid Metro use separate tariffs. Check the relevant operator fare." : "Estimated weekday token fare from station coordinates. Track distance, Sundays, holidays and smart-card discounts can change the fare.", transfers:finish.transfers,
       pathStationIds:states.map(s => s.id), segments, estimated:true};
   };
 }
@@ -84,4 +86,4 @@ async function fetchMetroRoute(localRouter, from, to, preference, bundled) {
   }
   return localRouter(from, to, preference);
 }
-if (typeof module !== 'undefined') module.exports = {createMetroRouter, fetchMetroRoute};
+if (typeof module !== 'undefined') module.exports = {createMetroRouter, fetchMetroRoute, estimateMetroFare};

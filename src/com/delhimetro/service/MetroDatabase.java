@@ -300,8 +300,9 @@ public class MetroDatabase {
             "kashmere_gate", "lal_quila", "jama_masjid", "delhi_gate", "ito", "mandi_house", "janpath", "central_secretariat", "khan_market", "jawaharlal_nehru_stadium", "jangpura", "lajpat_nagar", "moolchand", "kailash_colony", "nehru_place", "kalka_ji_mandir", "govind_puri", "harkesh_nagar", "jasola_apollo", "sarita_vihar", "mohan_estate", "tughlakabad", "badarpur_border", "sarai", "nhpc_chowk", "mewala_maharajpur", "sector_28_faridabad", "badkal_mor", "old_faridabad", "neelam_chowk_ajronda", "bata_chowk", "escorts_mujesar", "sant_surdas_sihi", "raja_nahar_singh"
         ));
 
+        lineStationsMap.put("Green Line Branch", List.of("kirti_nagar", "ashok_park_main"));
         lineStationsMap.put("Green Line", List.of(
-            "indrelok", "kirti_nagar", "ashok_park_main", "punjabi_bagh", "shivaji_park", "madipur", "paschim_vihar_east", "paschim_vihar_west", "peeragarhi", "udyog_nagar", "maharaja_surajmal_stadium", "nangloi", "nangloi_railway_station", "rajdhani_park", "mundka", "mundka_industrial_area", "ghevra_metro_station", "tikri_kalan", "tikri_border", "pandit_shree_ram_sharma", "brigadier_hoshiar_singh"
+            "indrelok", "ashok_park_main", "punjabi_bagh", "shivaji_park", "madipur", "paschim_vihar_east", "paschim_vihar_west", "peeragarhi", "udyog_nagar", "maharaja_surajmal_stadium", "nangloi", "nangloi_railway_station", "rajdhani_park", "mundka", "mundka_industrial_area", "ghevra_metro_station", "tikri_kalan", "tikri_border", "pandit_shree_ram_sharma", "brigadier_hoshiar_singh"
         ));
 
         lineStationsMap.put("Pink Line", List.of(
