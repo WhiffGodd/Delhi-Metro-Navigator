@@ -19,7 +19,7 @@ public class Build {
         if (compiler == null) throw new IllegalStateException("A full JDK is required, not just a JRE");
         if (compiler.run(null, null, null, options.toArray(String[]::new)) != 0) throw new IllegalStateException("Compilation failed");
         Path web = Files.createDirectories(classes.resolve("web"));
-        for (String file : List.of("index.html", "styles.css", "ui-enhancements.js", "route-planner.js", "journey-companion.js"))
+        for (String file : List.of("index.html", "styles.css", "ui-enhancements.js", "route-planner.js", "fare-engine.js", "journey-companion.js"))
             Files.copy(root.resolve(file), web.resolve(file));
         for (String directory : List.of("data", "vendor")) {
             try (var assets = Files.walk(root.resolve(directory))) {

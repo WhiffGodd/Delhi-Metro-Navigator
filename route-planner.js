@@ -1,3 +1,27 @@
+function getStoredExitRecommendation(guide, stationId, query = '', stepFree = false) {
+  const entry = guide?.[stationId];
+  if (!entry || !Array.isArray(entry.allGates) || !entry.allGates.length)
+    return {available:false, reason:entry?.reason || "Official gate details are unavailable. Follow station signage or ask station staff.", allGates:[], transitOptions:[]};
+  const words = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  const gates = entry.allGates.filter(g => !['closed','close','inactive'].includes(String(g.status).toLowerCase()) &&
+    (!stepFree || g.accessible === true) && words.every(word => `${g.gate} ${g.landmark}`.toLowerCase().includes(word)))
+    .sort((a,b) => a.gate.localeCompare(b.gate, undefined, {numeric:true}));
+  if (!gates.length) return {...entry, available:false, reason:stepFree ? "No matching gate is listed as accessible. Ask station staff for a step-free route." : "No listed exit matches that destination. Choose another nearby destination or ask station staff.", transitOptions:[]};
+  const best = gates[0];
+  return {...entry, ...best, available:true, bestGate:best.gate, matches:gates,
+    recommendationNote:"Based on DMRC’s published gate destinations, not live gate status. Confirm access using station signs or staff."};
+}
+async function loadStoredExitGuide() {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 4000);
+  try {
+    const response = await fetch('data/exits.json', {signal:controller.signal, cache:'no-cache'});
+    if (!response.ok) return {};
+    const data = await response.json();
+    return data && typeof data === 'object' && !Array.isArray(data) ? data : {};
+  } catch { return {}; }
+  finally { clearTimeout(timeout); }
+}
 function estimateMetroFare(km) {
   return km <= 2 ? 11 : km <= 5 ? 21 : km <= 12 ? 32 : km <= 21 ? 43 : km <= 32 ? 54 : 64;
 }
@@ -61,7 +85,7 @@ function createMetroRouter(network) {
     }
     return {originId:from, destId:to, originName:stations.get(from).name,
       destName:stations.get(to).name, totalTimeMins:Math.round(finish.minutes),
-      totalStops:stops, fare, distanceKm: Math.round(finish.distanceKm * 10) / 10, fareNote: separateOperator ? "Airport Express, NMRC and Rapid Metro use separate tariffs. Check the relevant operator fare." : "Estimated weekday token fare from station coordinates. Track distance, Sundays, holidays and smart-card discounts can change the fare.", transfers:finish.transfers,
+      totalStops:stops, fare, exitAi:getStoredExitRecommendation(network.exitRecommendations, to), distanceKm: Math.round(finish.distanceKm * 10) / 10, fareNote: separateOperator ? "Airport Express, NMRC and Rapid Metro use separate tariffs. Check the relevant operator fare." : "Estimated weekday token fare from station coordinates. Track distance, Sundays, holidays and smart-card discounts can change the fare.", transfers:finish.transfers,
       pathStationIds:states.map(s => s.id), segments, estimated:true};
   };
 }
@@ -86,4 +110,4 @@ async function fetchMetroRoute(localRouter, from, to, preference, bundled) {
   }
   return localRouter(from, to, preference);
 }
-if (typeof module !== 'undefined') module.exports = {createMetroRouter, fetchMetroRoute, estimateMetroFare};
+if (typeof module !== 'undefined') module.exports = {createMetroRouter, fetchMetroRoute, estimateMetroFare, getStoredExitRecommendation, loadStoredExitGuide};

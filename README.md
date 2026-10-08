@@ -27,8 +27,11 @@ stations (Sikanderpur is shared with the existing Yellow Line).
   `oneWayLines` accompanies `lineRoutes` in both the API and bundled network.
   The `Walking transfer` topology entry is a pedestrian connection, not a train.
 - Journey roadmaps show every intermediate station. Search supports line names,
-  Greater Noida, Gurugram and Gurgaon aliases. Aqua/Rapid fares are left unset
-  (`fare: null`) with operator guidance; no combined fare is fabricated.
+  Greater Noida, Gurugram and Gurgaon aliases. The fare panel calculates operator
+  components from published tariffs, with weekday and Sunday/national-holiday columns.
+  See [fare sources and accuracy limits](docs/FARE_DATA.md).
+- Smart exit uses a bundled official DMRC snapshot covering 239 stations and 724 gates.
+  Search a nearby landmark or filter for gates listed as accessible. See [exit data](docs/EXIT_DATA.md).
 - New station first/last trains say “Check operator”; missing exit information
   does not invent a gate or accessibility facilities. Travel times remain estimates.
 
@@ -84,8 +87,10 @@ server, station responses identify `source: java`, and routes include Java-built
 roadmap, legs and transfer metadata.
 
 The existing data is an in-memory catalogue, not live train tracking or a user
-account database. Fare/time figures are estimates from the existing stop-based
-fare model and average speed. Confirm fares, station exits and accessibility
+account database. The UI fare panel uses published operator tariffs; regular Delhi
+Metro slab selection still estimates distance from station coordinates. Backend API
+fare fields remain legacy estimates; the UI uses the shared fare engine for either
+route source. Travel time uses average speed. Confirm fares, station exits and accessibility
 against official station information. Card recharge only links to the DMRC portal;
 this application does not process payments.
 
