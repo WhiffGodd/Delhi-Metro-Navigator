@@ -249,7 +249,8 @@
               <div class="planner-form">
                 <div class="input-group">
                   <label class="select-label" for="route-from">FROM</label>
-                  <select id="route-from" class="route-select"></select>
+                  <input id="route-from-search" class="search-input" type="search" list="station-options" placeholder="Type starting station…" aria-label="Search starting station" autocomplete="off" />
+                  <select id="route-from" class="route-select" aria-label="Select starting station"></select>
                 </div>
 
                 <div class="swap-wrapper">
@@ -268,7 +269,9 @@
 
                 <div class="input-group">
                   <label class="select-label" for="route-to">TO</label>
-                  <select id="route-to" class="route-select"></select>
+                  <input id="route-to-search" class="search-input" type="search" list="station-options" placeholder="Type destination station…" aria-label="Search destination station" autocomplete="off" />
+                  <datalist id="station-options"></datalist>
+                  <select id="route-to" class="route-select" aria-label="Select destination station"></select>
                 </div>
               </div>
             </div>
@@ -597,8 +600,8 @@
                     <strong>Last Train:</strong> ~11:30 PM (Terminal departures)
                   </li>
                   <li>
-                    <strong>Token & Smart Card:</strong> Minimum fare ₹10,
-                    Maximum ₹60
+                    <strong>Token & Smart Card:</strong> Weekday token fare ₹11–₹64.
+                    Airport Express uses a separate tariff
                   </li>
                   <li>
                     <strong>Peak Headways:</strong> 2 to 4 mins on major lines
@@ -788,6 +791,7 @@
         "Red Line": "#E31837",
         "Violet Line": "#9400D3",
         "Green Line": "#00A651",
+        "Green Line Branch": "#00A651",
         "Pink Line": "#FF69B4",
         "Magenta Line": "#C40380",
         "Airport Express": "#F26522",
@@ -812,6 +816,7 @@
         } catch (error) {
           console.warn("Dock animation unavailable", error);
         }
+        initStationTyping();
         retryStartup();
 
         document
@@ -898,7 +903,23 @@
         }
       }
 
+      function initStationTyping() {
+        ['from','to'].forEach(side => {
+          const input = document.getElementById('route-' + side + '-search');
+          input.addEventListener('input', () => {
+            const match = stationsData.find(s => stationLabel(s).toLowerCase() === input.value.trim().toLowerCase() || s.name.toLowerCase() === input.value.trim().toLowerCase());
+            document.getElementById('route-' + side).value = match ? match.id : '';
+            autoCheckAndHighlight();
+          });
+          document.getElementById('route-' + side).addEventListener('change', () => {
+            const station = stationsData.find(s => s.id === document.getElementById('route-' + side).value);
+            input.value = station ? stationLabel(station) : '';
+          });
+        });
+      }
+      function stationLabel(s) { return s.name + ' — ' + s.lines.join(', '); }
       function populateDropdowns(stations) {
+        document.getElementById("station-options").replaceChildren(...stations.map(s => { const option = document.createElement("option"); option.value = stationLabel(s); return option; }));
         const fromSel = document.getElementById("route-from");
         const toSel = document.getElementById("route-to");
         fromSel.innerHTML =
@@ -1119,7 +1140,7 @@
                 <div class="gate-reason-text" style="font-size:14px;color:#334155;margin-top:2px"> ${g.reason}</div>
                 <div class="gate-features-row" style="margin-top:5px;font-size:14px;color:#64748b;display:flex;gap:12px">
                   <span> ~${g.walkMins} min walk to street</span>
-                  <span> ${g.lift ? "Lifts Available" : "Escalators Available"}</span>
+                  <span> ${g.lift ? "Lift listed" : g.escalator ? "Escalator listed" : "Accessibility details unavailable"}</span>
                 </div>
               </div>`,
                 )
@@ -1182,8 +1203,15 @@
         document
           .getElementById("pref-interchanges")
           .classList.toggle("active", pref === "fewest_interchanges");
+        autoCheckAndHighlight();
       }
 
+      function syncStationInputs() {
+        ['from','to'].forEach(side => {
+          const station = stationsData.find(s => s.id === document.getElementById('route-' + side).value);
+          document.getElementById('route-' + side + '-search').value = station ? stationLabel(station) : '';
+        });
+      }
       function autoCheckAndHighlight() {
         const from = document.getElementById("route-from").value;
         const to = document.getElementById("route-to").value;
@@ -1208,12 +1236,14 @@
         const tmp = fromSel.value;
         fromSel.value = toSel.value;
         toSel.value = tmp;
+        syncStationInputs();
         autoCheckAndHighlight();
       }
 
       function setOriginFromPanel() {
         if (selectedStation) {
           document.getElementById("route-from").value = selectedStation.id;
+          syncStationInputs();
           switchTab("planner");
           autoCheckAndHighlight();
         }
@@ -1222,6 +1252,7 @@
       function setDestFromPanel() {
         if (selectedStation) {
           document.getElementById("route-to").value = selectedStation.id;
+          syncStationInputs();
           switchTab("planner");
           autoCheckAndHighlight();
         }
@@ -1579,29 +1610,30 @@
 
         ${generateRoadmapHtml(r.roadmap, r.totalStops)}
 
-        ${r.exitAi && r.exitAi.available !== false ? `
+        ${r.exitAi && r.exitAi.available === true ? `
         <div class="smart-assistant-card exit-ai-card" style="background:#f8fafc;border:1px solid #e2e8f0">
           <div class="assistant-card-header">
             <span class="assistant-card-title" style="font-weight:700"> Arrival information</span>
-            <span class="exit-gate-highlight-badge" style="background:#2563eb;color:#fff"> Recommended: ${r.exitAi ? r.exitAi.bestGate : "Gate 1"}</span>
+            <span class="exit-gate-highlight-badge" style="background:#2563eb;color:#fff"> Recommended: ${r.exitAi.bestGate}</span>
           </div>
           <div class="exit-reasoning-box">
-            <div class="reasoning-text" style="font-size:14px;color:#1e293b;line-height:1.4"> ${r.exitAi ? r.exitAi.reason : "Direct street exit with fast auto connectivity."}</div>
+            <div class="reasoning-text" style="font-size:14px;color:#1e293b;line-height:1.4"> ${r.exitAi.reason}</div>
             <div class="exit-metrics-row" style="margin-top:6px;font-size:14px;color:#64748b">
-              <span> Quickest exit (~${r.exitAi ? r.exitAi.savedMins : 3} mins faster)</span>
-              <span> ${r.exitAi && r.exitAi.lift ? "Step-Free Elevator Access" : "Escalators Available"}</span>
+              <span> Approx. ${r.exitAi.walkMins} min walk to street</span>
+              <span> ${r.exitAi.lift ? "Lift listed" : r.exitAi.escalator ? "Escalator listed" : "Accessibility details unavailable"}</span>
             </div>
             <div style="margin-top:8px">${transitBadges}</div>
             <div style="margin-top:8px;padding-top:8px;border-top:1px dashed #cbd5e1;font-size:14px;color:#475569">
-               <strong>Commuter Tip:</strong> Board near middle coaches (Coaches 3-4) for the shortest walk to exit stairs/lifts at ${r.destName}.
+               <strong>Commuter Tip:</strong> ${r.exitAi.recommendationNote}
             </div>
           </div>
         </div>` : `
         <div class="smart-assistant-card" style="padding:16px">
           <strong>${r.transfers || 0} transfer${r.transfers === 1 ? "" : "s"}</strong>
+          <p>Exit details are unavailable for this journey. Follow station signage or ask station staff.</p>
           <p>Time and fare estimates use the saved network, average train speed,
           a five-minute allowance per rail interchange and eight minutes for the Noida walking connection.
-          Check DMRC and NMRC for current fares and service updates.</p>
+          Check <a href="https://delhimetrorail.com/fare" target="_blank" rel="noopener">DMRC</a> and NMRC for current fares and service updates.</p>
         </div>`}`;
 
         prepareJourney(r.roadmap);

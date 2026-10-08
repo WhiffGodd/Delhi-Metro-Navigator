@@ -95,3 +95,16 @@ test('cross NCR journeys use the walking connection and separate fares', () => {
   const walk = route('noida_sector_51','noida_sector_52');
   assert.equal(walk.totalStops,0);assert.equal(walk.totalTimeMins,8);assert.equal(walk.fare,0);
 });
+test('fare uses distance boundaries and Airport Express has separate tariff', () => {
+  const {estimateMetroFare} = require('../route-planner.js');
+  for (const [distance,fare] of [[2,11],[2.01,21],[5,21],[5.01,32],[12,32],[12.01,43],[21,43],[21.01,54],[32,54],[32.01,64]])
+    assert.equal(estimateMetroFare(distance), fare);
+  assert.equal(route('new_delhi','igi_airport').fare,null);
+  const synthetic = createMetroRouter({stations:[{id:'a',name:'A',lat:0,lng:0},{id:'b',name:'B',lat:0,lng:0.1}],lineRoutes:{'Yellow Line':['a','b']}});
+  assert.equal(synthetic('a','b').totalStops,1);
+  assert.equal(synthetic('a','b').fare,32);
+});
+test('Green branches meet at Ashok Park Main', () => {
+  assert.deepEqual(route('indrelok','kirti_nagar').pathStationIds,['indrelok','ashok_park_main','kirti_nagar']);
+  assert.equal(route('indrelok','kirti_nagar').transfers,0);
+});

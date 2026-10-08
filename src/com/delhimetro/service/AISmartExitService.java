@@ -18,13 +18,15 @@ public class AISmartExitService {
 
         if (gates == null || gates.isEmpty()) {
             result.put("available", false);
-            result.put("reason", "Verified exit details are unavailable. Follow station signs or ask station staff.");
+            result.put("reason", "Exit details are not available for this station. Follow station signage or ask station staff.");
+            result.put("allGates", List.of());
+            result.put("transitOptions", List.of());
             return result;
         }
 
-        // Multi-factor AI Gate Evaluation in Java
+        // Rank stored gates by walking time, accessibility and onward transport.
         ExitGate bestGate = gates.get(0);
-        int maxScore = -1;
+        int maxScore = Integer.MIN_VALUE;
 
         for (ExitGate g : gates) {
             int score = 100 - (g.getWalkMins() * 10);
@@ -40,7 +42,10 @@ public class AISmartExitService {
 
         result.put("bestGate", bestGate.getGate());
         result.put("reason", bestGate.getReason());
-        result.put("savedMins", Math.max(4, 10 - bestGate.getWalkMins()));
+        result.put("available", true);
+        result.put("walkMins", bestGate.getWalkMins());
+        result.put("landmark", bestGate.getLandmark());
+        result.put("recommendationNote", "Suggested from stored gate details, prioritising lift access and walking time. Confirm current gate availability at the station.");
         result.put("lift", bestGate.hasLift());
         result.put("escalator", bestGate.hasEscalator());
         result.put("transitOptions", bestGate.getTransitOptions());

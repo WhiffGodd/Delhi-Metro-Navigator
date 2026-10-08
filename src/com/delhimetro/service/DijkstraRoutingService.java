@@ -96,7 +96,13 @@ public class DijkstraRoutingService {
         }
         int totalTime = (int) Math.round(finish.minutes());
         int totalStops = (int) segmentLines.stream().filter(line -> !line.equals("Walking transfer")).count();
-        int fare = calculateFare(totalStops);
+        double distanceKm = 0;
+        for (int i = 1; i < path.size(); i++) {
+            if (segmentLines.get(i - 1).equals("Walking transfer")) continue;
+            Station a = allStations.get(path.get(i - 1)), b = allStations.get(path.get(i));
+            distanceKm += calculateDistance(a.getLat(), a.getLng(), b.getLat(), b.getLng());
+        }
+        int fare = calculateFare(distanceKm);
 
         // Build Journey Legs & Station-by-Station Roadmap
         List<Map<String, Object>> legs = new ArrayList<>();
@@ -224,13 +230,13 @@ public class DijkstraRoutingService {
         result.put("destName", allStations.get(destId).getName());
         result.put("totalTimeMins", totalTime);
         result.put("totalStops", totalStops);
-        boolean separateOperator = segmentLines.contains("Aqua Line") || segmentLines.contains("Rapid Metro");
+        boolean separateOperator = segmentLines.contains("Aqua Line") || segmentLines.contains("Rapid Metro") || segmentLines.contains("Airport Express");
         result.put("fare", separateOperator ? null : totalStops == 0 ? 0 : fare);
-        result.put("fareNote", separateOperator ? "Check operator fares. NMRC and Rapid Metro tickets are separate from Delhi Metro." : "Estimated fare");
+        result.put("fareNote", separateOperator ? "Airport Express, NMRC and Rapid Metro use separate tariffs. Check the relevant operator fare." : "Estimated weekday token fare from station coordinates. Track distance, Sundays, holidays and smart-card discounts can change the fare.");
         result.put("estimated", true);
         result.put("source", "java");
         result.put("transfers", interchanges.size());
-        result.put("recommendedCoach", "Coach 2-3 (Optimal Platform Exit)");
+        result.put("distanceKm", Math.round(distanceKm * 10) / 10.0);
         result.put("pathStationIds", path);
         result.put("totalInterchanges", interchanges.size());
         result.put("interchanges", interchanges);
@@ -281,12 +287,12 @@ public class DijkstraRoutingService {
         return R * c;
     }
 
-    private int calculateFare(int stops) {
-        if (stops <= 2) return 10;
-        if (stops <= 5) return 20;
-        if (stops <= 12) return 30;
-        if (stops <= 21) return 40;
-        if (stops <= 32) return 50;
-        return 60;
+    public static int calculateFare(double km) {
+        if (km <= 2) return 11;
+        if (km <= 5) return 21;
+        if (km <= 12) return 32;
+        if (km <= 21) return 43;
+        if (km <= 32) return 54;
+        return 64;
     }
 }
