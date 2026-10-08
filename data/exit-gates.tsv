@@ -1,0 +1,725 @@
+station	gate	landmark	accessible	status	sourceUrl	checkedOn
+samaypur_badli	Gate No. 3	FOB Badli Railway Station	true	open	https://delhimetrorail.com/station/SPBI	2026-10-08
+samaypur_badli	Gate No. 1	Badli Railway Station	true	open	https://delhimetrorail.com/station/SPBI	2026-10-08
+rohini_sector_18	Gate No. 2	Paradise Apartments	true	open	https://delhimetrorail.com/station/RISE	2026-10-08
+rohini_sector_18	Gate No. 1	Divyajyoti Apartments	true	open	https://delhimetrorail.com/station/RISE	2026-10-08
+haiderpur_badli_mor	Gate No. 3	Max Hospital,Shalimar Bagh	false	open	https://delhimetrorail.com/station/BIMR	2026-10-08
+haiderpur_badli_mor	Gate No. 2	Max Hospital, Shalimar Bagh Delhi	true	open	https://delhimetrorail.com/station/BIMR	2026-10-08
+haiderpur_badli_mor	Gate No. 1	Badli Village	false	open	https://delhimetrorail.com/station/BIMR	2026-10-08
+jahangirpuri	Gate No. 4	Jahangirpuri Industrial Area	true	open	https://delhimetrorail.com/station/JGPI	2026-10-08
+jahangirpuri	Gate No. 3	Rajasthan Udyog Nagar	false	open	https://delhimetrorail.com/station/JGPI	2026-10-08
+jahangirpuri	Gate No. 2	Jahangirpuri Mahendra Park , DDA Flat & A Block	true	open	https://delhimetrorail.com/station/JGPI	2026-10-08
+jahangirpuri	Gate No. 1	Jahangirpuri Ram Garh , DDA Flat & A Block	false	open	https://delhimetrorail.com/station/JGPI	2026-10-08
+adarsh_nagar	Gate No. 4	Sarai Pipal Thala	true	open	https://delhimetrorail.com/station/AHNR	2026-10-08
+adarsh_nagar	Gate No. 3	Bharola Village	false	open	https://delhimetrorail.com/station/AHNR	2026-10-08
+adarsh_nagar	Gate No. 2	Moolchand Colony	true	open	https://delhimetrorail.com/station/AHNR	2026-10-08
+adarsh_nagar	Gate No. 1	Rajan Babu Road , Adarsh Nagar	false	open	https://delhimetrorail.com/station/AHNR	2026-10-08
+azadpur	Gate No. 4	Model Town 3	true	open	https://delhimetrorail.com/station/AZU	2026-10-08
+azadpur	Gate No. 3	Lal Bagh, GT Karnal Road	true	open	https://delhimetrorail.com/station/AZU	2026-10-08
+azadpur	Gate No. 2	Azadpur Bus Terminal	false	open	https://delhimetrorail.com/station/AZU	2026-10-08
+azadpur	Gate No. 1	MCD Flats	true	open	https://delhimetrorail.com/station/AZU	2026-10-08
+model_town	Gate No. 4	Gujranwala Town	true	open	https://delhimetrorail.com/station/MDTW	2026-10-08
+model_town	Gate No. 3	Kirpal Bagh	false	open	https://delhimetrorail.com/station/MDTW	2026-10-08
+model_town	Gate No. 2	Tagore Park	false	open	https://delhimetrorail.com/station/MDTW	2026-10-08
+model_town	Gate No. 1	Alpana Cinema	false	open	https://delhimetrorail.com/station/MDTW	2026-10-08
+gtb_nagar	Gate No. 5	New Police Line	false	open	https://delhimetrorail.com/station/GTBR	2026-10-08
+gtb_nagar	Gate No. 4	Kingsway Camp Chowk	false	open	https://delhimetrorail.com/station/GTBR	2026-10-08
+gtb_nagar	Gate No. 3	Hudson Lane	false	open	https://delhimetrorail.com/station/GTBR	2026-10-08
+gtb_nagar	Gate No. 2	Batra Cinema	false	open	https://delhimetrorail.com/station/GTBR	2026-10-08
+gtb_nagar	Gate No. 1	Outram Lines	true	open	https://delhimetrorail.com/station/GTBR	2026-10-08
+vishwa_vidyalaya	Gate No. 4	Delhi University	true	open	https://delhimetrorail.com/station/VW	2026-10-08
+vishwa_vidyalaya	Gate No. 3	Delhi University	true	open	https://delhimetrorail.com/station/VW	2026-10-08
+vishwa_vidyalaya	Gate No. 2	Timarpur	true	open	https://delhimetrorail.com/station/VW	2026-10-08
+vishwa_vidyalaya	Gate No. 1	Riviera Apartments	true	open	https://delhimetrorail.com/station/VW	2026-10-08
+vidhan_sabha	Gate No. 3	MCD Office	false	open	https://delhimetrorail.com/station/VS	2026-10-08
+vidhan_sabha	Gate No. 2	Police Station , Civil Lines	false	open	https://delhimetrorail.com/station/VS	2026-10-08
+vidhan_sabha	Gate No. 1	DMRC Officer's Quarters	true	open	https://delhimetrorail.com/station/VS	2026-10-08
+civil_lines	Gate No. 3	Punjab National Bank	true	open	https://delhimetrorail.com/station/CL	2026-10-08
+civil_lines	Gate No. 2	Yulu Bikes, IP College	false	open	https://delhimetrorail.com/station/CL	2026-10-08
+civil_lines	Gate No. 1	Sant Parmanand Hospital	false	open	https://delhimetrorail.com/station/CL	2026-10-08
+kashmere_gate	Gate No. 8	Maharana Pratap Inter State Bus Terminal ,KASHMERE GATE	false	open	https://delhimetrorail.com/station/KG	2026-10-08
+kashmere_gate	Gate No. 7	Maharana Pratap Inter State Bus Terminal ,KASHMERE GATE	true	open	https://delhimetrorail.com/station/KG	2026-10-08
+kashmere_gate	Gate No. 6	Lala Hardev Sahai Marg	true	open	https://delhimetrorail.com/station/KG	2026-10-08
+kashmere_gate	Gate No. 5	Lala Hardev Sahai Marg	false	open	https://delhimetrorail.com/station/KG	2026-10-08
+kashmere_gate	Gate No. 4	Lala Hardev Sahai Marg	false	open	https://delhimetrorail.com/station/KG	2026-10-08
+kashmere_gate	Gate No. 3	Lala Hardev Sahai Marg	false	open	https://delhimetrorail.com/station/KG	2026-10-08
+kashmere_gate	Gate No. 1	Intercity Smart Bus, Flix Bus, Laxmi Holidays, R S Yadav Smart Bus Pvt. Ltd., Raj Kalpana Travels Pvt. Ltd. and Nuego Travels	true	open	https://delhimetrorail.com/station/KG	2026-10-08
+chandni_chowk	Gate No. 5	Chandni Chowk Market, Khari Baoli, Sadar Bazar	false	open	https://delhimetrorail.com/station/CHK	2026-10-08
+chandni_chowk	Gate No. 3	Delhi Railway Station	false	open	https://delhimetrorail.com/station/CHK	2026-10-08
+chandni_chowk	Gate No. 2	S P Mukherjee Road, Delhi Public Library	true	open	https://delhimetrorail.com/station/CHK	2026-10-08
+chandni_chowk	Gate No. 1	Town Hall, Hardayal Library	false	open	https://delhimetrorail.com/station/CHK	2026-10-08
+chawri_bazar	Gate No. 3	Hauz Qazi, Nai Sadak	false	open	https://delhimetrorail.com/station/CWBR	2026-10-08
+chawri_bazar	Gate No. 1	Ajmeri Gate	true	open	https://delhimetrorail.com/station/CWBR	2026-10-08
+new_delhi	Gate No. 4	Airport line , Civic center	false	open	https://delhimetrorail.com/station/NDI	2026-10-08
+new_delhi	Gate No. 3	Kamla Market	true	open	https://delhimetrorail.com/station/NDI	2026-10-08
+new_delhi	Gate No. 2	New Delhi Railway Station	false	open	https://delhimetrorail.com/station/NDI	2026-10-08
+new_delhi	Gate No. 1	New Delhi Railway Station	false	open	https://delhimetrorail.com/station/NDI	2026-10-08
+new_delhi	Gate No. 6 (Airport Express)	Pathway connecting to New Delhi Railway Station	true	open	https://delhimetrorail.com/station/NDI	2026-10-08
+new_delhi	Gate No. 5 (Airport Express)	New Delhi Railway Station Road	true	open	https://delhimetrorail.com/station/NDI	2026-10-08
+new_delhi	Gate No. 7 (Airport Express)	Bhavbhuti Marg	true	open	https://delhimetrorail.com/station/NDI	2026-10-08
+rajiv_chowk	Gate No. 8	Radial Road-3, Panchkuian Road , A Block	true	open	https://delhimetrorail.com/station/RCK	2026-10-08
+rajiv_chowk	Gate No. 7	Radial Road -2, Baba Kharak Singh Marg , A Block	true	open	https://delhimetrorail.com/station/RCK	2026-10-08
+rajiv_chowk	Gate No. 6	Radial Road-1, Janpath Road,Palika Bazar	false	open	https://delhimetrorail.com/station/RCK	2026-10-08
+rajiv_chowk	Gate No. 5	Radial Road-1, Janpath Road, F Block	false	open	https://delhimetrorail.com/station/RCK	2026-10-08
+rajiv_chowk	Gate No. 4	E Block, Barakhamba Road, Kasturba Gandhi Road	false	open	https://delhimetrorail.com/station/RCK	2026-10-08
+rajiv_chowk	Gate No. 3	D Block, Carnival Cinema(Odean)	false	open	https://delhimetrorail.com/station/RCK	2026-10-08
+rajiv_chowk	Gate No. 2	, PVR Plaza	true	open	https://delhimetrorail.com/station/RCK	2026-10-08
+rajiv_chowk	Gate No. 1	Radial Road-3, Panchkuian Road , B Block, Minto Road	true	open	https://delhimetrorail.com/station/RCK	2026-10-08
+patel_chowk	Gate No. 3	Dak Bhawan, Sanchar Bhawan,NITI Bhawan	false	open	https://delhimetrorail.com/station/PTCK	2026-10-08
+patel_chowk	Gate No. 2	Jantar Mantar, State Bank of India	true	open	https://delhimetrorail.com/station/PTCK	2026-10-08
+patel_chowk	Gate No. 1	Jeevan Tara Building	true	open	https://delhimetrorail.com/station/PTCK	2026-10-08
+central_secretariat	Gate No. 3	India Gate	true	open	https://delhimetrorail.com/station/CTST	2026-10-08
+central_secretariat	Gate No. 5	Rail Bhawan	true	open	https://delhimetrorail.com/station/CTST	2026-10-08
+central_secretariat	Gate No. 4	Rastrapati Bhawan	false	open	https://delhimetrorail.com/station/CTST	2026-10-08
+central_secretariat	Gate No. 2	Krishi Bhawan	false	open	https://delhimetrorail.com/station/CTST	2026-10-08
+central_secretariat	Gate No. 1	Red Cross Building	false	open	https://delhimetrorail.com/station/CTST	2026-10-08
+udyog_bhawan	Gate No. 4	K Kamraj Marg	true	open	https://delhimetrorail.com/station/UDB	2026-10-08
+udyog_bhawan	Gate No. 3	K Kamraj Marg	false	open	https://delhimetrorail.com/station/UDB	2026-10-08
+udyog_bhawan	Gate No. 2	Maulana Azad Road	true	open	https://delhimetrorail.com/station/UDB	2026-10-08
+udyog_bhawan	Gate No. 1	Rafi Marg Adjacent To Udyog Bhawan	true	open	https://delhimetrorail.com/station/UDB	2026-10-08
+lok_kalyan_marg	Gate No. 2	APJ ABDUL KALAM ROAD	true	open	https://delhimetrorail.com/station/LKM	2026-10-08
+lok_kalyan_marg	Gate No. 1	NAGALAND HOUSE	false	open	https://delhimetrorail.com/station/LKM	2026-10-08
+jor_bagh	Gate No. 3	AAI Office, Safdarjung Airport	true	open	https://delhimetrorail.com/station/JB	2026-10-08
+jor_bagh	Gate No. 2	Rajiv Gandhi Bhawan	false	open	https://delhimetrorail.com/station/JB	2026-10-08
+jor_bagh	Gate No. 1	Jor Bagh Road, Lodhi Colony, Safdarjung Fire Station, Karbala Lane	true	open	https://delhimetrorail.com/station/JB	2026-10-08
+dilli_haat_ina	Gate No. 6	Towards INA Market	false	open	https://delhimetrorail.com/station/INA	2026-10-08
+dilli_haat_ina	Gate No. 5	Towards Dilli Haat	true	open	https://delhimetrorail.com/station/INA	2026-10-08
+dilli_haat_ina	Gate No. 4	Towards Laxmibai Nagar,Sanjay Lake	true	open	https://delhimetrorail.com/station/INA	2026-10-08
+dilli_haat_ina	Gate No. 3	Towards West Kidwai Nagar	false	open	https://delhimetrorail.com/station/INA	2026-10-08
+dilli_haat_ina	Gate No. 2	Towards INA Market	true	open	https://delhimetrorail.com/station/INA	2026-10-08
+dilli_haat_ina	Gate No. 1	Towards Dilli Haat	true	open	https://delhimetrorail.com/station/INA	2026-10-08
+aiims	Gate No. 4	Ring Road,Vardhman Mahavir Medical College & Safdarjung Hospital	false	open	https://delhimetrorail.com/station/AIIMS	2026-10-08
+aiims	Gate No. 3	Ansari Nagar West, Post Office, Vardhman Mahavir Medical College & Safdarjung Hospital	true	open	https://delhimetrorail.com/station/AIIMS	2026-10-08
+aiims	Gate No. 2	AIIMS Hospital, Ansari Nagar East, Yusuf Sarai	true	open	https://delhimetrorail.com/station/AIIMS	2026-10-08
+aiims	Gate No. 1	AIIMSHospital, Kidwai Nagar	true	open	https://delhimetrorail.com/station/AIIMS	2026-10-08
+green_park	Gate No. 4	Safdarganj Enclave,Gurudwara,Arjun Nagar,Green Park Extension	false	open	https://delhimetrorail.com/station/GNPK	2026-10-08
+green_park	Gate No. 3	Deer Park,Hauz Khas Village,Uphar Cinema,Gurudwara,Green Park Extension	true	open	https://delhimetrorail.com/station/GNPK	2026-10-08
+green_park	Gate No. 2	Sirifort Auditorium,Nift,Hauz Khas Market,Gulmohar Enclave,Indian Oil Building	true	open	https://delhimetrorail.com/station/GNPK	2026-10-08
+green_park	Gate No. 1	Yusuf Sarai,Indian Oil Building	false	open	https://delhimetrorail.com/station/GNPK	2026-10-08
+hauz_khas	Gate No. 4	Kalu Sarai	true	open	https://delhimetrorail.com/station/HKS	2026-10-08
+hauz_khas	Gate No. 2	Laxman Public School	false	open	https://delhimetrorail.com/station/HKS	2026-10-08
+hauz_khas	Gate No. 1	Outer Ring Road Towards Iit	true	open	https://delhimetrorail.com/station/HKS	2026-10-08
+hauz_khas	Gate No. 3	Shri Krishna Chaitanya Mahaprabhu marg	true	open	https://delhimetrorail.com/station/HKS	2026-10-08
+malviya_nagar	Gate No. 4	PVR Anupam Saket	false	open	https://delhimetrorail.com/station/MVNR	2026-10-08
+malviya_nagar	Gate No. 3	Select City Walk Mall,Max Hospital,Saket Court	true	open	https://delhimetrorail.com/station/MVNR	2026-10-08
+malviya_nagar	Gate No. 1	Mvnr Ps,Geetanjali Enclave	true	open	https://delhimetrorail.com/station/MVNR	2026-10-08
+saket	Gate No. 3	Cisf Camp,Saket D Block	false	open	https://delhimetrorail.com/station/SAKT	2026-10-08
+saket	Gate No. 2	Garden Of Five Senses	true	open	https://delhimetrorail.com/station/SAKT	2026-10-08
+saket	Gate No. 1	Vidya Niketan	true	open	https://delhimetrorail.com/station/SAKT	2026-10-08
+qutab_minar	Gate No. 2	Anuvart Marg	true	open	https://delhimetrorail.com/station/QM	2026-10-08
+qutab_minar	Gate No. 1	Anuvart Marg	true	open	https://delhimetrorail.com/station/QM	2026-10-08
+chhatarpur	Gate No. 3	Mg Road	false	open	https://delhimetrorail.com/station/CHTP	2026-10-08
+chhatarpur	Gate No. 2	South West Delhi	false	close	https://delhimetrorail.com/station/CHTP	2026-10-08
+chhatarpur	Gate No. 1	Mg Road	true	open	https://delhimetrorail.com/station/CHTP	2026-10-08
+sultanpur	Gate No. 2	Mg Road	true	open	https://delhimetrorail.com/station/SLTP	2026-10-08
+sultanpur	Gate No. 1	Sultanpur	true	open	https://delhimetrorail.com/station/SLTP	2026-10-08
+ghitorni	Gate No. 2	Ghitorni Village	true	open	https://delhimetrorail.com/station/GTNI	2026-10-08
+ghitorni	Gate No. 1	Gadaipur,DLF Farms	true	open	https://delhimetrorail.com/station/GTNI	2026-10-08
+arjan_garh	Gate No. 2	Gurugram Mehrauli Road Indian Metrological Department	true	open	https://delhimetrorail.com/station/AJG	2026-10-08
+arjan_garh	Gate No. 1	Mehrauli Gurugram Road Aya- Nagar	false	open	https://delhimetrorail.com/station/AJG	2026-10-08
+guru_dronacharya	Gate No. 2	HP Petrol Pump	true	open	https://delhimetrorail.com/station/GE	2026-10-08
+guru_dronacharya	Gate No. 1	Global Business Park	true	open	https://delhimetrorail.com/station/GE	2026-10-08
+sikanderpur	Gate No. 6 (Rapid Metro)	EMAAR Bussiness Park Side	true	open	https://delhimetrorail.com/station/SKRP	2026-10-08
+sikanderpur	Gate No. 5 (Rapid Metro)	EMAAR Bussiness Park Side	true	open	https://delhimetrorail.com/station/SKRP	2026-10-08
+sikanderpur	Gate No. 4 (Rapid Metro)	Sikanderpur Main Road	true	open	https://delhimetrorail.com/station/SKRP	2026-10-08
+sikanderpur	Gate No. 3 (Rapid Metro)	Sikanderpur Main Road	true	open	https://delhimetrorail.com/station/SKRP	2026-10-08
+sikanderpur	Gate No. 2 (Rapid Metro)	Sikanderpur Village Side	true	open	https://delhimetrorail.com/station/SKRP	2026-10-08
+sikanderpur	Gate No. 2	DLF City Court	true	open	https://delhimetrorail.com/station/SKRP	2026-10-08
+sikanderpur	Gate No. 1	Sahara Mall,Bristal Hotel	true	open	https://delhimetrorail.com/station/SKRP	2026-10-08
+mg_road	Gate No. 2	Mgf Metropoliton Mall	true	open	https://delhimetrorail.com/station/MGRO	2026-10-08
+mg_road	Gate No. 1	Dt City Centre Mall	true	open	https://delhimetrorail.com/station/MGRO	2026-10-08
+iffco_chowk	Gate No. 3	Umkal Hospital	false	open	https://delhimetrorail.com/station/IFOC	2026-10-08
+iffco_chowk	Gate No. 2	Iffco Tower	true	open	https://delhimetrorail.com/station/IFOC	2026-10-08
+iffco_chowk	Gate No. 1	Bus Stand Towards M.G. Road	false	open	https://delhimetrorail.com/station/IFOC	2026-10-08
+millennium_city_center	Gate No. 4	Max Hospital	true	open	https://delhimetrorail.com/station/HCC	2026-10-08
+millennium_city_center	Gate No. 3	Unitech Buisiness Park	true	open	https://delhimetrorail.com/station/HCC	2026-10-08
+millennium_city_center	Gate No. 2	Fortis Hospital	false	open	https://delhimetrorail.com/station/HCC	2026-10-08
+millennium_city_center	Gate No. 1	Fortis Hospital	true	open	https://delhimetrorail.com/station/HCC	2026-10-08
+dwarka_sector_21	Gate No. 2	DWARKA SECTOR 21 PICK & DROP AREA	true	open	https://delhimetrorail.com/station/DSTO	2026-10-08
+dwarka_sector_21	Gate No. 1	DWARKA SECTOR 21 PICK & DROP AREA	true	close	https://delhimetrorail.com/station/DSTO	2026-10-08
+dwarka_sector_21	Gate No. 5	DWARKA SECTOR 21 PICK & DROP AREA	true	open	https://delhimetrorail.com/station/DSTO	2026-10-08
+dwarka_sector_21	Gate No. 4	DWARKA SECTOR 21 PICK & DROP AREA	true	open	https://delhimetrorail.com/station/DSTO	2026-10-08
+dwarka_sector_21	Gate No. 3	DWARKA SECTOR 21 PICK & DROP AREA	true	open	https://delhimetrorail.com/station/DSTO	2026-10-08
+dwarka_sector_8	Gate No. 1	Special Protection Group staff quarters, Dwarka Sec-21 Airport express line depot	true	open	https://delhimetrorail.com/station/DSET	2026-10-08
+dwarka_sector_9	Gate No. 2	Gas Agency	true	open	https://delhimetrorail.com/station/DSN	2026-10-08
+dwarka_sector_9	Gate No. 1	Sector - 23 Marble Market	true	open	https://delhimetrorail.com/station/DSN	2026-10-08
+dwarka_sector_10	Gate No. 2 (Entry)	Dwarka Court	true	open	https://delhimetrorail.com/station/DST	2026-10-08
+dwarka_sector_10	Gate No. 1 (Entry)	Welcome Hotel, PNB Corporate Office	true	open	https://delhimetrorail.com/station/DST	2026-10-08
+dwarka_sector_10	Gate No. 3 (Exit)	District court,  Indira Gandhi Hospital	false	open	https://delhimetrorail.com/station/DST	2026-10-08
+dwarka_sector_10	Gate No. 4 (Exit)	NB , Welcome Hotel, NHAI, NCTE	false	open	https://delhimetrorail.com/station/DST	2026-10-08
+dwarka_sector_11	Gate No. 1	Ambrahi Village	true	open	https://delhimetrorail.com/station/DSE	2026-10-08
+dwarka_sector_11	Gate No. 2	St. Gregorious School	true	open	https://delhimetrorail.com/station/DSE	2026-10-08
+dwarka_sector_12	Gate No. 2	City Centre Mall	true	open	https://delhimetrorail.com/station/DSW	2026-10-08
+dwarka_sector_12	Gate No. 1	Service Road	true	open	https://delhimetrorail.com/station/DSW	2026-10-08
+dwarka_sector_13	Gate No. 2	Reliance Shopping Mall	true	open	https://delhimetrorail.com/station/DSTN	2026-10-08
+dwarka_sector_13	Gate No. 1	Abhinav Globel School	true	open	https://delhimetrorail.com/station/DSTN	2026-10-08
+dwarka_sector_14	Gate No. 2	Bharat Vihar	true	open	https://delhimetrorail.com/station/DSFN	2026-10-08
+dwarka_sector_14	Gate No. 1	National Law University, IP University	true	open	https://delhimetrorail.com/station/DSFN	2026-10-08
+dwarka	Gate No. 2	CRPF Quarters, Vipin Garden, Nand Vihar	true	open	https://delhimetrorail.com/station/DW	2026-10-08
+dwarka	Gate No. 1	CRPF Quarters, Kakrola Gaon	true	open	https://delhimetrorail.com/station/DW	2026-10-08
+dwarka	Gate No. 4	CRPF Quarters,Vipin Garden, Nand Vihar	false	open	https://delhimetrorail.com/station/DW	2026-10-08
+dwarka	Gate No. 3	CRPF Quarters,Vipin Garden, Nand Vihar	true	open	https://delhimetrorail.com/station/DW	2026-10-08
+dwarka_mor	Gate No. 2	Sewak Park Side	false	open	https://delhimetrorail.com/station/DM	2026-10-08
+dwarka_mor	Gate No. 1	Rama Park Side	true	open	https://delhimetrorail.com/station/DM	2026-10-08
+nawada	Gate No. 5	Matiyala Gaon	false	open	https://delhimetrorail.com/station/NWD	2026-10-08
+nawada	Gate No. 4	Matiyala Gaon	false	open	https://delhimetrorail.com/station/NWD	2026-10-08
+nawada	Gate No. 3	Kiran Garden	false	open	https://delhimetrorail.com/station/NWD	2026-10-08
+nawada	Gate No. 2	Nawada Gaon	false	open	https://delhimetrorail.com/station/NWD	2026-10-08
+nawada	Gate No. 1	Shyam Park	false	open	https://delhimetrorail.com/station/NWD	2026-10-08
+uttam_nagar_west	Gate No. 4	Aarya Samaj	true	open	https://delhimetrorail.com/station/UNW	2026-10-08
+uttam_nagar_west	Gate No. 3	Dyalsar Road	true	open	https://delhimetrorail.com/station/UNW	2026-10-08
+uttam_nagar_west	Gate No. 2	Dal Mil Road	false	open	https://delhimetrorail.com/station/UNW	2026-10-08
+uttam_nagar_west	Gate No. 1	Dal Mil Road	false	open	https://delhimetrorail.com/station/UNW	2026-10-08
+uttam_nagar_east	Gate No. 3	Pankha Road	false	open	https://delhimetrorail.com/station/UNE	2026-10-08
+uttam_nagar_east	Gate No. 2	Pankha Road	true	open	https://delhimetrorail.com/station/UNE	2026-10-08
+uttam_nagar_east	Gate No. 1	Towards Dtc Bus Terminal	true	open	https://delhimetrorail.com/station/UNE	2026-10-08
+janakpuri_west	Gate No. 3	District Center,Auto Licencing office	true	open	https://delhimetrorail.com/station/JPW	2026-10-08
+janakpuri_west	Gate No. 2	Shivaji Marg,Najafgarh Road	true	open	https://delhimetrorail.com/station/JPW	2026-10-08
+janakpuri_west	Gate No. 1	Vikaspuri	true	open	https://delhimetrorail.com/station/JPW	2026-10-08
+janakpuri_east	Gate No. 3	Village Nangli Jalib and Janakpuri B1,B2 Block	false	open	https://delhimetrorail.com/station/JPE	2026-10-08
+janakpuri_east	Gate No. 2	Amarleela Hospital and Bharti college	true	open	https://delhimetrorail.com/station/JPE	2026-10-08
+janakpuri_east	Gate No. 1	Mahaveer Nagar and Vikas Puri	true	open	https://delhimetrorail.com/station/JPE	2026-10-08
+tilak_nagar	Gate No. 4	Prem Nagar, DMRC Authorised Parking	false	open	https://delhimetrorail.com/station/TN	2026-10-08
+tilak_nagar	Gate No. 3	Ashok Nagar, Fateh Nagar, Jail Road	true	open	https://delhimetrorail.com/station/TN	2026-10-08
+tilak_nagar	Gate No. 2	Saatmanjila Temple, Central Market	false	open	https://delhimetrorail.com/station/TN	2026-10-08
+tilak_nagar	Gate No. 1	Central Market	false	open	https://delhimetrorail.com/station/TN	2026-10-08
+subhash_nagar	Gate No. 4	Police Station, Tilak Nagar	true	open	https://delhimetrorail.com/station/SN	2026-10-08
+subhash_nagar	Gate No. 3	Meenakshi Garden	true	open	https://delhimetrorail.com/station/SN	2026-10-08
+subhash_nagar	Gate No. 2	Pacific Mall	true	open	https://delhimetrorail.com/station/SN	2026-10-08
+subhash_nagar	Gate No. 1	SBI, Tilak Nagar	true	open	https://delhimetrorail.com/station/SN	2026-10-08
+tagore_garden	Gate No. 4	J-Block Rajori Garden,Green Flats	true	open	https://delhimetrorail.com/station/TG	2026-10-08
+tagore_garden	Gate No. 3	Cambridge School, Dda Flats	true	open	https://delhimetrorail.com/station/TG	2026-10-08
+tagore_garden	Gate No. 2	Guru Govind Singh Hospital	false	open	https://delhimetrorail.com/station/TG	2026-10-08
+tagore_garden	Gate No. 1	Kendriya Vidyalaya , Khyala	false	open	https://delhimetrorail.com/station/TG	2026-10-08
+rajouri_garden	Gate No. 2	Rajouri Garden	true	open	https://delhimetrorail.com/station/RG	2026-10-08
+rajouri_garden	Gate No. 1	Rajouri Garden	true	open	https://delhimetrorail.com/station/RG	2026-10-08
+rajouri_garden	Gate No. 8	Janta Market, Rajouri	false	open	https://delhimetrorail.com/station/RG	2026-10-08
+rajouri_garden	Gate No. 7	Nazafgarh Road	false	open	https://delhimetrorail.com/station/RG	2026-10-08
+rajouri_garden	Gate No. 6	Nazafgarh Road	false	open	https://delhimetrorail.com/station/RG	2026-10-08
+rajouri_garden	Gate No. 5	Nazafgarh Road	false	open	https://delhimetrorail.com/station/RG	2026-10-08
+rajouri_garden	Gate No. 4	Tdi Mall	false	open	https://delhimetrorail.com/station/RG	2026-10-08
+rajouri_garden	Gate No. 3	Towards Parking	false	open	https://delhimetrorail.com/station/RG	2026-10-08
+rajouri_garden	Gate No. 2 (Pink Line)	Dc Office	false	open	https://delhimetrorail.com/station/RG	2026-10-08
+rajouri_garden	Gate No. 1 (Pink Line)	Ring Road	true	open	https://delhimetrorail.com/station/RG	2026-10-08
+ramesh_nagar	Gate No. 5	Ramesh Nagar	false	open	https://delhimetrorail.com/station/RN	2026-10-08
+ramesh_nagar	Gate No. 4	Namdhari Colony	false	open	https://delhimetrorail.com/station/RN	2026-10-08
+ramesh_nagar	Gate No. 3	Raja Garden	false	open	https://delhimetrorail.com/station/RN	2026-10-08
+ramesh_nagar	Gate No. 2	Basai Darapur	true	open	https://delhimetrorail.com/station/RN	2026-10-08
+ramesh_nagar	Gate No. 1	Bali Nagar	true	open	https://delhimetrorail.com/station/RN	2026-10-08
+moti_nagar	Gate No. 4	Kirti Nagar	false	open	https://delhimetrorail.com/station/MN	2026-10-08
+moti_nagar	Gate No. 3	Kalra Hospital	false	open	https://delhimetrorail.com/station/MN	2026-10-08
+moti_nagar	Gate No. 2	Fun Cinema	true	open	https://delhimetrorail.com/station/MN	2026-10-08
+moti_nagar	Gate No. 1	Moti Nagar Market	true	open	https://delhimetrorail.com/station/MN	2026-10-08
+kirti_nagar	Gate No. 1	Furniture Market	true	open	https://delhimetrorail.com/station/KNR	2026-10-08
+shadipur	Gate No. 7	Towards Parking	false	open	https://delhimetrorail.com/station/SP	2026-10-08
+shadipur	Gate No. 6	Pandav Nagar	false	open	https://delhimetrorail.com/station/SP	2026-10-08
+shadipur	Gate No. 5	Ranjeet Nagar	false	open	https://delhimetrorail.com/station/SP	2026-10-08
+shadipur	Gate No. 4	Patel Nagar	true	open	https://delhimetrorail.com/station/SP	2026-10-08
+shadipur	Gate No. 3	Patel Nagar Police Station	true	open	https://delhimetrorail.com/station/SP	2026-10-08
+shadipur	Gate No. 2	Baljeet Nagar	true	open	https://delhimetrorail.com/station/SP	2026-10-08
+shadipur	Gate No. 1	Towards DMS Depot & DTC Bus Depot	true	open	https://delhimetrorail.com/station/SP	2026-10-08
+patel_nagar	Gate No. 6	Kailash Nursing Home	false	open	https://delhimetrorail.com/station/PN	2026-10-08
+patel_nagar	Gate No. 5	Near Parking	true	open	https://delhimetrorail.com/station/PN	2026-10-08
+patel_nagar	Gate No. 4	Shivaji Marg, Najafgarh Road	false	open	https://delhimetrorail.com/station/PN	2026-10-08
+patel_nagar	Gate No. 3	Domino's	false	open	https://delhimetrorail.com/station/PN	2026-10-08
+patel_nagar	Gate No. 2	Shivaji Marg, Najafgarh Road	true	open	https://delhimetrorail.com/station/PN	2026-10-08
+patel_nagar	Gate No. 1	IDFC First Bank	false	open	https://delhimetrorail.com/station/PN	2026-10-08
+rajendra_place	Gate No. 4	Krishi Kunj	false	open	https://delhimetrorail.com/station/RP	2026-10-08
+rajendra_place	Gate No. 3	Old Rajender Nagar	false	open	https://delhimetrorail.com/station/RP	2026-10-08
+rajendra_place	Gate No. 2	BLK Hospital	false	open	https://delhimetrorail.com/station/RP	2026-10-08
+rajendra_place	Gate No. 1	Rajendra Bhawan	false	open	https://delhimetrorail.com/station/RP	2026-10-08
+karol_bagh	Gate No. 8	Pusa Road	false	open	https://delhimetrorail.com/station/KB	2026-10-08
+karol_bagh	Gate No. 7	Rajendra Nagar Block-C	false	open	https://delhimetrorail.com/station/KB	2026-10-08
+karol_bagh	Gate No. 6	Pusa Road	false	open	https://delhimetrorail.com/station/KB	2026-10-08
+karol_bagh	Gate No. 5	Pusa Road	false	open	https://delhimetrorail.com/station/KB	2026-10-08
+karol_bagh	Gate No. 4	Pusa Road	false	open	https://delhimetrorail.com/station/KB	2026-10-08
+karol_bagh	Gate No. 3	Pusa Road	true	open	https://delhimetrorail.com/station/KB	2026-10-08
+karol_bagh	Gate No. 2	Pusa Road	false	open	https://delhimetrorail.com/station/KB	2026-10-08
+karol_bagh	Gate No. 1	Ajmal Khan Road	true	open	https://delhimetrorail.com/station/KB	2026-10-08
+jhandewalan	Gate No. 1 A	Jhandewalan Devi Mandir, Bhartiya Sanskritik Academy, Jhulelal Mandir	false	open	https://delhimetrorail.com/station/JW	2026-10-08
+jhandewalan	Gate No. 4	Meghdoot Bhawan	true	open	https://delhimetrorail.com/station/JW	2026-10-08
+jhandewalan	Gate No. 3	Hanuman Mandir, Baba Lal Mandir	true	open	https://delhimetrorail.com/station/JW	2026-10-08
+jhandewalan	Gate No. 2	Videocon Tower	true	open	https://delhimetrorail.com/station/JW	2026-10-08
+jhandewalan	Gate No. 1	Jhandewalan Devi Mandir	false	open	https://delhimetrorail.com/station/JW	2026-10-08
+ramakrishna_ashram_marg	Gate No. 5	Parking	false	open	https://delhimetrorail.com/station/RKAM	2026-10-08
+ramakrishna_ashram_marg	Gate No. 4	Lady Harding Hospital	false	open	https://delhimetrorail.com/station/RKAM	2026-10-08
+ramakrishna_ashram_marg	Gate No. 3	Goal Market	false	open	https://delhimetrorail.com/station/RKAM	2026-10-08
+ramakrishna_ashram_marg	Gate No. 2	Rama Krishan Mission, New Delhi Railway Station, Paharganj	false	open	https://delhimetrorail.com/station/RKAM	2026-10-08
+mandi_house	Gate No. 4	National School Of Drama	true	open	https://delhimetrorail.com/station/MDHS	2026-10-08
+mandi_house	Gate No. 3	National School Of Drama	true	open	https://delhimetrorail.com/station/MDHS	2026-10-08
+mandi_house	Gate No. 2	Sikandara Road	true	open	https://delhimetrorail.com/station/MDHS	2026-10-08
+mandi_house	Gate No. 1	Himachal Bhawan	false	open	https://delhimetrorail.com/station/MDHS	2026-10-08
+supreme_court	Gate No. 4	Skywalk	true	open	https://delhimetrorail.com/station/PTMD	2026-10-08
+supreme_court	Gate No. 3	Open (08:00 hrs-17:00 hrs) for exit only towards Bharat Mandapam Gate No-10	false	open	https://delhimetrorail.com/station/PTMD	2026-10-08
+supreme_court	Gate No. 2	Mathura Road	true	open	https://delhimetrorail.com/station/PTMD	2026-10-08
+supreme_court	Gate No. 1	Supreme Court	false	close	https://delhimetrorail.com/station/PTMD	2026-10-08
+indraprastha	Gate No. 1	Mahatma Gandhi Marg, Ip Estate	true	open	https://delhimetrorail.com/station/IDPT	2026-10-08
+indraprastha	Gate No. 2	Near DTC headquarters	false	open	https://delhimetrorail.com/station/IDPT	2026-10-08
+yamuna_bank	Gate No. 1	Station Approch Road	true	open	https://delhimetrorail.com/station/YB	2026-10-08
+akshardham	Gate No. 3	Foot Over Bridge	false	open	https://delhimetrorail.com/station/ASDM	2026-10-08
+akshardham	Gate No. 2	Parking Side	true	open	https://delhimetrorail.com/station/ASDM	2026-10-08
+akshardham	Gate No. 1	East Aproach Road	true	open	https://delhimetrorail.com/station/ASDM	2026-10-08
+mayur_vihar_phase_1	Gate No. 4 (Pink Line)	Transport Authority	true	open	https://delhimetrorail.com/station/MVP1	2026-10-08
+mayur_vihar_phase_1	Gate No. 3 (Pink Line)	Mayur Vihar Phase 1 Infront Of Gate No 02	true	open	https://delhimetrorail.com/station/MVP1	2026-10-08
+mayur_vihar_phase_1	Gate No. 2	Noida Link Road	true	open	https://delhimetrorail.com/station/MVP1	2026-10-08
+mayur_vihar_phase_1	Gate No. 1	IFS Apartment	false	open	https://delhimetrorail.com/station/MVP1	2026-10-08
+mayur_vihar_extension	Gate No. 2	Club Avenue Road	true	open	https://delhimetrorail.com/station/MVE	2026-10-08
+mayur_vihar_extension	Gate No. 1	Service lane to Sahkarita Marg	false	open	https://delhimetrorail.com/station/MVE	2026-10-08
+new_ashok_nagar	Gate No. 1	East End Appartment, Chilla Gaon, Nagarjun Appartment	false	open	https://delhimetrorail.com/station/NAGR	2026-10-08
+noida_sector_15	Gate No. 4	Nya Bans,Noida Sec-14/15	false	open	https://delhimetrorail.com/station/NSFT	2026-10-08
+noida_sector_15	Gate No. 3	Noida Sec-2/4/6	false	open	https://delhimetrorail.com/station/NSFT	2026-10-08
+noida_sector_15	Gate No. 2	Traffic Police Authority	true	open	https://delhimetrorail.com/station/NSFT	2026-10-08
+noida_sector_15	Gate No. 1	Indian Oil Office	false	open	https://delhimetrorail.com/station/NSFT	2026-10-08
+noida_sector_16	Gate No. 4	Bluedart Express Ltd, Noida Post Office, Mcdonald'S	false	open	https://delhimetrorail.com/station/NSST	2026-10-08
+noida_sector_16	Gate No. 3	HCL Technology	false	open	https://delhimetrorail.com/station/NSST	2026-10-08
+noida_sector_16	Gate No. 2	World Trade Tower	true	open	https://delhimetrorail.com/station/NSST	2026-10-08
+noida_sector_16	Gate No. 1	Rajnigandha Factory	true	open	https://delhimetrorail.com/station/NSST	2026-10-08
+noida_sector_18	Gate No. 2	GIP, DLF Mall	true	open	https://delhimetrorail.com/station/NSET	2026-10-08
+noida_sector_18	Gate No. 1	Atta Market	true	open	https://delhimetrorail.com/station/NSET	2026-10-08
+botanical_garden	Gate No. 1	Captain Vijayat Thapar Marg	true	open	https://delhimetrorail.com/station/BCGN	2026-10-08
+botanical_garden	Gate No. 4	Multilevel parking	true	open	https://delhimetrorail.com/station/BCGN	2026-10-08
+botanical_garden	Gate No. 3	Capt. Vijyant thapar Marg	true	open	https://delhimetrorail.com/station/BCGN	2026-10-08
+botanical_garden	Gate No. 2	Capt. Vijyant thapar Marg	true	open	https://delhimetrorail.com/station/BCGN	2026-10-08
+golf_course	Gate No. 2	Noida golf Course	true	open	https://delhimetrorail.com/station/GEC	2026-10-08
+golf_course	Gate No. 1	Arun Vihar Sector 37	true	open	https://delhimetrorail.com/station/GEC	2026-10-08
+noida_city_centre	Gate No. 4	Sector 39, 41, 50 & 51	false	open	https://delhimetrorail.com/station/NCC	2026-10-08
+noida_city_centre	Gate No. 3	Logix mall side	false	open	https://delhimetrorail.com/station/NCC	2026-10-08
+noida_city_centre	Gate No. 2	Sector 39.41,50 & 51	true	open	https://delhimetrorail.com/station/NCC	2026-10-08
+noida_city_centre	Gate No. 1	DMRC parking side	true	open	https://delhimetrorail.com/station/NCC	2026-10-08
+noida_sector_34	Gate No. 2	Sector 50, 51 Side	true	open	https://delhimetrorail.com/station/STFN	2026-10-08
+noida_sector_34	Gate No. 1	Sector 34 Side	true	open	https://delhimetrorail.com/station/STFN	2026-10-08
+noida_sector_52	Gate No. 3	Hosiyaar Pur , VDS Market, Sector 52	true	open	https://delhimetrorail.com/station/SFTN	2026-10-08
+noida_sector_52	Gate No. 2	Noida Sector 51	true	open	https://delhimetrorail.com/station/SFTN	2026-10-08
+noida_sector_52	Gate No. 1	52 Avenue Mall	true	open	https://delhimetrorail.com/station/SFTN	2026-10-08
+noida_sector_61	Gate No. 2	TOWARDS SEC 71 THANA	true	open	https://delhimetrorail.com/station/SSON	2026-10-08
+noida_sector_61	Gate No. 1	PARK VIEW APARTMENT	true	open	https://delhimetrorail.com/station/SSON	2026-10-08
+noida_sector_59	Gate No. 2	MAMURA VILLAGE	true	open	https://delhimetrorail.com/station/SFNN	2026-10-08
+noida_sector_59	Gate No. 1	U-FLEX	true	open	https://delhimetrorail.com/station/SFNN	2026-10-08
+noida_sector_62	Gate No. 2	Towards Noida Sec-63	true	open	https://delhimetrorail.com/station/SSTN	2026-10-08
+noida_sector_62	Gate No. 1	Towards Fortis Hospital	true	open	https://delhimetrorail.com/station/SSTN	2026-10-08
+noida_electronic_city	Gate No. 3	Highway Tower, I-Thumb Tower, Graphics Tower, Gol Chakkar sect-62	false	open	https://delhimetrorail.com/station/NECC	2026-10-08
+noida_electronic_city	Gate No. 2	Sect-63, H-Block Noida, SBI, PNB,HDFC Bank, Haldiram restaurant, Ginjer Hotel, Domino's	true	open	https://delhimetrorail.com/station/NECC	2026-10-08
+noida_electronic_city	Gate No. 1	Near DMRC Parking	true	open	https://delhimetrorail.com/station/NECC	2026-10-08
+laxmi_nagar	Gate No. 5	NEAR INDUSIND BANK ATM	false	open	https://delhimetrorail.com/station/LN	2026-10-08
+laxmi_nagar	Gate No. 4	NEAR PATEL HOSPITAL	false	open	https://delhimetrorail.com/station/LN	2026-10-08
+laxmi_nagar	Gate No. 3	NEAR PATEL HOSPITAL	false	open	https://delhimetrorail.com/station/LN	2026-10-08
+laxmi_nagar	Gate No. 2	NEAR GANESH KACHUARI RED LIGHT	true	open	https://delhimetrorail.com/station/LN	2026-10-08
+laxmi_nagar	Gate No. 1	NEAR CGHS DISPENSERY	true	open	https://delhimetrorail.com/station/LN	2026-10-08
+nirman_vihar	Gate No. 5	V3S MALL	false	open	https://delhimetrorail.com/station/NV	2026-10-08
+nirman_vihar	Gate No. 4	NIRMAN VIHAR COLONY GATE	false	open	https://delhimetrorail.com/station/NV	2026-10-08
+nirman_vihar	Gate No. 3	NIRMAN VIHAR COLONY GATE	false	open	https://delhimetrorail.com/station/NV	2026-10-08
+nirman_vihar	Gate No. 2	TOWARDS MANDAWLI	false	open	https://delhimetrorail.com/station/NV	2026-10-08
+nirman_vihar	Gate No. 1	V3S MALL	true	open	https://delhimetrorail.com/station/NV	2026-10-08
+preet_vihar	Gate No. 4	TOWARDS PNB BANK	false	open	https://delhimetrorail.com/station/PTVR	2026-10-08
+preet_vihar	Gate No. 3	TOWARDS SBI BANK	false	open	https://delhimetrorail.com/station/PTVR	2026-10-08
+preet_vihar	Gate No. 2	TOWARDS CENTRE FOR SIGHT	true	open	https://delhimetrorail.com/station/PTVR	2026-10-08
+preet_vihar	Gate No. 1	TOWARDS SHARP SIGHT CENTRE	false	open	https://delhimetrorail.com/station/PTVR	2026-10-08
+karkarduma_blue	Gate No. 4 (Pink Line)	TOWARDS KARKARDOOMA VILLAGE	false	open	https://delhimetrorail.com/station/KKDA	2026-10-08
+karkarduma_blue	Gate No. 3 (Pink Line)	TOWARDS KARKARDOOMA VILLAGE	true	open	https://delhimetrorail.com/station/KKDA	2026-10-08
+karkarduma_blue	Gate No. 2	SHANTI MUKUND	true	open	https://delhimetrorail.com/station/KKDA	2026-10-08
+karkarduma_blue	Gate No. 1	KARKARDOOMA VILLAGE, DIAMOND BANQUET HALL	true	open	https://delhimetrorail.com/station/KKDA	2026-10-08
+anand_vihar_isbt_blue	Gate No. 3	Between Anand Vihar ISBT and Railway station	true	open	https://delhimetrorail.com/station/AVIT	2026-10-08
+anand_vihar_isbt_blue	Gate No. 2	IN FRONT OF ANAND VIHAR ISBT	false	open	https://delhimetrorail.com/station/AVIT	2026-10-08
+anand_vihar_isbt_blue	Gate No. 1 (Pink Line)	TOWARDS ANAND VIHAR ISBT 	true	open	https://delhimetrorail.com/station/AVIT	2026-10-08
+kaushambi	Gate No. 3	Passport office	false	open	https://delhimetrorail.com/station/KSHI	2026-10-08
+kaushambi	Gate No. 2	Towards Yashoda Hospital and wave cinema	false	open	https://delhimetrorail.com/station/KSHI	2026-10-08
+kaushambi	Gate No. 1	Towards Mohan Nagar Anand Vihar Road	true	open	https://delhimetrorail.com/station/KSHI	2026-10-08
+vaishali	Gate No. 3	Todards FOB	true	open	https://delhimetrorail.com/station/VASI	2026-10-08
+vaishali	Gate No. 2	Towards Vaishali Sector 3,4	true	open	https://delhimetrorail.com/station/VASI	2026-10-08
+vaishali	Gate No. 1	Towards Mohan Nagar Anand Vihar Road	true	open	https://delhimetrorail.com/station/VASI	2026-10-08
+rithala	Gate No. 3	Towards SEC-11  ROHINI	true	open	https://delhimetrorail.com/station/RI	2026-10-08
+rithala	Gate No. 2	Towards SEC-24  ROHINI	false	open	https://delhimetrorail.com/station/RI	2026-10-08
+rithala	Gate No. 1	Towards SEC-5  ROHINI	false	open	https://delhimetrorail.com/station/RI	2026-10-08
+rohini_west	Gate No. 3	Unity Mall	false	open	https://delhimetrorail.com/station/RHW	2026-10-08
+rohini_west	Gate No. 2	Towards BR Ambedkar Hospital	false	open	https://delhimetrorail.com/station/RHW	2026-10-08
+rohini_west	Gate No. 1	SEC-6  ROHINI	false	open	https://delhimetrorail.com/station/RHW	2026-10-08
+rohini_east	Gate No. 3	Sec.9, Rohini Court, Fire Station	true	open	https://delhimetrorail.com/station/RHE	2026-10-08
+rohini_east	Gate No. 2	SEC.7 & 8 ROHINI 	false	open	https://delhimetrorail.com/station/RHE	2026-10-08
+rohini_east	Gate No. 1	SEC.7 & 8 ROHINI 	false	open	https://delhimetrorail.com/station/RHE	2026-10-08
+pitampura	Gate No. 4	Rohini Court	false	open	https://delhimetrorail.com/station/PTP	2026-10-08
+pitampura	Gate No. 3	South Pitampura, Vishakha Enclave	false	open	https://delhimetrorail.com/station/PTP	2026-10-08
+pitampura	Gate No. 2 (Under Construction)	ROHINI COURT	false	open	https://delhimetrorail.com/station/PTP	2026-10-08
+pitampura	Gate No. 1	ROHINI SECTOR 8	false	open	https://delhimetrorail.com/station/PTP	2026-10-08
+kohat_enclave	Gate No. 3	Kapil Vihar	false	open	https://delhimetrorail.com/station/KE	2026-10-08
+kohat_enclave	Gate No. 1	Maurya Enclave	true	open	https://delhimetrorail.com/station/KE	2026-10-08
+kohat_enclave	Gate No. 2	Kohat Enclave	true	open	https://delhimetrorail.com/station/KE	2026-10-08
+netaji_subhash_place	Gate No. 1	Towards LOTS entry	true	open	https://delhimetrorail.com/station/NSHP	2026-10-08
+netaji_subhash_place	Gate No. 2	Towards Service Road	false	open	https://delhimetrorail.com/station/NSHP	2026-10-08
+netaji_subhash_place	Gate No. 3	Towards LOTS entry	false	close	https://delhimetrorail.com/station/NSHP	2026-10-08
+netaji_subhash_place	Gate No. 2 (Pink Line)	D-Mall	true	open	https://delhimetrorail.com/station/NSHP	2026-10-08
+netaji_subhash_place	Gate No. 1 (Pink Line)	Towards Punjab Kesari, Ring Road	true	open	https://delhimetrorail.com/station/NSHP	2026-10-08
+keshav_puram	Gate No. 1	Towards Dispensary, Chotu Ram Dharamshala	false	open	https://delhimetrorail.com/station/KP	2026-10-08
+keshav_puram	Gate No. 2	Towards Keshav Puram Residential Area	false	open	https://delhimetrorail.com/station/KP	2026-10-08
+keshav_puram	Gate No. 3	Adjacent to parking	false	open	https://delhimetrorail.com/station/KP	2026-10-08
+keshav_puram	Gate No. 4	Towards Ashok Vihar	false	open	https://delhimetrorail.com/station/KP	2026-10-08
+kanhiya_nagar	Gate No. 1	Towards Tota Ram Bazaar	false	open	https://delhimetrorail.com/station/KN	2026-10-08
+kanhiya_nagar	Gate No. 2	Towards Tri Nagar	false	open	https://delhimetrorail.com/station/KN	2026-10-08
+kanhiya_nagar	Gate No. 3	Towards JJ Colony	false	open	https://delhimetrorail.com/station/KN	2026-10-08
+kanhiya_nagar	Gate No. 4	Towards MDC Complex	true	open	https://delhimetrorail.com/station/KN	2026-10-08
+indrelok	Gate No. 6	CISF Dog Training Area	false	open	https://delhimetrorail.com/station/ILOK	2026-10-08
+indrelok	Gate No. 5	Nirankari Bhawan	true	open	https://delhimetrorail.com/station/ILOK	2026-10-08
+indrelok	Gate No. 4	Cooler Market	false	open	https://delhimetrorail.com/station/ILOK	2026-10-08
+indrelok	Gate No. 3	Aadhaar Centre	false	open	https://delhimetrorail.com/station/ILOK	2026-10-08
+indrelok	Gate No. 2	D.D.A Park Shastri Nagar	false	open	https://delhimetrorail.com/station/ILOK	2026-10-08
+indrelok	Gate No. 1	Aadhaar Centre	true	open	https://delhimetrorail.com/station/ILOK	2026-10-08
+shastri_nagar	Gate No. 1	Towards Sarai Rohilla Railway Station	false	open	https://delhimetrorail.com/station/SHT	2026-10-08
+shastri_nagar	Gate No. 2	Towards Shastri Nagar Market	true	open	https://delhimetrorail.com/station/SHT	2026-10-08
+pratap_nagar	Gate No. 1	Towards Kishanganj Railway Station 	false	open	https://delhimetrorail.com/station/PRA	2026-10-08
+pratap_nagar	Gate No. 2	Towards Sabzi Mandi Railway Station 	true	open	https://delhimetrorail.com/station/PRA	2026-10-08
+pul_bangash	Gate No. 1	Towards Roshanara Road 	true	open	https://delhimetrorail.com/station/PBGH	2026-10-08
+tis_hazari	Gate No. 1	Towards St. Stephen Hospital , Tis Hazari Court, Sadar bazar, Dept. of Animal Husbandary	true	open	https://delhimetrorail.com/station/TZI	2026-10-08
+tis_hazari	Gate No. 2	Towards Lala Hardev Sahai marg , St. Stephen Hospital , Tis Hazari Court, Sadar bazar	true	open	https://delhimetrorail.com/station/TZI	2026-10-08
+tis_hazari	Gate No. 3	Towards Metro parking, Lt. Governor Secretariat, Aruna Asaf Ali Hospital, Rajpur Road, Boulevard Road	true	open	https://delhimetrorail.com/station/TZI	2026-10-08
+shastri_park	Gate No. 1	Towards Gandhi Nagar market	true	open	https://delhimetrorail.com/station/SHPK	2026-10-08
+shastri_park	Gate No. 2	Towards IT Park	false	open	https://delhimetrorail.com/station/SHPK	2026-10-08
+seelampur	Gate No. 1	Towards GT Road	true	open	https://delhimetrorail.com/station/SLAP	2026-10-08
+welcome	Gate No. 1	Towards GT Road	true	open	https://delhimetrorail.com/station/WC	2026-10-08
+welcome	Gate No. 2 (Pink Line)	Towards GT Road	true	open	https://delhimetrorail.com/station/WC	2026-10-08
+shahdara	Gate No. 1	West End (Facing GT Road), Parsavnath Mall, Vikas Cinema Mall	true	open	https://delhimetrorail.com/station/SHD	2026-10-08
+shahdara	Gate No. 2	East End (Indian Railways Side)	false	open	https://delhimetrorail.com/station/SHD	2026-10-08
+mansarovar_park	Gate No. 1	Jhilmil Industrial Area	true	open	https://delhimetrorail.com/station/MPK	2026-10-08
+mansarovar_park	Gate No. 2	GT Road Flyover, Swami  Dayanand Hospital, IHBAS, GTB Hospital	true	open	https://delhimetrorail.com/station/MPK	2026-10-08
+jhilmil	Gate No. 1	Jhilmil Industrial Area	true	open	https://delhimetrorail.com/station/JLML	2026-10-08
+jhilmil	Gate No. 2	Towards GT Road	true	open	https://delhimetrorail.com/station/JLML	2026-10-08
+dilshad_garden	Gate No. 1	Towards Parking	true	open	https://delhimetrorail.com/station/DSG	2026-10-08
+dilshad_garden	Gate No. 2	Towards Dilshad Colony	false	open	https://delhimetrorail.com/station/DSG	2026-10-08
+shahid_nagar	Gate No. 1	Opp. Shani Dev Mandir	true	open	https://delhimetrorail.com/station/SHDN	2026-10-08
+shahid_nagar	Gate No. 2	Near Shani Dev Mandir	true	open	https://delhimetrorail.com/station/SHDN	2026-10-08
+raj_bagh	Gate No. 1	Shalimar Garden, East India Udyog Limited	true	open	https://delhimetrorail.com/station/RJBH	2026-10-08
+raj_bagh	Gate No. 2	Pipe Market	true	open	https://delhimetrorail.com/station/RJBH	2026-10-08
+shahdara_bus_adda	Gate No. 1	Near Bikanervala	true	open	https://delhimetrorail.com/station/RJNM	2026-10-08
+shahdara_bus_adda	Gate No. 2	Near Durga Industrial Park	true	open	https://delhimetrorail.com/station/RJNM	2026-10-08
+shyam_park	Gate No. 1	Ambey Hospital, Shahibabad Police Station, Lajpat Nagar	true	open	https://delhimetrorail.com/station/SMPK	2026-10-08
+shyam_park	Gate No. 2	LR College, Shyam Park, Diwakar Model School	true	open	https://delhimetrorail.com/station/SMPK	2026-10-08
+shyam_park	Gate No. 3	LR COLLEGE, SHYAM PARK, DIWAKAR MODEL SCHOOL	false	open	https://delhimetrorail.com/station/SMPK	2026-10-08
+mohan_nagar	Gate No. 1	Narendra Mohan Hospital, World Square Mall, Inter-State Bus Stand	true	open	https://delhimetrorail.com/station/MNGM	2026-10-08
+mohan_nagar	Gate No. 2	ITS College, Mohan Nagar Bus Stand, Mohan Meakin	true	open	https://delhimetrorail.com/station/MNGM	2026-10-08
+arthala	Gate No. 1	Parsvnath Exotica, Arthala Peer, Commercial Tax Office	true	open	https://delhimetrorail.com/station/ATHA	2026-10-08
+arthala	Gate No. 2	ITS College, Arthala Village	true	open	https://delhimetrorail.com/station/ATHA	2026-10-08
+hindon_river	Gate No. 1	Hindon Vihar, Nandgram	true	open	https://delhimetrorail.com/station/HDNR	2026-10-08
+hindon_river	Gate No. 2	Sai Upvan Temple, Hindon Ghat	true	open	https://delhimetrorail.com/station/HDNR	2026-10-08
+shaheed_sthal	Gate No. 1	Meerut Mod, Pelican Hotel, Dewan Diagnostics	true	open	https://delhimetrorail.com/station/NBAA	2026-10-08
+shaheed_sthal	Gate No. 2	Red Mall, GT Road towards Moahan Nagar	true	open	https://delhimetrorail.com/station/NBAA	2026-10-08
+lal_quila	Gate No. 4	Red Fort	false	open	https://delhimetrorail.com/station/LLQA	2026-10-08
+lal_quila	Gate No. 3	Netaji Subhash Marg,Yamuna Bazar	true	open	https://delhimetrorail.com/station/LLQA	2026-10-08
+lal_quila	Gate No. 2	Old Lajpat Rai Market	true	open	https://delhimetrorail.com/station/LLQA	2026-10-08
+lal_quila	Gate No. 1	Netaji Subhash Marg, Gauri Shankar Mandir	false	open	https://delhimetrorail.com/station/LLQA	2026-10-08
+jama_masjid	Gate No. 4	Subhash Marg	true	open	https://delhimetrorail.com/station/JAMD	2026-10-08
+jama_masjid	Gate No. 3	Lal Quila	true	open	https://delhimetrorail.com/station/JAMD	2026-10-08
+jama_masjid	Gate No. 2	Jama Masjid	false	open	https://delhimetrorail.com/station/JAMD	2026-10-08
+jama_masjid	Gate No. 1	Kasturba Hospital	true	open	https://delhimetrorail.com/station/JAMD	2026-10-08
+delhi_gate	Gate No. 5	Arun Jaitley Stadium	true	open	https://delhimetrorail.com/station/DLIG	2026-10-08
+delhi_gate	Gate No. 4	Ambedkar stadium	true	open	https://delhimetrorail.com/station/DLIG	2026-10-08
+delhi_gate	Gate No. 3	Daryaganj	false	open	https://delhimetrorail.com/station/DLIG	2026-10-08
+delhi_gate	Gate No. 2	G.B.Pant Hospital 	true	open	https://delhimetrorail.com/station/DLIG	2026-10-08
+delhi_gate	Gate No. 1	Mulana Azad Medical College	false	open	https://delhimetrorail.com/station/DLIG	2026-10-08
+ito	Gate No. 6	Cr Building	true	open	https://delhimetrorail.com/station/ITO	2026-10-08
+ito	Gate No. 5	Police Head Quarter	true	open	https://delhimetrorail.com/station/ITO	2026-10-08
+ito	Gate No. 4	Passport Office	false	open	https://delhimetrorail.com/station/ITO	2026-10-08
+ito	Gate No. 3	Ugc,Foreign Post Office	true	open	https://delhimetrorail.com/station/ITO	2026-10-08
+ito	Gate No. 2	Mata Sundari College	false	open	https://delhimetrorail.com/station/ITO	2026-10-08
+ito	Gate No. 1	Andhara  School,Gandhi Peace Foundation	true	open	https://delhimetrorail.com/station/ITO	2026-10-08
+janpath	Gate No. 4	Eastern Court	false	open	https://delhimetrorail.com/station/JNPH	2026-10-08
+janpath	Gate No. 3	Cottage Emporium, Kg Marg	true	open	https://delhimetrorail.com/station/JNPH	2026-10-08
+janpath	Gate No. 2	Janpath Market	true	open	https://delhimetrorail.com/station/JNPH	2026-10-08
+janpath	Gate No. 1	Western Court	false	open	https://delhimetrorail.com/station/JNPH	2026-10-08
+khan_market	Gate No. 4	Lok Nayak Bhawan	true	open	https://delhimetrorail.com/station/KM	2026-10-08
+khan_market	Gate No. 3	The Ambassador Hotel	false	open	https://delhimetrorail.com/station/KM	2026-10-08
+khan_market	Gate No. 2	Pandara Road, Golf Link	true	open	https://delhimetrorail.com/station/KM	2026-10-08
+khan_market	Gate No. 1	R.S. Junior Modern School, Shahjahan Road	false	open	https://delhimetrorail.com/station/KM	2026-10-08
+jawaharlal_nehru_stadium	Gate No. 5	Dayal Singh College	false	open	https://delhimetrorail.com/station/JLNS	2026-10-08
+jawaharlal_nehru_stadium	Gate No. 4	Lodhi road, NBCC	true	open	https://delhimetrorail.com/station/JLNS	2026-10-08
+jawaharlal_nehru_stadium	Gate No. 3	JLN Stadium Gate.no 02	false	open	https://delhimetrorail.com/station/JLNS	2026-10-08
+jawaharlal_nehru_stadium	Gate No. 2	CGO Complex	false	open	https://delhimetrorail.com/station/JLNS	2026-10-08
+jawaharlal_nehru_stadium	Gate No. 1	Delhi Transco Office	true	open	https://delhimetrorail.com/station/JLNS	2026-10-08
+jangpura	Gate No. 3	MTNL Building, JLN Stadium	false	open	https://delhimetrorail.com/station/JGPA	2026-10-08
+jangpura	Gate No. 2	Jangpura Extension, Bhogal, Nizamuddin Railway Station, Pant Nagar, Eros.	true	open	https://delhimetrorail.com/station/JGPA	2026-10-08
+jangpura	Gate No. 1	Electronic Niketan, Scope Complex, Soochna Bhawan.	true	open	https://delhimetrorail.com/station/JGPA	2026-10-08
+lajpat_nagar	Gate No. 5 (Pink Line)	Block 1 Lajpat Nagar Iii	true	open	https://delhimetrorail.com/station/LJPN	2026-10-08
+lajpat_nagar	Gate No. 3	Defence Colony	true	open	https://delhimetrorail.com/station/LJPN	2026-10-08
+lajpat_nagar	Gate No. 2	Lajpat Nagar Market	false	open	https://delhimetrorail.com/station/LJPN	2026-10-08
+lajpat_nagar	Gate No. 1	Parking side-Lajpat Nagar Market	true	open	https://delhimetrorail.com/station/LJPN	2026-10-08
+moolchand	Gate No. 1	Moolchand Hospital, Andrews Ganj	true	open	https://delhimetrorail.com/station/MLCD	2026-10-08
+kailash_colony	Gate No. 2	Lal Path Lab	true	open	https://delhimetrorail.com/station/KHCY	2026-10-08
+kailash_colony	Gate No. 1	Café Coffee Day	true	open	https://delhimetrorail.com/station/KHCY	2026-10-08
+nehru_place	Gate No. 2	Nehru Place Market, Eros Corporate Tower	true	open	https://delhimetrorail.com/station/NP	2026-10-08
+kalka_ji_mandir	Gate No. 1	BLOCK 9,KALKAJI ,NEW DELHI,DELHI-110019	true	open	https://delhimetrorail.com/station/KJMD	2026-10-08
+kalka_ji_mandir	Gate No. 4	BHAIRAV MANDIR	true	open	https://delhimetrorail.com/station/KJMD	2026-10-08
+kalka_ji_mandir	Gate No. 3	MTNL BUILDING	false	open	https://delhimetrorail.com/station/KJMD	2026-10-08
+kalka_ji_mandir	Gate No. 2	LOTUS TEMPLE, KALKAJI MANDIR	true	open	https://delhimetrorail.com/station/KJMD	2026-10-08
+govind_puri	Gate No. 2	Govindpuri & Alaknanda, CR Park, Kalkaji Mandir, Desh Bandhu College.	true	open	https://delhimetrorail.com/station/GDPI	2026-10-08
+govind_puri	Gate No. 1	B.D Chandiwala Hospital, G.B Pant Institute of Technology, Okhla Phase I,II & III, IIIT Delhi, NSIC Exibition Ground	true	open	https://delhimetrorail.com/station/GDPI	2026-10-08
+harkesh_nagar	Gate No. 4	Harkesh Nagar, Sanjay Colony, Okhla Phase 1,2&3.	false	open	https://delhimetrorail.com/station/HNOK	2026-10-08
+harkesh_nagar	Gate No. 3	Harkesh Nagar, Sanjay Colony, Okhla Phase 1,2&3.	true	open	https://delhimetrorail.com/station/HNOK	2026-10-08
+harkesh_nagar	Gate No. 2	Harkesh Nagar, Sanjay Colony, Okhla Phase 1,2&3.	false	open	https://delhimetrorail.com/station/HNOK	2026-10-08
+harkesh_nagar	Gate No. 1	Shamshaan Ghat, IIIT Delhi	true	open	https://delhimetrorail.com/station/HNOK	2026-10-08
+jasola_apollo	Gate No. 2	Container Corporation of India (CONCOR), Pacific Premium Outlets, Office of DCP South East District	true	open	https://delhimetrorail.com/station/JLA	2026-10-08
+jasola_apollo	Gate No. 1	Indraprasth Apollo Hospital, Jasola District Park, Netaji Subhash Sports Complex.	true	open	https://delhimetrorail.com/station/JLA	2026-10-08
+sarita_vihar	Gate No. 2	Sarita Vihar Residential Area	true	open	https://delhimetrorail.com/station/STVR	2026-10-08
+sarita_vihar	Gate No. 1	Vodafone Office	true	open	https://delhimetrorail.com/station/STVR	2026-10-08
+mohan_estate	Gate No. 2	DMRC Staff Qtr	true	open	https://delhimetrorail.com/station/METE	2026-10-08
+mohan_estate	Gate No. 1	Haldiram	true	open	https://delhimetrorail.com/station/METE	2026-10-08
+tughlakabad	Gate No. 1	Tughlakabad Railway Station	true	open	https://delhimetrorail.com/station/TKDS	2026-10-08
+badarpur_border	Gate No. 2	IIHM Badarpur, Mohan Cooperative	true	open	https://delhimetrorail.com/station/BAPB	2026-10-08
+badarpur_border	Gate No. 1	Faridabad Toll Plaza	true	open	https://delhimetrorail.com/station/BAPB	2026-10-08
+sarai	Gate No. 3	Near Crown Interiorz Mall	true	open	https://delhimetrorail.com/station/SRAI	2026-10-08
+sarai	Gate No. 2	L&T	true	open	https://delhimetrorail.com/station/SRAI	2026-10-08
+sarai	Gate No. 1	Vatika towers	false	open	https://delhimetrorail.com/station/SRAI	2026-10-08
+nhpc_chowk	Gate No. 3	Motor 1 (Luxury Automotive Workshop)	true	open	https://delhimetrorail.com/station/NHPC	2026-10-08
+nhpc_chowk	Gate No. 2	Jiva Ayurveda	true	open	https://delhimetrorail.com/station/NHPC	2026-10-08
+nhpc_chowk	Gate No. 1	Kia Motors	false	open	https://delhimetrorail.com/station/NHPC	2026-10-08
+mewala_maharajpur	Gate No. 3	Sec-43, 44, 45, Pooja Forge	true	open	https://delhimetrorail.com/station/MMJR	2026-10-08
+mewala_maharajpur	Gate No. 2	S.R.S. IT Park, Mitra	false	open	https://delhimetrorail.com/station/MMJR	2026-10-08
+mewala_maharajpur	Gate No. 1	Havells chowk, Sec-30, Sec-31, Spring Field Colony	true	open	https://delhimetrorail.com/station/MMJR	2026-10-08
+sector_28_faridabad	Gate No. 3	Sector-27, Escorts Corp. Centre	false	open	https://delhimetrorail.com/station/STTA	2026-10-08
+sector_28_faridabad	Gate No. 2	Maruti Workshop, Tarang Orchid Apartments	true	open	https://delhimetrorail.com/station/STTA	2026-10-08
+sector_28_faridabad	Gate No. 1	Sector-28, Sector-30 Police Line	true	open	https://delhimetrorail.com/station/STTA	2026-10-08
+badkal_mor	Gate No. 3	Mathura Road towards Delhi	false	open	https://delhimetrorail.com/station/BKMR	2026-10-08
+badkal_mor	Gate No. 2	Mahindra Chlaris Apartment	true	open	https://delhimetrorail.com/station/BKMR	2026-10-08
+badkal_mor	Gate No. 1	Mathura Road towards Ballabhgarh	true	open	https://delhimetrorail.com/station/BKMR	2026-10-08
+old_faridabad	Gate No. 3	EF3 MALL	true	open	https://delhimetrorail.com/station/OFDB	2026-10-08
+old_faridabad	Gate No. 2	Main Mathura Road	false	open	https://delhimetrorail.com/station/OFDB	2026-10-08
+old_faridabad	Gate No. 1	Sec 16 Faridabad	true	open	https://delhimetrorail.com/station/OFDB	2026-10-08
+neelam_chowk_ajronda	Gate No. 3	18/1 Mathura Road (Opposite Neelam Chowk Ajronda)	true	open	https://delhimetrorail.com/station/NCAJ	2026-10-08
+neelam_chowk_ajronda	Gate No. 2	LG04, Crown Plaza Mall, Azad Colony	false	open	https://delhimetrorail.com/station/NCAJ	2026-10-08
+neelam_chowk_ajronda	Gate No. 1	Lakhani Armaan, Neelam Chowk, Ajraonda, Mathura Road	false	open	https://delhimetrorail.com/station/NCAJ	2026-10-08
+bata_chowk	Gate No. 3	Radisson Blue Hotel	true	open	https://delhimetrorail.com/station/BACH	2026-10-08
+bata_chowk	Gate No. 2	Silvercity Mall	false	open	https://delhimetrorail.com/station/BACH	2026-10-08
+bata_chowk	Gate No. 1	Eldeco Mall	true	open	https://delhimetrorail.com/station/BACH	2026-10-08
+escorts_mujesar	Gate No. 3	Motor Repair Market	true	open	https://delhimetrorail.com/station/ECMJ	2026-10-08
+escorts_mujesar	Gate No. 2	Main Mathura Road	true	open	https://delhimetrorail.com/station/ECMJ	2026-10-08
+escorts_mujesar	Gate No. 1	Main Mathura Road	false	open	https://delhimetrorail.com/station/ECMJ	2026-10-08
+sant_surdas_sihi	Gate No. 3	Goodyear Company	true	open	https://delhimetrorail.com/station/NCBC	2026-10-08
+sant_surdas_sihi	Gate No. 2	Main Mathura Road	true	open	https://delhimetrorail.com/station/NCBC	2026-10-08
+sant_surdas_sihi	Gate No. 1	Main Mathura Road	false	open	https://delhimetrorail.com/station/NCBC	2026-10-08
+raja_nahar_singh	Gate No. 3	Railway Station	false	open	https://delhimetrorail.com/station/BVHM	2026-10-08
+raja_nahar_singh	Gate No. 2	Govt. Hospital	true	open	https://delhimetrorail.com/station/BVHM	2026-10-08
+raja_nahar_singh	Gate No. 1	Ballabgarh Bus Stand	true	open	https://delhimetrorail.com/station/BVHM	2026-10-08
+ashok_park_main	Gate No. 2	SDM Office Rampura, Golden Park, Tri Nagar	false	open	https://delhimetrorail.com/station/APMN	2026-10-08
+ashok_park_main	Gate No. 1	Manohar Park, Channamal Park, Ashoka Park Extension	false	open	https://delhimetrorail.com/station/APMN	2026-10-08
+punjabi_bagh	Gate No. 2	Punjabi Bagh Transport Nagar, Post Office, Power House	true	open	https://delhimetrorail.com/station/PBGA	2026-10-08
+punjabi_bagh	Gate No. 1	Punjabi Bagh Railway Colony, Jaidev Park, Bhagwan Das Nagar	true	open	https://delhimetrorail.com/station/PBGA	2026-10-08
+shivaji_park	Gate No. 2	Sakur Basti Railway Satation	false	open	https://delhimetrorail.com/station/SHVP	2026-10-08
+shivaji_park	Gate No. 1	Maharaja Agrasen Hospital	true	open	https://delhimetrorail.com/station/SHVP	2026-10-08
+madipur	Gate No. 2	Railways Reservation Counter	true	open	https://delhimetrorail.com/station/MAPR	2026-10-08
+madipur	Gate No. 1	Madipur Village	false	open	https://delhimetrorail.com/station/MAPR	2026-10-08
+paschim_vihar_east	Gate No. 2	Ordnance Depot	false	open	https://delhimetrorail.com/station/PVE	2026-10-08
+paschim_vihar_east	Gate No. 1	Bharti Vidyapeeth College	true	open	https://delhimetrorail.com/station/PVE	2026-10-08
+paschim_vihar_west	Gate No. 2	PWD Office	false	open	https://delhimetrorail.com/station/PVW	2026-10-08
+paschim_vihar_west	Gate No. 1	Shanti Kunj Apartment	true	open	https://delhimetrorail.com/station/PVW	2026-10-08
+peeragarhi	Gate No. 2	Udyog Nagar Industrial Area	false	open	https://delhimetrorail.com/station/PAGI	2026-10-08
+peeragarhi	Gate No. 1	Ekta Enclave 	true	open	https://delhimetrorail.com/station/PAGI	2026-10-08
+udyog_nagar	Gate No. 2	Udyog Nagar Industrial Area	true	open	https://delhimetrorail.com/station/UNRG	2026-10-08
+udyog_nagar	Gate No. 1	Jwala Puri /Inder Enclave	false	open	https://delhimetrorail.com/station/UNRG	2026-10-08
+maharaja_surajmal_stadium	Gate No. 2	Maharaja Surajmal Stadium	true	open	https://delhimetrorail.com/station/SMSM	2026-10-08
+maharaja_surajmal_stadium	Gate No. 1	Rail Neer Plant	false	open	https://delhimetrorail.com/station/SMSM	2026-10-08
+nangloi	Gate No. 2	Govt. Sarvodya Bal / Kanya Vidhalaya Nangloi, Govt Girls Sr. Sec School Nangloi	false	open	https://delhimetrorail.com/station/NNOI	2026-10-08
+nangloi	Gate No. 1	Kirari Mor, Delhi Police Staff Quarter	true	open	https://delhimetrorail.com/station/NNOI	2026-10-08
+nangloi_railway_station	Gate No. 2	Nangloi Railway Station Of Indian Railway, Govt. Boys Senior Secondary School	false	open	https://delhimetrorail.com/station/NRSN	2026-10-08
+nangloi_railway_station	Gate No. 1	Blooming Dales School	true	open	https://delhimetrorail.com/station/NRSN	2026-10-08
+rajdhani_park	Gate No. 2	MAFINGA EXAM CENTRE	false	open	https://delhimetrorail.com/station/RDPK	2026-10-08
+rajdhani_park	Gate No. 1	Timber Market	true	open	https://delhimetrorail.com/station/RDPK	2026-10-08
+rajdhani_park	Gate No. 3	MG GLOBAL EXAM CENTRE	false	open	https://delhimetrorail.com/station/RDPK	2026-10-08
+mundka	Gate No. 2	Metro Parking	true	open	https://delhimetrorail.com/station/MUDK	2026-10-08
+mundka	Gate No. 1	Rohtak Road	false	open	https://delhimetrorail.com/station/MUDK	2026-10-08
+mundka_industrial_area	Gate No. 3	Mundka Depot	false	open	https://delhimetrorail.com/station/MIAA	2026-10-08
+mundka_industrial_area	Gate No. 2	Bakkarwala	true	open	https://delhimetrorail.com/station/MIAA	2026-10-08
+mundka_industrial_area	Gate No. 1	Bakkarwala 	true	open	https://delhimetrorail.com/station/MIAA	2026-10-08
+ghevra_metro_station	Gate No. 2	Ghevra Railway Station, Sawda Colony	true	open	https://delhimetrorail.com/station/GHEM	2026-10-08
+ghevra_metro_station	Gate No. 1	Shri Vaishno Devi Mandir, Neelwal Gaon	true	open	https://delhimetrorail.com/station/GHEM	2026-10-08
+tikri_kalan	Gate No. 2	HP Delhi Terminal and Receiving Station , Azad Hind Gram	true	open	https://delhimetrorail.com/station/TKLM	2026-10-08
+tikri_kalan	Gate No. 1	Tikri Kalan Village , Shirdi Sai Temple, Prince Public School	true	open	https://delhimetrorail.com/station/TKLM	2026-10-08
+tikri_border	Gate No. 2	Tikri Border Toll Tax	true	open	https://delhimetrorail.com/station/TKBR	2026-10-08
+tikri_border	Gate No. 1	Govt. Sarvodaya Kanya Vidayla	true	open	https://delhimetrorail.com/station/TKBR	2026-10-08
+tikri_border	Gate No. 1	Govt. Boys Sr. Sec. School	true	open	https://delhimetrorail.com/station/TKBR	2026-10-08
+pandit_shree_ram_sharma	Gate No. 2	MIE Part A	true	open	https://delhimetrorail.com/station/MIEE	2026-10-08
+pandit_shree_ram_sharma	Gate No. 1	MIE Part B	true	open	https://delhimetrorail.com/station/MIEE	2026-10-08
+brigadier_hoshiar_singh	Gate No. 2	Iocl Petrol Pump	true	open	https://delhimetrorail.com/station/CIPK	2026-10-08
+brigadier_hoshiar_singh	Gate No. 1	Ch. Devilal Park	true	open	https://delhimetrorail.com/station/CIPK	2026-10-08
+majlis_park	Gate No. 2	Exit Towards Arihant Marg	true	open	https://delhimetrorail.com/station/MKPR	2026-10-08
+majlis_park	Gate No. 1	Entry From Arihant Marg	true	open	https://delhimetrorail.com/station/MKPR	2026-10-08
+shalimar_bagh	Gate No. 5	EPFO Office	false	open	https://delhimetrorail.com/station/SMBG	2026-10-08
+shalimar_bagh	Gate No. 4	Computer Market	true	open	https://delhimetrorail.com/station/SMBG	2026-10-08
+shalimar_bagh	Gate No. 3	Ashok Vihar	false	open	https://delhimetrorail.com/station/SMBG	2026-10-08
+shalimar_bagh	Gate No. 2	AG Block Shalimar Bagh	true	open	https://delhimetrorail.com/station/SMBG	2026-10-08
+shalimar_bagh	Gate No. 1	AG Block Shalimar Bagh	true	open	https://delhimetrorail.com/station/SMBG	2026-10-08
+shakurpur	Gate No. 2	JJ Colony Shakurpur, Shakurpur Village, Shakurpur Crossing & Brittania Chowk 	false	open	https://delhimetrorail.com/station/SAKP	2026-10-08
+shakurpur	Gate No. 1	Indira Gandhi Polyclinic, Wazirpur, Prachin Shiv Mandir, Gurudwara Guru Singh Sabha	true	open	https://delhimetrorail.com/station/SAKP	2026-10-08
+punjabi_bagh_west	Gate No. 2	Rohtak Road,Punjabi bagh chauk, Maharaja agarsen Hospital, Shi Hans Satsang bhawan	true	open	https://delhimetrorail.com/station/PBGW	2026-10-08
+punjabi_bagh_west	Gate No. 1	Punjabi bagh Club,Traffic training park,Jaidev Park,Karampura,Iskon Punjabi Bagh,Gurudwara Tikana Sahib	false	open	https://delhimetrorail.com/station/PBGW	2026-10-08
+esi_hospital	Gate No. 2	ESI Hospital,ISCKON Punjabi Bagh, Sudarshan park, Bali nagar, ESI colony, Punjabi Bagh club	false	open	https://delhimetrorail.com/station/ESIH	2026-10-08
+esi_hospital	Gate No. 1	Rajdhani college, Shivaji college, Basaidarapur, Rajouri garden, Tagore garden EXT., Director Gen. of Home guards	true	open	https://delhimetrorail.com/station/ESIH	2026-10-08
+naraina_vihar	Gate No. 2	Naraina Village	true	open	https://delhimetrorail.com/station/NAVR	2026-10-08
+naraina_vihar	Gate No. 1	Road to Ring Road, DDA Market Complex	false	open	https://delhimetrorail.com/station/NAVR	2026-10-08
+mayapuri	Gate No. 2	DTC Mayapuri Depot	true	open	https://delhimetrorail.com/station/MYPI	2026-10-08
+mayapuri	Gate No. 1	Priyadarshni Park	true	open	https://delhimetrorail.com/station/MYPI	2026-10-08
+delhi_cantt	Gate No. 2	Brar Square, Air Force Station, Naraina	true	open	https://delhimetrorail.com/station/DLIC	2026-10-08
+delhi_cantt	Gate No. 1	Army Medical College	true	open	https://delhimetrorail.com/station/DLIC	2026-10-08
+south_campus	Gate No. 2	Smriti vatika, San Martin park, Northern railway eco park	true	open	https://delhimetrorail.com/station/DDSC	2026-10-08
+south_campus	Gate No. 1	Sh. Venkateswar College, Satya Niketan	true	open	https://delhimetrorail.com/station/DDSC	2026-10-08
+moti_bagh	Subway (Gate No. 1 )	Aradhna Enclave	true	open	https://delhimetrorail.com/station/SVMB	2026-10-08
+moti_bagh	Gate No. 2	Sector -3 Shanti Niketan, Charak Palika Hospital	false	open	https://delhimetrorail.com/station/SVMB	2026-10-08
+moti_bagh	Gate No. 1	Sector 12 RK Puram	true	open	https://delhimetrorail.com/station/SVMB	2026-10-08
+bhikaji_cama_place	Gate No. 3	EIL Office	true	open	https://delhimetrorail.com/station/BKCP	2026-10-08
+bhikaji_cama_place	Gate No. 2	DTC Sarojini Nagar Depot	false	open	https://delhimetrorail.com/station/BKCP	2026-10-08
+bhikaji_cama_place	Gate No. 1	Subway Towards GAIL India	false	open	https://delhimetrorail.com/station/BKCP	2026-10-08
+bhikaji_cama_place	Gate No. 1	Palika Bhawan	true	open	https://delhimetrorail.com/station/BKCP	2026-10-08
+sarojini_nagar	Gate No. 2(Exit only)	Pilanji Gaon	false	open	https://delhimetrorail.com/station/SOJI	2026-10-08
+sarojini_nagar	Gate No. 1(Entry only)	Sarojini Nagar Market	true	open	https://delhimetrorail.com/station/SOJI	2026-10-08
+south_extension	Gate No. 4	South Extention 2	true	open	https://delhimetrorail.com/station/SOEN	2026-10-08
+south_extension	Gate No. 3	South Extention 2	false	open	https://delhimetrorail.com/station/SOEN	2026-10-08
+south_extension	Gate No. 2	South Extention 1	true	open	https://delhimetrorail.com/station/SOEN	2026-10-08
+south_extension	Gate No. 1	South Extention 1	false	open	https://delhimetrorail.com/station/SOEN	2026-10-08
+vinobapuri	Gate No. 2	Sriniwas Puri	false	open	https://delhimetrorail.com/station/VNPR	2026-10-08
+vinobapuri	Gate No. 1	Lajpat Nagar - II	true	open	https://delhimetrorail.com/station/VNPR	2026-10-08
+ashram	Gate No. 3	Maharani Bagh	true	open	https://delhimetrorail.com/station/AHRM	2026-10-08
+ashram	Gate No. 2	NAFED	true	open	https://delhimetrorail.com/station/AHRM	2026-10-08
+ashram	Gate No. 1	Harinagar Ashram, TVM and RCTM	false	open	https://delhimetrorail.com/station/AHRM	2026-10-08
+hazrat_nizamuddin	Gate No. 3	Hazrat Nizamuddin Railway Station	true	open	https://delhimetrorail.com/station/NIZM	2026-10-08
+hazrat_nizamuddin	Gate No. 2	Hazrat Nizamuddin Railway Station	true	open	https://delhimetrorail.com/station/NIZM	2026-10-08
+hazrat_nizamuddin	Gate No. 1	Sarai Kale Khan Bus Stand	false	open	https://delhimetrorail.com/station/NIZM	2026-10-08
+mayur_vihar_pocket_1	Gate No. 2	Mayur Vihar Pocket 3&4	true	open	https://delhimetrorail.com/station/MVPO	2026-10-08
+mayur_vihar_pocket_1	Gate No. 1	Mayur Vihar Pocket 1&2	true	open	https://delhimetrorail.com/station/MVPO	2026-10-08
+trilokpuri	Gate No. 2	Chand Cinema & Sanjay Lake	true	open	https://delhimetrorail.com/station/TKPR	2026-10-08
+trilokpuri	Gate No. 1	Chand Cinema & Sanjay Lake	true	open	https://delhimetrorail.com/station/TKPR	2026-10-08
+east_vinod_nagar	Gate No. 2	Sports Complex, East Vinod Nagar	true	open	https://delhimetrorail.com/station/VENT	2026-10-08
+east_vinod_nagar	Gate No. 1	Pocket C, East Vinod Nagar	true	open	https://delhimetrorail.com/station/VENT	2026-10-08
+west_vinod_nagar	Gate No. 1	Delhi Jal Board	true	open	https://delhimetrorail.com/station/VNNR	2026-10-08
+ip_extension	Gate No. 2	National Victor Public School	true	open	https://delhimetrorail.com/station/IPE	2026-10-08
+ip_extension	Gate No. 1	Max Hospital	true	open	https://delhimetrorail.com/station/IPE	2026-10-08
+anand_vihar_isbt	Gate No. 3	Between Anand Vihar ISBT and Railway station	true	open	https://delhimetrorail.com/station/AVIT	2026-10-08
+anand_vihar_isbt	Gate No. 2	IN FRONT OF ANAND VIHAR ISBT	false	open	https://delhimetrorail.com/station/AVIT	2026-10-08
+anand_vihar_isbt	Gate No. 1 (Pink Line)	TOWARDS ANAND VIHAR ISBT 	true	open	https://delhimetrorail.com/station/AVIT	2026-10-08
+karkarduma	Gate No. 4 (Pink Line)	TOWARDS KARKARDOOMA VILLAGE	false	open	https://delhimetrorail.com/station/KKDA	2026-10-08
+karkarduma	Gate No. 3 (Pink Line)	TOWARDS KARKARDOOMA VILLAGE	true	open	https://delhimetrorail.com/station/KKDA	2026-10-08
+karkarduma	Gate No. 2	SHANTI MUKUND	true	open	https://delhimetrorail.com/station/KKDA	2026-10-08
+karkarduma	Gate No. 1	KARKARDOOMA VILLAGE, DIAMOND BANQUET HALL	true	open	https://delhimetrorail.com/station/KKDA	2026-10-08
+karkarduma_court	Gate No. 2	Towards Karkarduma Court	true	open	https://delhimetrorail.com/station/KKDC	2026-10-08
+karkarduma_court	Gate No. 1	Garg hospital	true	open	https://delhimetrorail.com/station/KKDC	2026-10-08
+krishna_nagar	Gate No. 2	Vishwas Nagar	true	open	https://delhimetrorail.com/station/KHNA	2026-10-08
+krishna_nagar	Gate No. 1	Krishna Nagar Market	true	open	https://delhimetrorail.com/station/KHNA	2026-10-08
+jafrabad	Gate No. 2	Janta Colony, BSES Office	true	open	https://delhimetrorail.com/station/JFRB	2026-10-08
+jafrabad	Gate No. 1	Zeenat Mahal School, Jafrabad	true	open	https://delhimetrorail.com/station/JFRB	2026-10-08
+maujpur_babarpur	Gate No. 5	Babarpur,  Durgapuri	true	open	https://delhimetrorail.com/station/MUPR	2026-10-08
+maujpur_babarpur	Gate No. 4	Babarpur, Jyoti Colony, Durgapuri	false	open	https://delhimetrorail.com/station/MUPR	2026-10-08
+maujpur_babarpur	Gate No. 3	Kabir Nagar ,Kardam Puri	false	open	https://delhimetrorail.com/station/MUPR	2026-10-08
+maujpur_babarpur	Gate No. 2	Vijay Park,Yamuna Vihar	true	open	https://delhimetrorail.com/station/MUPR	2026-10-08
+maujpur_babarpur	Gate No. 1	Mujpur Chowk,Ghonda	true	open	https://delhimetrorail.com/station/MUPR	2026-10-08
+gokulpuri	Gate No. 2	Ambedkar College,Dayalpur police station.	true	open	https://delhimetrorail.com/station/GKPR	2026-10-08
+gokulpuri	Gate No. 1	Ganga vihar, Gokulpuri village	true	open	https://delhimetrorail.com/station/GKPR	2026-10-08
+johri_enclave	Gate No. 2	Near Samrat TVS Show room on Loni Road	true	open	https://delhimetrorail.com/station/JIEE	2026-10-08
+johri_enclave	Gate No. 1	Near Arora Restaurant on Loni Road	true	open	https://delhimetrorail.com/station/JIEE	2026-10-08
+shiv_vihar	Gate No. 2	on Loni Road	true	open	https://delhimetrorail.com/station/SVVR	2026-10-08
+shiv_vihar	Gate No. 1	 on Loni Road	true	open	https://delhimetrorail.com/station/SVVR	2026-10-08
+dabri_mor	Gate No. 3	Towards Pankha Road	true	open	https://delhimetrorail.com/station/DBMR	2026-10-08
+dabri_mor	Gate No. 2	Towards Jankapuri C-2	false	open	https://delhimetrorail.com/station/DBMR	2026-10-08
+dabri_mor	Gate No. 1	Towards Pankha Road, Outer Ring Road	true	open	https://delhimetrorail.com/station/DBMR	2026-10-08
+dashrathpuri	Gate No. 3	VIJAY ENCLAVE	true	open	https://delhimetrorail.com/station/DSHP	2026-10-08
+dashrathpuri	Gate No. 2	SULABH INTERNATIONAL	false	open	https://delhimetrorail.com/station/DSHP	2026-10-08
+dashrathpuri	Gate No. 1	NASIRPUR VILLAGE	true	open	https://delhimetrorail.com/station/DSHP	2026-10-08
+palam	Gate No. 3	PALAM VILLAGE	true	open	https://delhimetrorail.com/station/PALM	2026-10-08
+palam	Gate No. 2	PALAM COLONY	true	open	https://delhimetrorail.com/station/PALM	2026-10-08
+palam	Gate No. 1	MANGLAPURI BUS TERMINAL	false	open	https://delhimetrorail.com/station/PALM	2026-10-08
+sadaar_bazar_cantt	Gate No. 2	DHRUV AUDITORIUM	false	open	https://delhimetrorail.com/station/SABR	2026-10-08
+sadaar_bazar_cantt	Gate No. 1	PRAHALAD PUR VILLAGE	true	open	https://delhimetrorail.com/station/SABR	2026-10-08
+terminal_1_igi_airport	Gate No. 3	DOMESTIC ARRIVALS, DOMESTIC AIRPORT POLICE STATION, G-5 BUILDING	true	open	https://delhimetrorail.com/station/IGDA	2026-10-08
+terminal_1_igi_airport	Gate No. 2	T-1 PARKING, MEHRAM NAGAR EAST, DOMESTIC DEPARTURES, DR. BHIMRAO AMBEDKAR SCHOOL	true	open	https://delhimetrorail.com/station/IGDA	2026-10-08
+terminal_1_igi_airport	Gate No. 1	MEHRAM NAGAR WEST , DHAULA KUAN	true	open	https://delhimetrorail.com/station/IGDA	2026-10-08
+terminal_1_igi_airport	Gate No. 5	T-1 IGI Airport	false	open	https://delhimetrorail.com/station/IGDA	2026-10-08
+terminal_1_igi_airport	Gate No. 4	T-1 IGI Airport, Feeder Bus available	false	open	https://delhimetrorail.com/station/IGDA	2026-10-08
+shankar_vihar	Gate No. 2	Army Residential Area	true	open	https://delhimetrorail.com/station/SKVR	2026-10-08
+shankar_vihar	Gate No. 1	Army Public School	true	open	https://delhimetrorail.com/station/SKVR	2026-10-08
+vasant_vihar	Gate No. 4	Jharkhand Bhawan Embassy of EL Salvador	true	open	https://delhimetrorail.com/station/VTVR	2026-10-08
+vasant_vihar	Gate No. 3	Embassy of Togo, Vasant  lok Market, JP continental Hotel	false	open	https://delhimetrorail.com/station/VTVR	2026-10-08
+vasant_vihar	Gate No. 2	Munirka Marg, JP continental Hotel	true	open	https://delhimetrorail.com/station/VTVR	2026-10-08
+vasant_vihar	Gate No. 1	Gurudwara, JP continental Hotel	false	open	https://delhimetrorail.com/station/VTVR	2026-10-08
+munirka	Subway	MUNIRKA VILLAGE,MUNIRKA MARKET, CAPITAL COURT, DDA MARKET, VASANT VIHAR POLICE STATION,DTC DEPOT VASANT VIHAR	false	open	https://delhimetrorail.com/station/MIRK	2026-10-08
+munirka	Gate No. 3	MUNIRKA MARKET, CAPITAL COURT, DDA MARKET, VASANT VIHAR POLICE STATION	true	open	https://delhimetrorail.com/station/MIRK	2026-10-08
+munirka	Gate No. 2	CPWD COLONY, JAIN MANDIR	false	open	https://delhimetrorail.com/station/MIRK	2026-10-08
+munirka	Gate No. 1	CPWD COLONY,VIVEKANAND MARG	true	open	https://delhimetrorail.com/station/MIRK	2026-10-08
+rk_puram	Gate No. 5	ENTRY/EXIT FOR IIT HOSTEL,BER SARAI,CENTRAL SOIL & MATERIAL RESEARCH STATION,INSTITUTE OF SECRITARIAT TRAINING AND MANAGEMENT	true	open	https://delhimetrorail.com/station/RKPM	2026-10-08
+rk_puram	Gate No. 4	ENTRY/EXIT FOR ROSE GARDEN & IIT	false	open	https://delhimetrorail.com/station/RKPM	2026-10-08
+rk_puram	Gate No. 3	ENTRY/EXIT FOR DDA SPORTS COMPLEX GROUND	true	open	https://delhimetrorail.com/station/RKPM	2026-10-08
+rk_puram	Gate No. 2	ENTRY/EXIT FOR R .K.PURAM SEC. 3, & R K KHANNA TENNIS STATDIUM	true	open	https://delhimetrorail.com/station/RKPM	2026-10-08
+rk_puram	Gate No. 1	ENTRY/EXIT FOR R .K.PURAM SEC. 3, & R K KHANNA TENNIS STATDIUM	true	open	https://delhimetrorail.com/station/RKPM	2026-10-08
+iit_delhi	Gate No. 3	IIT INSTITUTE	true	open	https://delhimetrorail.com/station/IIT	2026-10-08
+iit_delhi	Gate No. 2	SDA MARKET	true	open	https://delhimetrorail.com/station/IIT	2026-10-08
+iit_delhi	Gate No. 1	ROSE GARDEN	false	open	https://delhimetrorail.com/station/IIT	2026-10-08
+panchsheel_park	Gate No. 3	SOAMI NAGAR (SOUTH)	false	open	https://delhimetrorail.com/station/PSPK	2026-10-08
+panchsheel_park	Gate No. 2	PANCHSHEEL ENCLAVE, MAX HOSPITAL	true	open	https://delhimetrorail.com/station/PSPK	2026-10-08
+panchsheel_park	Gate No. 1	PANCHSHEEL PARK S-BLOCK, SAVITRI NAGAR	true	open	https://delhimetrorail.com/station/PSPK	2026-10-08
+chirag_delhi	Gate No. 5	Chirag Delhi Village,Jahapanah city forest	true	open	https://delhimetrorail.com/station/CDLI	2026-10-08
+chirag_delhi	Gate No. 4	Ambedkar nagar, Khanpur	false	open	https://delhimetrorail.com/station/CDLI	2026-10-08
+chirag_delhi	Gate No. 3	DDA flats Masjid Moth(Ph-1&2)	true	open	https://delhimetrorail.com/station/CDLI	2026-10-08
+chirag_delhi	Gate No. 2	Rockland hotel	true	open	https://delhimetrorail.com/station/CDLI	2026-10-08
+chirag_delhi	Gate No. 1	Chirag Delhi Village	false	open	https://delhimetrorail.com/station/CDLI	2026-10-08
+greater_kailash	Gate No. 3	CR Park, Greater Kailash Enclave 2, Savitri Cinema Complex	true	open	https://delhimetrorail.com/station/GKEI	2026-10-08
+greater_kailash	Gate No. 2	Pumposh Enclave, TCIL Building, Greater Kailash Enclave 1	true	open	https://delhimetrorail.com/station/GKEI	2026-10-08
+greater_kailash	Gate No. 1	Masjid Moth, DDA Flats, BSES Office	false	open	https://delhimetrorail.com/station/GKEI	2026-10-08
+nehru_enclave	Gate No. 5	Kalkaji , Veer Savarkar Govt. Sarvodaya Kanya Vidyalaya, CR Park, Deshbandhu College, Ramanujan College, Apollo Cradle Royale Hospital	true	open	https://delhimetrorail.com/station/NUEE	2026-10-08
+nehru_enclave	Gate No. 4	Kalkaji , Veer Savarkar Govt. Sarvodaya Kanya Vidyalaya, CR Park, Deshbandhu College, Ramanujan College, Apollo Cradle Royale Hospital	false	open	https://delhimetrorail.com/station/NUEE	2026-10-08
+nehru_enclave	Gate No. 3	Kalkaji Extention, JIMS Kalkaji, Bhairav Mandir, Kalkaji Police Station	true	open	https://delhimetrorail.com/station/NUEE	2026-10-08
+nehru_enclave	Gate No. 2	Paras Cinema, Nehru Place Market, Modi Tower, International Trade Tower, Paharpur Business Centre	true	open	https://delhimetrorail.com/station/NUEE	2026-10-08
+nehru_enclave	Gate No. 1	Chirag Enclave, pamposh Enclave, Eros Intercontinental, Devika Tower, Fortis C-DAC Hospital	true	open	https://delhimetrorail.com/station/NUEE	2026-10-08
+okhla_nsic	Gate No. 3	NSIC, Okhla Phase-3, Okhla Railway Station, Shambhu Dayal Bagh, Captain Gaur Marg	false	open	https://delhimetrorail.com/station/OKNS	2026-10-08
+okhla_nsic	Gate No. 2	NSIC Exhibition Complex, Lotus Temple, Kalkaji Mandir	true	open	https://delhimetrorail.com/station/OKNS	2026-10-08
+okhla_nsic	Gate No. 1	NSIC, Okhla Phase-3, Okhla Railway Station, Shambhu Dayal Bagh, Captain Gaur Marg	false	open	https://delhimetrorail.com/station/OKNS	2026-10-08
+sukhdev_vihar	Gate No. 4	DON BOSCO SCHOOL	false	open	https://delhimetrorail.com/station/IWNR	2026-10-08
+sukhdev_vihar	Gate No. 3	ARDEE SCHOOL	false	open	https://delhimetrorail.com/station/IWNR	2026-10-08
+sukhdev_vihar	Gate No. 2	Fortis Escort Hospital OPD	true	open	https://delhimetrorail.com/station/IWNR	2026-10-08
+sukhdev_vihar	Gate No. 1	Fortis Escort Hospital IPD	true	open	https://delhimetrorail.com/station/IWNR	2026-10-08
+jamia_millia_islamia	Gate No. 3	TIKONA PARK	true	open	https://delhimetrorail.com/station/JANR	2026-10-08
+jamia_millia_islamia	Gate No. 2	BATLA HOUSE	false	open	https://delhimetrorail.com/station/JANR	2026-10-08
+jamia_millia_islamia	Gate No. 1	JAMIA  MILLIA ISLAMIA UNIVERSITY	true	open	https://delhimetrorail.com/station/JANR	2026-10-08
+okhla_vihar	Gate No. 3	Abul Fazal Enclave,Hari Kothi Road	false	open	https://delhimetrorail.com/station/OVA	2026-10-08
+okhla_vihar	Gate No. 2	Okhla Head,Canal Colony	true	open	https://delhimetrorail.com/station/OVA	2026-10-08
+okhla_vihar	Gate No. 1	Jamia Nagar Police station,Okhla Head	true	open	https://delhimetrorail.com/station/OVA	2026-10-08
+jasola_vihar_shaheen_bagh	Gate No. 5	FOB Shaheen Bagh, Allama Shibli Nomani Marg	false	open	https://delhimetrorail.com/station/JLA8	2026-10-08
+jasola_vihar_shaheen_bagh	Gate No. 4	DAV School, Living Style Mall, SFS Flats, Sector 7 & 8, Jasola Vihar DDA, Jasola Pocket 1 & 2	false	open	https://delhimetrorail.com/station/JLA8	2026-10-08
+jasola_vihar_shaheen_bagh	Gate No. 3	Choudhary Charan Singh Udyan, Delhi Rides, Sarita Vihar,Madanpur Khadar	false	open	https://delhimetrorail.com/station/JLA8	2026-10-08
+jasola_vihar_shaheen_bagh	Gate No. 2	 Shaheen Bagh Police station,Grave Yard, Okhla Vihar	false	open	https://delhimetrorail.com/station/JLA8	2026-10-08
+jasola_vihar_shaheen_bagh	Gate No. 1	Working Women's Hostel(YWCA), Good Samaritan School, HIG Flats, Sec-9A, Jasola Vihar(DDA), DDA Marriage Hall, Govt. Boys/Girls Senior Secondary School(Shaheen Bagh/ Jasola), Sanjeevni Hospital, Jasola Village, Shaheen Bagh Police station, Abdul Fazal Encl	false	open	https://delhimetrorail.com/station/JLA8	2026-10-08
+kalindi_kunj	Gate No. 1	South-West side towards kalindi kunj mithapur road	false	open	https://delhimetrorail.com/station/KIKJ	2026-10-08
+okhla_bird_sanctuary	Gate No. 3	Mahamaya Flyover	true	open	https://delhimetrorail.com/station/OKBS	2026-10-08
+okhla_bird_sanctuary	Gate No. 2	Supertech Supernova	false	open	https://delhimetrorail.com/station/OKBS	2026-10-08
+okhla_bird_sanctuary	Gate No. 1	Okhla Bird Sanctuary	true	open	https://delhimetrorail.com/station/OKBS	2026-10-08
+shivaji_stadium	Gate No. 2	BABA KHARAK SINGH MARG (Main Road Side) Exit Gate	true	open	https://delhimetrorail.com/station/SJSU	2026-10-08
+shivaji_stadium	Gate No. 1	 BABA KHARAK SINGH MARG (Back side) Entry Gate	true	open	https://delhimetrorail.com/station/SJSU	2026-10-08
+dhaula_kuan	Gate No. 1	NH-8 Side	true	open	https://delhimetrorail.com/station/DKV	2026-10-08
+dhaula_kuan	Gate No. 2	Jheel Side	true	open	https://delhimetrorail.com/station/DKV	2026-10-08
+delhi_aerocity	Gate No. 2	Aerocity Side	true	open	https://delhimetrorail.com/station/DACY	2026-10-08
+delhi_aerocity	Gate No. 1	Mahipalpur Side	true	open	https://delhimetrorail.com/station/DACY	2026-10-08
+igi_airport	Multiple Gates	At Airport there are multiple entries which connects Airport(T-3) to metro station.	true	open	https://delhimetrorail.com/station/APOT	2026-10-08
+yashobhoomi_dwarka_sector_25	Gate No. 3	On Dwarka Gurgaon Expressway near Bharthal Village out side of Yashobhoomi	true	open	https://delhimetrorail.com/station/IICC	2026-10-08
+yashobhoomi_dwarka_sector_25	Gate No. 1	Long subway gallery to  Exhibition hall	true	open	https://delhimetrorail.com/station/IICC	2026-10-08
+yashobhoomi_dwarka_sector_25	Gate No. 2	Long subway gallery to Yashobhoomi Arina	true	open	https://delhimetrorail.com/station/IICC	2026-10-08
+yashobhoomi_dwarka_sector_25	Gate No. 4	unpaid concourse east side to Yashobhoomi convention centre	true	open	https://delhimetrorail.com/station/IICC	2026-10-08
+yashobhoomi_dwarka_sector_25	Gate No. 5	unpaid concourse east side to Yashobhoomi convention centre	false	open	https://delhimetrorail.com/station/IICC	2026-10-08
+yashobhoomi_dwarka_sector_25	Gate No. 6	unpaid concourse west side to Yashobhoomi convention centre	true	open	https://delhimetrorail.com/station/IICC	2026-10-08
+yashobhoomi_dwarka_sector_25	Gate No. 7	unpaid concourse west side to Yashobhoomi convention centre	false	open	https://delhimetrorail.com/station/IICC	2026-10-08
+nangli	Gate No. 2	Ranaji Enclave, Sainik Enclave	true	open	https://delhimetrorail.com/station/NNGI	2026-10-08
+nangli	Gate No. 1	Arjun Park, Indira Park, Anand Vihar, Nangli Sakrawati	true	open	https://delhimetrorail.com/station/NNGI	2026-10-08
+najafgarh	Gate No. 3	Jyoti Memorial Hospital	false	open	https://delhimetrorail.com/station/NFGH	2026-10-08
+najafgarh	Gate No. 2	Govt Boys Sr. Sec School	true	open	https://delhimetrorail.com/station/NFGH	2026-10-08
+najafgarh	Gate No. 1	Near OPD Primary Health Care	false	open	https://delhimetrorail.com/station/NFGH	2026-10-08
+dhansa_bus_stand	Gate No.1	Fire Station Side	true	open	https://delhimetrorail.com/station/DNBT	2026-10-08
+dhansa_bus_stand	Gate No. 2	MCD Office	true	open	https://delhimetrorail.com/station/DNBT	2026-10-08
+dhansa_bus_stand	Gate No. 3	Dhansa Bus Stop	true	open	https://delhimetrorail.com/station/DNBT	2026-10-08
+rapid_phase_1	Gate No. 2	Main Golf Course Road	true	open	https://delhimetrorail.com/station/PH1	2026-10-08
+rapid_phase_1	Gate No. 1	Main Golf Course Road	true	open	https://delhimetrorail.com/station/PH1	2026-10-08
+rapid_phase_2	Gate No. 2	Towards Yadav Bus Service Side	true	open	https://delhimetrorail.com/station/DL2	2026-10-08
+rapid_phase_2	Gate No. 1	Towards Building no-5	true	open	https://delhimetrorail.com/station/DL2	2026-10-08
+rapid_phase_3	Gate No. 2	Towards Building no-9	false	open	https://delhimetrorail.com/station/DL3	2026-10-08
+rapid_phase_3	Gate No. 1	Towards U Block	true	open	https://delhimetrorail.com/station/DL3	2026-10-08
+rapid_belvedere_towers	Gate No. 1	Main Road	true	open	https://delhimetrorail.com/station/BEL	2026-10-08
+rapid_cyber_city	Gate No. 2	Towards Gateway Towers	true	open	https://delhimetrorail.com/station/GAT	2026-10-08
+rapid_cyber_city	Gate No. 1	Cyber Hub Road	true	open	https://delhimetrorail.com/station/GAT	2026-10-08
+rapid_moulsari_avenue	Gate No. 1	Moulsari Avenue Road	true	open	https://delhimetrorail.com/station/MAL	2026-10-08
+rapid_sector_42_43	Gate No. 2	Main Golf Course Road	true	open	https://delhimetrorail.com/station/SUL	2026-10-08
+rapid_sector_42_43	Gate No. 1	Main Golf Course Road	true	open	https://delhimetrorail.com/station/SUL	2026-10-08
+rapid_sector_53_54	Gate No. 2	Main Golf Course Road	true	open	https://delhimetrorail.com/station/S53	2026-10-08
+rapid_sector_53_54	Gate No. 1	Main Golf Course Road	true	open	https://delhimetrorail.com/station/S53	2026-10-08
+rapid_sector_54_chowk	Gate No. 2	Main Golf Course Road	true	open	https://delhimetrorail.com/station/AIT	2026-10-08
+rapid_sector_54_chowk	Gate No. 1	Main Golf Course Road	true	open	https://delhimetrorail.com/station/AIT	2026-10-08
+rapid_sector_55_56	Gate No. 2	Main Golf Course Road	true	open	https://delhimetrorail.com/station/S55	2026-10-08
+rapid_sector_55_56	Gate No. 1	Main Golf Course Road	true	open	https://delhimetrorail.com/station/S55	2026-10-08

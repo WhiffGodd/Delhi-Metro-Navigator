@@ -70,7 +70,7 @@ public final class DelhiMetroServer implements AutoCloseable {
                     String station = params.get("station");
                     if (station == null || !database.getAllStations().containsKey(station))
                         throw new IllegalArgumentException("Choose a valid station");
-                    json(request, 200, Map.of("success", true, "exitAi", exits.getExitRecommendation(station)));
+                    json(request, 200, Map.of("success", true, "exitAi", exits.getExitRecommendation(station, params.getOrDefault("destination", ""), Boolean.parseBoolean(params.getOrDefault("accessible", "false")))));
                 }
                 case "/api/card-recharge" -> json(request, 200, Map.of("success", true, "redirectUrl", "https://www.dmrcsmartcard.com/"));
                 default -> json(request, 404, Map.of("success", false, "error", "API endpoint not found"));

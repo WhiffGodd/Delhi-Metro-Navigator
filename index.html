@@ -248,9 +248,10 @@
             <div class="sidebar-section">
               <div class="planner-form">
                 <div class="input-group">
-                  <label class="select-label" for="route-from">FROM</label>
-                  <input id="route-from-search" class="search-input" type="search" list="station-options" placeholder="Type starting station…" aria-label="Search starting station" autocomplete="off" />
-                  <select id="route-from" class="route-select" aria-label="Select starting station"></select>
+                  <label class="select-label" for="route-from-search">FROM</label>
+                  <input id="route-from-search" class="search-input" type="search" placeholder="Type starting station…" aria-label="Search starting station" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="route-from-suggestions" />
+                  <div id="route-from-suggestions" class="station-suggestions" role="listbox" aria-label="Station suggestions" hidden></div>
+                  <select hidden tabindex="-1" aria-hidden="true" id="route-from" class="route-select" aria-label="Select starting station"></select>
                 </div>
 
                 <div class="swap-wrapper">
@@ -268,10 +269,10 @@
                 </div>
 
                 <div class="input-group">
-                  <label class="select-label" for="route-to">TO</label>
-                  <input id="route-to-search" class="search-input" type="search" list="station-options" placeholder="Type destination station…" aria-label="Search destination station" autocomplete="off" />
-                  <datalist id="station-options"></datalist>
-                  <select id="route-to" class="route-select" aria-label="Select destination station"></select>
+                  <label class="select-label" for="route-to-search">TO</label>
+                  <input id="route-to-search" class="search-input" type="search" placeholder="Type destination station…" aria-label="Search destination station" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="route-to-suggestions" />
+                  <div id="route-to-suggestions" class="station-suggestions" role="listbox" aria-label="Station suggestions" hidden></div>
+                  <select hidden tabindex="-1" aria-hidden="true" id="route-to" class="route-select" aria-label="Select destination station"></select>
                 </div>
               </div>
             </div>
@@ -764,6 +765,7 @@
     </div>
     <!-- /site-content -->
     <script src="ui-enhancements.js"></script>
+    <script src="fare-engine.js"></script>
     <script src="route-planner.js"></script>
     <script src="journey-companion.js"></script>
     <!-- Scripts -->
@@ -865,6 +867,8 @@
         try {
           const data = await fetchStationNetwork();
           if (data.success && data.stations) {
+            data.exitRecommendations = await loadStoredExitGuide();
+            storedExitGuide = data.exitRecommendations;
             stationsData = data.stations;
             usingBundledNetwork = data.source === "bundled";
             // Java owns routing on the full application. Build the browser
@@ -903,23 +907,93 @@
         }
       }
 
+      let storedExitGuide = {};
+      function findStationMatches(query) {
+        const words = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
+        return words.length ? stationsData.filter(s => words.every(word => stationSearchText(s).includes(word))).slice(0, 8) : [];
+      }
       function initStationTyping() {
         ['from','to'].forEach(side => {
           const input = document.getElementById('route-' + side + '-search');
+          const select = document.getElementById('route-' + side);
+          const list = document.getElementById('route-' + side + '-suggestions');
+          let active = -1;
+          const close = () => {
+            list.hidden = true;
+            input.setAttribute('aria-expanded', 'false');
+            input.removeAttribute('aria-activedescendant');
+            active = -1;
+          };
+          const choose = station => {
+            select.value = station.id;
+            input.value = station.name;
+            close();
+            autoCheckAndHighlight();
+          };
+          const show = () => {
+            const matches = findStationMatches(input.value);
+            list.replaceChildren();
+            active = -1;
+            input.removeAttribute('aria-activedescendant');
+            if (!input.value.trim()) { close(); return; }
+            for (const station of matches) {
+              const option = document.createElement('button');
+              option.type = 'button';
+              option.className = 'station-suggestion';
+              option.id = 'suggestion-' + side + '-' + station.id;
+              option.setAttribute('role', 'option');
+              option.setAttribute('aria-selected', 'false');
+              option.tabIndex = -1;
+              const name = document.createElement('strong'); name.textContent = station.name;
+              const lines = document.createElement('span'); lines.textContent = station.lines.join(' · ');
+              option.append(name, lines);
+              option.addEventListener('pointerdown', event => event.preventDefault());
+              option.addEventListener('click', () => choose(station));
+              list.append(option);
+            }
+            if (!matches.length) {
+              const empty = document.createElement('div');
+              empty.className = 'station-suggestion-empty';
+              empty.textContent = 'No stations found. Try another name.';
+              empty.setAttribute('role', 'status');
+              list.append(empty);
+            }
+            list.hidden = false;
+            input.setAttribute('aria-expanded', 'true');
+          };
           input.addEventListener('input', () => {
             const match = stationsData.find(s => stationLabel(s).toLowerCase() === input.value.trim().toLowerCase() || s.name.toLowerCase() === input.value.trim().toLowerCase());
-            document.getElementById('route-' + side).value = match ? match.id : '';
+            select.value = match ? match.id : '';
             autoCheckAndHighlight();
+            show();
           });
-          document.getElementById('route-' + side).addEventListener('change', () => {
-            const station = stationsData.find(s => s.id === document.getElementById('route-' + side).value);
-            input.value = station ? stationLabel(station) : '';
+          input.addEventListener('focus', show);
+          input.addEventListener('blur', close);
+          input.addEventListener('keydown', event => {
+            if (event.key === 'Escape') { close(); return; }
+            if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+              event.preventDefault();
+              if (list.hidden) show();
+              const options = [...list.querySelectorAll('[role="option"]')];
+              if (!options.length) return;
+              active = (active + (event.key === 'ArrowDown' ? 1 : -1) + options.length) % options.length;
+              options.forEach((option, index) => option.setAttribute('aria-selected', String(index === active)));
+              input.setAttribute('aria-activedescendant', options[active].id);
+              options[active].scrollIntoView({block:'nearest'});
+            } else if (event.key === 'Enter' && !list.hidden) {
+              const options = [...list.querySelectorAll('[role="option"]')];
+              if (options.length) { event.preventDefault(); options[Math.max(0, active)].click(); }
+            }
+          });
+          select.addEventListener('change', () => {
+            const station = stationsData.find(s => s.id === select.value);
+            input.value = station ? station.name : '';
+            close();
           });
         });
       }
       function stationLabel(s) { return s.name + ' — ' + s.lines.join(', '); }
       function populateDropdowns(stations) {
-        document.getElementById("station-options").replaceChildren(...stations.map(s => { const option = document.createElement("option"); option.value = stationLabel(s); return option; }));
         const fromSel = document.getElementById("route-from");
         const toSel = document.getElementById("route-to");
         fromSel.innerHTML =
@@ -1112,16 +1186,9 @@
           <div class="last-train-row">Last Train: <strong>${s.lastTrain}</strong></div>
         </div>`;
 
-        if (usingBundledNetwork) {
-          document.getElementById("station-meta-box").textContent =
-            (s.isInterchange ? "Interchange station. " : "Regular station. ") +
-            "Exit recommendations require the metro server.";
-          document.getElementById("details-panel").classList.add("active");
-          return;
-        }
-        // Fetch Exit Gate recommendations from Backend
-        fetch(`/api/exit-recommendation?station=${s.id}`)
-          .then((res) => res.json())
+        // Static hosting and temporary API outages use the bundled gate guide.
+        const guideRequest = Promise.resolve({exitAi: getStoredExitRecommendation(storedExitGuide, s.id)});
+        guideRequest
           .then((data) => {
             if (selectedStation?.id !== s.id) return;
             const exitAi = data.exitAi;
@@ -1139,8 +1206,8 @@
                 <div class="gate-landmark-title"> ${g.landmark}</div>
                 <div class="gate-reason-text" style="font-size:14px;color:#334155;margin-top:2px"> ${g.reason}</div>
                 <div class="gate-features-row" style="margin-top:5px;font-size:14px;color:#64748b;display:flex;gap:12px">
-                  <span> ~${g.walkMins} min walk to street</span>
-                  <span> ${g.lift ? "Lift listed" : g.escalator ? "Escalator listed" : "Accessibility details unavailable"}</span>
+                  <span> ${g.walkMins != null ? `~${g.walkMins} min walk to street` : "Walking time not published"}</span>
+                  <span> ${g.accessible ? "Listed as accessible by DMRC" : "Confirm accessibility with station staff"}</span>
                 </div>
               </div>`,
                 )
@@ -1209,7 +1276,7 @@
       function syncStationInputs() {
         ['from','to'].forEach(side => {
           const station = stationsData.find(s => s.id === document.getElementById('route-' + side).value);
-          document.getElementById('route-' + side + '-search').value = station ? stationLabel(station) : '';
+          document.getElementById('route-' + side + '-search').value = station ? station.name : '';
         });
       }
       function autoCheckAndHighlight() {
@@ -1553,6 +1620,67 @@
         }
       }
 
+      function renderSmartExit(stationId) {
+        const panel = document.getElementById('smart-exit-panel');
+        const station = stationsData.find(s => s.id === stationId);
+        const guide = storedExitGuide[stationId];
+        panel.replaceChildren();
+        const heading = document.createElement('h3');
+        heading.textContent = 'Smart exit · ' + station.name;
+        panel.append(heading);
+        if (!guide?.allGates?.length) {
+          const message = document.createElement('p');
+          message.textContent = 'Gate destinations are not published in this guide. Follow station signs or ask staff for your destination.';
+          const link = document.createElement('a');
+          link.textContent = 'Open official station guide ↗';
+          link.href = guide?.sourceUrl || (station.lines.includes('Aqua Line') ? 'https://www.nmrcnoida.com/' : 'https://delhimetrorail.com/');
+          link.target = '_blank'; link.rel = 'noopener';
+          panel.append(message, link);
+          return;
+        }
+        const label = document.createElement('label');
+        label.textContent = 'Where are you heading after the station?';
+        label.htmlFor = 'exit-destination';
+        const input = document.createElement('input');
+        input.id = 'exit-destination'; input.type = 'search'; input.className = 'search-input';
+        input.placeholder = 'Type a nearby road, market or landmark';
+        const accessLabel = document.createElement('label'); accessLabel.className = 'exit-access-toggle';
+        const accessible = document.createElement('input'); accessible.type = 'checkbox'; accessible.id = 'exit-step-free';
+        accessLabel.append(accessible, document.createTextNode('Only gates listed as accessible'));
+        const result = document.createElement('div'); result.id = 'exit-recommendation-result';
+        result.setAttribute('aria-live','polite');
+        const choices = document.createElement('div'); choices.className = 'exit-gate-choices';
+        const source = document.createElement('a');
+        source.href = guide.sourceUrl; source.textContent = 'DMRC gate guide · checked ' + guide.checkedOn + ' ↗';
+        source.target = '_blank'; source.rel = 'noopener';
+        panel.append(label, input, accessLabel, result, choices, source);
+        const update = () => {
+          const recommendation = getStoredExitRecommendation(storedExitGuide, stationId, input.value, accessible.checked);
+          result.replaceChildren(); choices.replaceChildren();
+          if (recommendation.available) {
+            const gate = document.createElement('strong');
+            gate.textContent = (input.value.trim() ? 'Suggested: ' : 'Listed exit: ') + recommendation.bestGate;
+            const destination = document.createElement('p'); destination.textContent = recommendation.landmark;
+            const note = document.createElement('p'); note.textContent = recommendation.recommendationNote;
+            result.append(gate, destination, note);
+          } else {
+            const message = document.createElement('p'); message.textContent = recommendation.reason;
+            result.append(message);
+          }
+          for (const gate of guide.allGates) {
+            const closed = ['closed','close','inactive'].includes(String(gate.status).toLowerCase());
+            const button = document.createElement('button'); button.type = 'button'; button.className = 'exit-gate-choice';
+            button.disabled = closed || (accessible.checked && gate.accessible !== true);
+            button.textContent = gate.gate + ' · ' + (gate.landmark || 'Destination not published') + (closed ? ' · Listed closed' : gate.accessible ? ' · Accessible' : '');
+            button.addEventListener('click', () => { input.value = gate.landmark || gate.gate; update(); });
+            choices.append(button);
+          }
+        };
+        input.addEventListener('input', update);
+        accessible.addEventListener('change', update);
+        update();
+      }
+
       function renderRouteResults(r) {
         const c = document.getElementById("route-results-container");
         c.style.display = "flex";
@@ -1583,6 +1711,14 @@
           r.legs = enrichFallbackLegs(r.pathStationIds, r.roadmap);
         }
 
+        const fareDetails = MetroFares.priceJourney(r.pathStationIds,
+          r.roadmap.slice(0, -1).map(step => step.currentLine), stationsData);
+        r.fare = fareDetails.weekday;
+        const fareBreakdown = fareDetails.breakdown.map(part => `
+          <li><div><strong>${part.name}</strong><span>${part.fromName} → ${part.toName}</span></div>
+          <strong>${part.estimated ? '~' : ''}₹${part.weekday}</strong>
+          <p>${part.note} ${part.source ? `<a href="${part.source}" target="_blank" rel="noopener">Official tariff ↗</a>` : ''}</p></li>`).join('');
+
         let transitBadges = "";
         if (r.exitAi && r.exitAi.transitOptions) {
           transitBadges = r.exitAi.transitOptions
@@ -1598,44 +1734,26 @@
         c.innerHTML = `
         <div class="route-summary-card">
           <div class="route-metric"><span class="route-metric-val">~${r.totalTimeMins} mins</span><span class="route-metric-label">Estimated Time</span></div>
-          <div class="route-metric"><span class="route-metric-val">${r.fare == null ? "Check operator" : `₹${r.fare}`}</span><span class="route-metric-label">${r.fare == null ? "Separate operator fares" : r.estimated ? "Estimated Fare" : "Single Fare"}</span></div>
+          <div class="route-metric"><span class="route-metric-val">${fareDetails.estimated ? "~" : ""}₹${fareDetails.weekday}</span><span class="route-metric-label">${fareDetails.estimated ? "Estimated weekday fare" : "Weekday single-journey fare"}</span></div>
           <div class="route-metric"><span class="route-metric-val">${r.totalStops}</span><span class="route-metric-label">Total Stops</span></div>
           ${transferSummaryBadge}
         </div>
 
-        <p class="ncr-fare-note">${r.fareNote || "Fares and travel times are estimates."}</p>
+        <section class="journey-fare-info" aria-label="Fare information">
+          <div class="fare-day-prices"><span>Mon–Sat <strong>${fareDetails.estimated ? '~' : ''}₹${fareDetails.weekday}</strong></span><span>Sun / national holidays <strong>${fareDetails.estimated ? '~' : ''}₹${fareDetails.holiday}</strong></span></div>
+          <p>${fareDetails.note}</p>
+          <ul class="fare-breakdown">${fareBreakdown}</ul>
+          <small>Published tariffs checked 8 Oct 2026 · Single journey · Smart-card discounts excluded</small>
+        </section>
+        <section id="smart-exit-panel" class="smart-exit-panel" aria-label="Smart exit"></section>
         <section id="journey-companion" class="journey-companion" aria-label="Journey companion"></section>
 
         ${generateLegsHtml(r.legs, r.interchanges)}
 
-        ${generateRoadmapHtml(r.roadmap, r.totalStops)}
 
-        ${r.exitAi && r.exitAi.available === true ? `
-        <div class="smart-assistant-card exit-ai-card" style="background:#f8fafc;border:1px solid #e2e8f0">
-          <div class="assistant-card-header">
-            <span class="assistant-card-title" style="font-weight:700"> Arrival information</span>
-            <span class="exit-gate-highlight-badge" style="background:#2563eb;color:#fff"> Recommended: ${r.exitAi.bestGate}</span>
-          </div>
-          <div class="exit-reasoning-box">
-            <div class="reasoning-text" style="font-size:14px;color:#1e293b;line-height:1.4"> ${r.exitAi.reason}</div>
-            <div class="exit-metrics-row" style="margin-top:6px;font-size:14px;color:#64748b">
-              <span> Approx. ${r.exitAi.walkMins} min walk to street</span>
-              <span> ${r.exitAi.lift ? "Lift listed" : r.exitAi.escalator ? "Escalator listed" : "Accessibility details unavailable"}</span>
-            </div>
-            <div style="margin-top:8px">${transitBadges}</div>
-            <div style="margin-top:8px;padding-top:8px;border-top:1px dashed #cbd5e1;font-size:14px;color:#475569">
-               <strong>Commuter Tip:</strong> ${r.exitAi.recommendationNote}
-            </div>
-          </div>
-        </div>` : `
-        <div class="smart-assistant-card" style="padding:16px">
-          <strong>${r.transfers || 0} transfer${r.transfers === 1 ? "" : "s"}</strong>
-          <p>Exit details are unavailable for this journey. Follow station signage or ask station staff.</p>
-          <p>Time and fare estimates use the saved network, average train speed,
-          a five-minute allowance per rail interchange and eight minutes for the Noida walking connection.
-          Check <a href="https://delhimetrorail.com/fare" target="_blank" rel="noopener">DMRC</a> and NMRC for current fares and service updates.</p>
-        </div>`}`;
+        ${generateRoadmapHtml(r.roadmap, r.totalStops)}`;
 
+        renderSmartExit(r.destId);
         prepareJourney(r.roadmap);
 
         // ─────────────────────────────────────────────────────────────

@@ -30,8 +30,12 @@ public class BackendTest {
         var knownExit = exits.getExitRecommendation("rajiv_chowk");
         check(Boolean.TRUE.equals(knownExit.get("available")) && knownExit.containsKey("walkMins"), "Stored exit recommendation");
         check(!knownExit.containsKey("savedMins"), "No fabricated time saving");
-        var unknownExit = exits.getExitRecommendation("vaishali");
+        var unknownExit = exits.getExitRecommendation("noida_sector_51");
         check(Boolean.FALSE.equals(unknownExit.get("available")) && !unknownExit.containsKey("bestGate"), "No fabricated gate");
+        var landmarkExit = exits.getExitRecommendation("rajiv_chowk", "Palika", false);
+        check("Gate No. 6".equals(landmarkExit.get("bestGate")), "Official Palika destination selects Gate 6");
+        check(Boolean.FALSE.equals(exits.getExitRecommendation("rajiv_chowk", "Palika", true).get("available")), "Do not substitute inaccessible gate");
+        check(Boolean.TRUE.equals(exits.getExitRecommendation("vaishali").get("available")), "Gate coverage beyond the original five stations");
         for (String preference : List.of("fastest", "fewest_interchanges")) {
             for (String destination : db.getAllStations().keySet()) {
                 if (destination.equals("rajiv_chowk")) continue;
@@ -109,6 +113,10 @@ public class BackendTest {
                 if (path.startsWith("/api/")) check(response.headers().firstValue("Content-Type").orElse("").contains("application/json"), "JSON API");
                 if (path.startsWith("/api/route")) check(response.body().contains("\"source\":\"java\""), "Java route source");
             }
+            var palika = client.send(HttpRequest.newBuilder(URI.create(base + "/api/exit-recommendation?station=rajiv_chowk&destination=Palika")).GET().build(), HttpResponse.BodyHandlers.ofString());
+            check(palika.body().contains("\"bestGate\":\"Gate No. 6\""), "API destination changes recommendation");
+            var accessiblePalika = client.send(HttpRequest.newBuilder(URI.create(base + "/api/exit-recommendation?station=rajiv_chowk&destination=Palika&accessible=true")).GET().build(), HttpResponse.BodyHandlers.ofString());
+            check(accessiblePalika.body().contains("\"available\":false"), "API accessibility requirement respected");
             for (String path : List.of("/api/missing", "/missing.js", "/.git/config", "/src/com/delhimetro/Main.java", "/%2e%2e/README.md")) {
                 check(client.send(HttpRequest.newBuilder(URI.create(base + path)).GET().build(), HttpResponse.BodyHandlers.ofString()).statusCode() == 404, "Missing or private path " + path);
             }

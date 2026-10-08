@@ -1,68 +1,67 @@
 package com.delhimetro.service;
 
-import com.delhimetro.model.ExitGate;
-
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.*;
 import java.util.*;
 
+/** Uses the same checked-in official gate snapshot as the browser. */
 public class AISmartExitService {
-
-    private final MetroDatabase database;
+    private final Map<String, List<Map<String, Object>>> guide = new HashMap<>();
 
     public AISmartExitService(MetroDatabase database) {
-        this.database = database;
+        try {
+            InputStream resource = getClass().getClassLoader().getResourceAsStream("web/data/exit-gates.tsv");
+            if (resource == null) resource = Files.newInputStream(Path.of("data/exit-gates.tsv"));
+            try (var reader = new BufferedReader(new InputStreamReader(resource, StandardCharsets.UTF_8))) {
+                reader.readLine();
+                for (String row; (row = reader.readLine()) != null;) {
+                    String[] fields = row.split("\t", -1);
+                    if (fields.length != 7 || !database.getAllStations().containsKey(fields[0])) continue;
+                    Map<String, Object> gate = new LinkedHashMap<>();
+                    gate.put("gate", fields[1]); gate.put("landmark", fields[2]);
+                    gate.put("accessible", Boolean.parseBoolean(fields[3])); gate.put("status", fields[4]);
+                    gate.put("sourceUrl", fields[5]); gate.put("checkedOn", fields[6]);
+                    gate.put("lift", null); gate.put("escalator", null); gate.put("walkMins", null);
+                    gate.put("reason", "Exit towards " + fields[2] + ".");
+                    gate.put("transitOptions", List.of());
+                    guide.computeIfAbsent(fields[0], key -> new ArrayList<>()).add(gate);
+                }
+            }
+        } catch (IOException error) {
+            System.err.println("Official exit guide unavailable: " + error.getMessage());
+        }
     }
 
     public Map<String, Object> getExitRecommendation(String stationId) {
-        List<ExitGate> gates = database.getExitGates(stationId);
-        Map<String, Object> result = new LinkedHashMap<>();
+        return getExitRecommendation(stationId, "", false);
+    }
 
-        if (gates == null || gates.isEmpty()) {
-            result.put("available", false);
-            result.put("reason", "Exit details are not available for this station. Follow station signage or ask station staff.");
-            result.put("allGates", List.of());
-            result.put("transitOptions", List.of());
+    public Map<String, Object> getExitRecommendation(String stationId, String destination, boolean accessibleOnly) {
+        List<Map<String, Object>> gates = guide.getOrDefault(stationId, List.of());
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("available", false); result.put("allGates", gates); result.put("transitOptions", List.of());
+        result.put("reason", "Official gate details are unavailable. Follow station signs or ask station staff.");
+        if (gates.isEmpty()) return result;
+        String[] words = destination.trim().toLowerCase(Locale.ROOT).split("\\s+");
+        var matching = gates.stream().filter(g -> !Set.of("closed", "close", "inactive").contains(g.get("status").toString().toLowerCase(Locale.ROOT)))
+            .filter(g -> !accessibleOnly || Boolean.TRUE.equals(g.get("accessible")))
+            .filter(g -> Arrays.stream(words).allMatch(word -> (g.get("gate") + " " + g.get("landmark")).toLowerCase(Locale.ROOT).contains(word)))
+            .sorted(Comparator.comparingInt(g -> gateNumber(g.get("gate").toString()))).toList();
+        result.put("source", "dmrc");
+        result.put("sourceUrl", gates.get(0).get("sourceUrl")); result.put("checkedOn", gates.get(0).get("checkedOn"));
+        if (matching.isEmpty()) {
+            result.put("reason", accessibleOnly ? "No matching gate is listed as accessible. Ask station staff for a step-free route." : "No listed exit matches that destination. Choose another nearby destination or ask station staff.");
             return result;
         }
-
-        // Rank stored gates by walking time, accessibility and onward transport.
-        ExitGate bestGate = gates.get(0);
-        int maxScore = Integer.MIN_VALUE;
-
-        for (ExitGate g : gates) {
-            int score = 100 - (g.getWalkMins() * 10);
-            if (g.hasLift()) score += 25;
-            if (g.hasEscalator()) score += 15;
-            if (g.getTransitOptions() != null && !g.getTransitOptions().isEmpty()) score += 20;
-
-            if (score > maxScore) {
-                maxScore = score;
-                bestGate = g;
-            }
-        }
-
-        result.put("bestGate", bestGate.getGate());
-        result.put("reason", bestGate.getReason());
-        result.put("available", true);
-        result.put("walkMins", bestGate.getWalkMins());
-        result.put("landmark", bestGate.getLandmark());
-        result.put("recommendationNote", "Suggested from stored gate details, prioritising lift access and walking time. Confirm current gate availability at the station.");
-        result.put("lift", bestGate.hasLift());
-        result.put("escalator", bestGate.hasEscalator());
-        result.put("transitOptions", bestGate.getTransitOptions());
-
-        List<Map<String, Object>> gatesList = new ArrayList<>();
-        for (ExitGate g : gates) {
-            Map<String, Object> gateMap = new LinkedHashMap<>();
-            gateMap.put("gate", g.getGate());
-            gateMap.put("landmark", g.getLandmark());
-            gateMap.put("walkMins", g.getWalkMins());
-            gateMap.put("lift", g.hasLift());
-            gateMap.put("escalator", g.hasEscalator());
-            gateMap.put("reason", g.getReason());
-            gatesList.add(gateMap);
-        }
-        result.put("allGates", gatesList);
-
+        result.putAll(matching.get(0)); result.put("available", true);
+        result.put("bestGate", matching.get(0).get("gate")); result.put("matches", matching);
+        result.put("recommendationNote", "Based on DMRC’s published gate destinations, not live gate status. Confirm access using station signs or staff.");
         return result;
+    }
+
+    private static int gateNumber(String gate) {
+        var match = java.util.regex.Pattern.compile("\\d+").matcher(gate);
+        return match.find() ? Integer.parseInt(match.group()) : Integer.MAX_VALUE;
     }
 }

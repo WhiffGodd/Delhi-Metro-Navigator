@@ -108,3 +108,16 @@ test('Green branches meet at Ashok Park Main', () => {
   assert.deepEqual(route('indrelok','kirti_nagar').pathStationIds,['indrelok','ashok_park_main','kirti_nagar']);
   assert.equal(route('indrelok','kirti_nagar').transfers,0);
 });
+test('offline journeys include stored exit details without inventing unknown gates', () => {
+  const exitRecommendations = JSON.parse(fs.readFileSync('data/exits.json','utf8'));
+  const find = createMetroRouter({...network, exitRecommendations});
+  const arrival = find('hauz_khas','rajiv_chowk').exitAi;
+  assert.equal(arrival.available,true);
+  assert.ok(arrival.bestGate && arrival.landmark && arrival.allGates.length);
+  assert.equal(arrival.walkMins,null);
+  assert.equal(find('rajiv_chowk','noida_sector_51').exitAi.available,false);
+  for (const [id,entry] of Object.entries(exitRecommendations)) {
+    assert.ok(network.stations.some(s=>s.id===id));
+    if (entry.available) assert.ok(entry.allGates.length);
+  }
+});
